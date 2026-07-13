@@ -33,7 +33,7 @@
             {% if hero.lead %}<div class="intro-lead-in">{{ hero.lead }}</div>{% endif %}
             {% if hero.description %}<p class="intro-subtext">{{ hero.description }}</p>{% endif %}
             {% if hero.primary_button %}
-            <a href="{{ hero.primary_button.url }}" target="_blank" rel="noopener" class="btn btn-xl btn-cta-primary">
+            <a href="{{ hero.primary_button.url | relative_url }}" class="btn btn-xl btn-cta-primary">
                 {% if hero.primary_button.icon %}<i class="fa fa-{{ hero.primary_button.icon }} fa-lg"></i> {% endif %}{{ hero.primary_button.text }}
             </a>
             {% endif %}

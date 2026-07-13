@@ -9,8 +9,16 @@ plugins:
 title:       "SCHH Community Guide"
 email:       "info@schh-info.example.com"
 description: "A resident-created, AI-powered guide to community information and local resources."
-url:         ""   # e.g. https://your-org.github.io
+url:         "https://schh.info"
 baseurl:     ""   # e.g. /schh-info  (leave blank for a root-level Pages site)
+
+# -----------------------------------------------
+# Chatbot (self-hosted Dify Community Edition)
+# Embed URL from Dify: App > Publish > Embed into Site (iframe tab),
+# e.g. https://dify.example.com/chatbot/AbCdEfGh123
+# -----------------------------------------------
+chatbot:
+  embed_url: "https://chat.schh.info/chatbot/UXhwRs6EzreAxcLX"
 
 # -----------------------------------------------
 # Navigation
@@ -37,10 +45,10 @@ hero:
   description: >-
     The SCHH Community Guide brings together official community materials, local
     information, and vendor listings in one easier-to-search starting
-    point, with AI support powered by Google's NotebookLM.
+    point, with AI-supported search and chat.
   primary_button:
     text:   "Ask the Chatbot"
-    url:    "https://notebooklm.google.com/notebook/572a70be-3123-4826-96a1-a060265a75b9"
+    url:    "/chat/"
     icon:   "comments"
   secondary_button:
     text:   "Learn More About the Guide"

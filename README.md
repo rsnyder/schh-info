@@ -4,10 +4,11 @@ A Jekyll-powered landing page for the SCHH Community Guide, a resident-created A
 
 ## Quick-start checklist
 
-### 1. Set the NotebookLM chatbot URL
-Open `_config.yml` and replace the placeholder chatbot URL:
+### 1. Set the Dify chatbot embed URL
+The chatbot page at `/chat/` embeds a self-hosted [Dify Community Edition](https://github.com/langgenius/dify) chatbot in an iframe. In Dify, open the app and go to **Publish → Embed into Site** (iframe tab) to get the embed URL, then set it in `_config.yml`:
 ```yaml
-chatbot_url: "https://notebooklm.google.com/notebook/YOUR_NOTEBOOK_ID"
+chatbot:
+  embed_url: "https://YOUR-DIFY-HOST/chatbot/YOUR-CHATBOT-TOKEN"
 ```
 
 ### 2. Set up the contact form (Formspree)

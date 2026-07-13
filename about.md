@@ -30,11 +30,11 @@ The guide is not intended to be complete or exhaustive. It is best understood as
 
 AI-Supported Search and Chat
 
-The guide includes an AI-supported search and chat experience, currently powered by Google’s NotebookLM. The chatbot is intended as a helpful search and discovery tool, not as a final authority.
+The guide includes an AI-supported search and chat experience, available directly on this site at the Ask the Chatbot page. The chatbot is intended as a helpful search and discovery tool, not as a final authority.
 
 AI-generated answers may be incomplete, outdated, or imperfect. Where possible, chatbot responses will point residents back to the relevant source materials, including official documents when available. Residents should review those sources and verify important information with official Association resources. Some official documents may require sign-in through AAM or another authorized access point.
 
-When using the AI chatbot, residents will be taken to Google’s NotebookLM site and will need to sign in with a Google account. Use of NotebookLM is governed by Google’s own terms and privacy policies.
+No account or sign-in is required to use the chatbot. Questions submitted to the chatbot are processed by the AI service that powers it and may be logged to help improve the guide, so residents should avoid including personal information in their questions.
 
 The guide can be especially useful for questions such as: Where can I find a form? What did a recent announcement say? What are the rules for a facility? Where was an event mentioned? What local services or resources are available nearby?
 
