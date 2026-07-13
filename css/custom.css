@@ -1,0 +1,237 @@
+---
+---
+{%- assign c  = site.theme_colors -%}
+{%- assign tf = site.theme_fonts -%}
+{%- assign primary   = c.primary   | default: '#fed136' -%}
+{%- assign dark      = c.dark      | default: '#222222' -%}
+{%- assign body_text = c.body_text | default: '#333333' -%}
+{%- assign hero_from = c.hero_from | default: '#0d2137' -%}
+{%- assign hero_to   = c.hero_to   | default: '#1a6e6a' -%}
+{%- assign f_heading = tf.heading  | default: 'Montserrat'     -%}
+{%- assign f_body    = tf.body     | default: 'Roboto Slab'    -%}
+{%- assign f_accent  = tf.accent   | default: 'Droid Serif'    -%}
+{%- assign f_brand   = tf.brand    | default: 'Kaushan Script' -%}
+
+/* ============================================================
+   Site customizations — all values driven by _config.yml
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   Typography
+   ---------------------------------------------------------- */
+body {
+    font-family: "{{ f_body }}", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: {{ body_text }};
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: "{{ f_heading }}", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Nav links and buttons inherit heading font */
+.navbar-default .nav li a,
+.btn-xl,
+footer span.copyright,
+footer ul.quicklinks {
+    font-family: "{{ f_heading }}", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Italic accent font: hero lead-in and section subheadings */
+header .intro-text .intro-lead-in,
+section h3.section-subheading {
+    font-family: "{{ f_accent }}", "Helvetica Neue", Helvetica, Arial, serif;
+}
+
+/* Navbar brand / logo */
+.navbar-default .navbar-brand,
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+    font-family: "{{ f_brand }}", "Helvetica Neue", Helvetica, Arial, cursive;
+}
+
+/* ----------------------------------------------------------
+   Primary accent color
+   ---------------------------------------------------------- */
+.text-primary,
+.text-primary:hover       { color: {{ primary }} !important; }
+a                         { color: {{ primary }}; }
+a:hover, a:focus          { color: {{ primary }}; }
+
+/* Social icon hover */
+ul.social-buttons li a:hover,
+ul.social-buttons li a:focus,
+ul.social-buttons li a:active { background-color: {{ primary }}; }
+
+/* Form focus ring */
+.form-control:focus,
+section#contact .form-control:focus {
+    border-color: {{ primary }};
+    box-shadow: none;
+}
+
+/* ----------------------------------------------------------
+   Buttons  (override Agency theme's btn-xl)
+   ---------------------------------------------------------- */
+.btn-xl,
+.btn-xl:focus {
+    background-color: {{ primary }};
+    border-color: {{ primary }};
+    color: #222;
+}
+.btn-xl:hover {
+    background-color: {{ primary }};
+    border-color: {{ primary }};
+    filter: brightness(0.9);
+    color: #222;
+}
+
+/* CTA variants used in header.html */
+.btn-cta-primary,
+.btn-cta-primary:focus {
+    background-color: {{ primary }};
+    border-color: {{ primary }};
+    color: #222;
+    margin-right: 0.75rem;
+}
+.btn-cta-primary:hover { filter: brightness(0.9); color: #222; }
+
+.btn-cta-secondary {
+    background-color: transparent;
+    border: 2px solid rgba(255,255,255,0.7);
+    color: #fff;
+}
+.btn-cta-secondary:hover,
+.btn-cta-secondary:focus {
+    background-color: rgba(255,255,255,0.15);
+    border-color: #fff;
+    color: #fff;
+}
+
+/* Navbar pill CTA */
+.btn-cta-nav {
+    background-color: {{ primary }};
+    color: #222 !important;
+    border-radius: 3px;
+    padding: 6px 14px;
+    margin-top: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.btn-cta-nav:hover,
+.btn-cta-nav:focus { filter: brightness(0.9); color: #222 !important; }
+
+/* ----------------------------------------------------------
+   Dark color  (navbar scrolled, contact section, social icons)
+   ---------------------------------------------------------- */
+
+/* Add background-color to the transition so it fades in/out
+   instead of snapping when navbar-shrink class is toggled. */
+.navbar-default {
+    -webkit-transition: padding .3s, background-color .3s;
+    -moz-transition:    padding .3s, background-color .3s;
+    transition:         padding .3s, background-color .3s;
+}
+
+.navbar-default.navbar-shrink { background-color: {{ dark }}; }
+
+section#contact { background-color: {{ dark }}; }
+
+ul.social-buttons li a { background-color: {{ dark }}; }
+
+.bg-darkest-gray { background-color: {{ dark }}; }
+
+/* ----------------------------------------------------------
+   Hero header
+   To use a photo: add img/hero-bg.jpg and uncomment
+   the background-image line below.
+   ---------------------------------------------------------- */
+header {
+    background-color: {{ hero_from }};
+    background: linear-gradient(150deg, {{ hero_from }} 0%, {{ hero_to }} 100%);
+    /* background-image: url('../img/hero-bg.jpg');
+    background-size: cover;
+    background-position: center center; */
+}
+
+header .intro-text .intro-subtext {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.85);
+    margin: 1.25rem auto 2rem;
+    line-height: 1.6;
+    max-width: 760px;
+}
+
+/* ----------------------------------------------------------
+   Features section
+   ---------------------------------------------------------- */
+#features .service-heading { margin: 0.75rem 0 0.5rem; }
+.feature-row-extra { margin-top: 2rem; }
+
+/* ----------------------------------------------------------
+   About section
+   ---------------------------------------------------------- */
+.bg-light-gray { background-color: #f7f7f7; }
+
+.about-content { text-align: left; }
+
+.about-intro p {
+    font-size: 1.65rem;
+    line-height: 1.8;
+    margin-bottom: 1.4rem;
+    color: {{ body_text }};
+}
+
+.about-intro p:first-child {
+    font-size: 2rem;
+    font-weight: 600;
+    color: {{ dark }};
+}
+
+.about-content h3 {
+    margin-top: 3.25rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    font-size: 2.1rem;
+    color: {{ dark }};
+    border-bottom: 2px solid rgba(0,0,0,0.08);
+}
+
+.about-content h3:first-of-type { margin-top: 2.5rem; }
+
+.about-content h3 .fa {
+    color: {{ primary }};
+    margin-right: 0.6rem;
+    width: 1.1em;
+    text-align: center;
+}
+
+.about-content p {
+    font-size: 1.65rem;
+    line-height: 1.75;
+    margin-bottom: 1.3rem;
+    color: {{ body_text }};
+}
+
+.about-content strong { color: {{ dark }}; }
+
+.about-closing {
+    margin-top: 2.5rem;
+    font-size: 1.75rem;
+    font-style: italic;
+    color: {{ dark }};
+    text-align: center;
+}
+
+/* ----------------------------------------------------------
+   Contact form
+   ---------------------------------------------------------- */
+#contact .form-group { margin-bottom: 15px; }
+
+/* ----------------------------------------------------------
+   Footer
+   ---------------------------------------------------------- */
+footer .text-muted { font-size: 0.78rem; }

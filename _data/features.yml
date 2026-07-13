@@ -1,0 +1,62 @@
+# Each item renders as one feature card.
+# icon: Font Awesome icon name WITHOUT the "fa-" prefix
+# heading: card title
+# description: card body text (basic Markdown supported)
+#
+# Rebuilt from a scan of /schh-knowledge-base — each card maps to real
+# source folders so the grid reflects what's actually indexed.
+
+- icon: gavel
+  heading: "Governing Documents & Rules"
+  description: >-
+    Ask about the CC&Rs, bylaws, design guidelines, and the schedule of
+    fees and community rules that govern day-to-day life here.
+
+- icon: paint-brush
+  heading: "Home Modifications"
+  description: >-
+    Get guidance on driveways, roofs, paint, windows, trees, and other
+    exterior changes — plus how to submit a modification application.
+
+- icon: users
+  heading: "Board & Committees"
+  description: >-
+    Learn what the Covenants, Finance, Golf Advisory, Resident Advisory,
+    Safety & Service, and Strategic Planning committees do, and catch up
+    on Board of Directors meeting recaps.
+
+- icon: futbol-o
+  heading: "Clubs, Fitness & Recreation"
+  description: >-
+    Find chartered clubs, the group fitness schedule, pool and spa
+    hours, and how to buy tickets for Lifestyles events.
+
+- icon: home
+  heading: "Villas & Managed Neighborhoods"
+  description: >-
+    Look up irrigation control manuals, landscaping and turf programs,
+    termite warranty details, and villa-specific responsibility guides.
+
+- icon: exclamation-triangle
+  heading: "Hurricane & Emergency Prep"
+  description: >-
+    Access evacuation maps, hurricane FAQs, preparedness guides, and
+    seminar recordings to get ready before a storm.
+
+- icon: newspaper-o
+  heading: "Community News & Newsletters"
+  description: >-
+    Catch up on Association updates, BOD announcements, SunSations
+    magazine, and newsletters like eNews Weekly, City Life, and City Golf.
+
+- icon: laptop
+  heading: "How-To Guides"
+  description: >-
+    Step-by-step help for registering on the community website, resetting
+    a password, submitting a work order, and requesting a gate pass.
+
+- icon: map-marker
+  heading: "Local Area & Amenities"
+  description: >-
+    Find amenity locations around the community, general community
+    information, and how to get in touch.

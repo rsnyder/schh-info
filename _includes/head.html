@@ -1,0 +1,33 @@
+{% assign tf = site.theme_fonts %}
+{% assign f_heading = tf.heading | default: "Montserrat"     | replace: ' ', '+' %}
+{% assign f_body    = tf.body    | default: "Roboto Slab"    | replace: ' ', '+' %}
+{% assign f_accent  = tf.accent  | default: "Droid Serif"    | replace: ' ', '+' %}
+{% assign f_brand   = tf.brand   | default: "Kaushan Script" | replace: ' ', '+' %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ site.description }}">
+
+    <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
+
+    <!-- Bootstrap + Agency theme CSS (compiled stylesheet from remote theme) -->
+    <link rel="stylesheet" href="{{ "/style.css" | prepend: site.baseurl }}">
+
+    <!-- Font Awesome icons -->
+    <link rel="stylesheet" href="{{ "/css/font-awesome/css/font-awesome.min.css" | prepend: site.baseurl }}">
+
+    <!-- Google Fonts — driven by theme_fonts in _config.yml -->
+    <link href="https://fonts.googleapis.com/css?family={{ f_heading }}:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family={{ f_body }}:300,400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family={{ f_accent }}:400,700,400italic,700italic" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family={{ f_brand }}" rel="stylesheet">
+
+    <!-- Site customizations (colors + fonts from _config.yml) -->
+    <link rel="stylesheet" href="{{ "/css/custom.css" | prepend: site.baseurl }}">
+
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>

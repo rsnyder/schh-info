@@ -1,0 +1,113 @@
+remote_theme: y7kim/agency-jekyll-theme
+
+plugins:
+  - jekyll-remote-theme
+
+# -----------------------------------------------
+# Site identity
+# -----------------------------------------------
+title:       "SCHH Community Guide"
+email:       "info@schh-info.example.com"
+description: "A resident-created, AI-powered guide to community information and local resources."
+url:         ""   # e.g. https://your-org.github.io
+baseurl:     ""   # e.g. /schh-info  (leave blank for a root-level Pages site)
+
+# -----------------------------------------------
+# Navigation
+# -----------------------------------------------
+nav:
+  brand: "SCHH Community Guide"
+  links:
+    - text: "Features"
+      anchor: "features"
+    - text: "About"
+      anchor: "about"
+    - text: "Contact"
+      anchor: "contact"
+  cta:
+    text: "Ask the Chatbot"
+    icon: "comments"
+
+# -----------------------------------------------
+# Hero section
+# -----------------------------------------------
+hero:
+  lead:        "A resident-created companion for finding your way around community information."
+  heading:     "SCHH Community Guide"
+  description: >-
+    The SCHH Community Guide brings together official community materials, local
+    information, and vendor listings in one easier-to-search starting
+    point, with AI support powered by Google's NotebookLM.
+  primary_button:
+    text:   "Ask the Chatbot"
+    url:    "https://notebooklm.google.com/notebook/572a70be-3123-4826-96a1-a060265a75b9"
+    icon:   "comments"
+  secondary_button:
+    text:   "Learn More About the Guide"
+    anchor: "about"
+
+# -----------------------------------------------
+# Features section  (card content lives in _data/features.yml)
+# -----------------------------------------------
+features:
+  heading:    "What Can I Ask?"
+  subheading: "The guide covers the full breadth of community life."
+  cta:
+    text: "Open the Chatbot"
+    icon: "comments"
+
+# -----------------------------------------------
+# About section  (long-form copy lives in _data/about.yml)
+# -----------------------------------------------
+about:
+  heading: "About the SCHH Community Guide"
+
+# -----------------------------------------------
+# Contact section
+# -----------------------------------------------
+contact:
+  heading:      "Contact Us"
+  subheading:   "Found an error? Want to suggest content? We'd love to hear from you."
+  formspree_id: "YOUR_FORM_ID"
+
+# -----------------------------------------------
+# Footer
+# -----------------------------------------------
+footer:
+  disclaimer: >-
+    This is an unofficial, resident-created resource. It is not affiliated
+    with, sponsored by, or endorsed by the Community Association or the
+    developer.
+
+# -----------------------------------------------
+# Theme colors
+# -----------------------------------------------
+theme_colors:
+  primary:    "#fed136"   # accent: buttons, icons, links, timeline circles
+  dark:       "#222222"   # dark bg: navbar (scrolled), contact section, social icons
+  body_text:  "#333333"   # main body text color
+  hero_from:  "#0d2137"   # hero gradient start (top-left)
+  hero_to:    "#1a6e6a"   # hero gradient end   (bottom-right)
+
+# -----------------------------------------------
+# Theme fonts  (Google Fonts names, case-sensitive)
+# See https://fonts.google.com
+# -----------------------------------------------
+theme_fonts:
+  heading: "Montserrat"      # h1-h6, nav links, buttons
+  body:    "Source Sans Pro" # body / paragraph text
+  accent:  "Droid Serif"     # italic accent: hero lead-in, section subheadings
+  brand:   "Kaushan Script"  # navbar brand / logo
+
+# -----------------------------------------------
+# Social links  (title = Font Awesome icon name, e.g. facebook, twitter)
+# -----------------------------------------------
+social:
+  - title: facebook
+    url:   "#"
+
+# -----------------------------------------------
+# Build settings
+# -----------------------------------------------
+markdown:  kramdown
+permalink: pretty

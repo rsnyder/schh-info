@@ -1,0 +1,71 @@
+About the SCHH Guide
+
+The SCHH Guide is a resident-created companion for finding your way around community information.
+
+The community has a large and valuable collection of official information, including public website pages, Resident Central materials, PDFs, SunSations magazine issues, Association emails, SCTV broadcasts, forms, policies, announcements, and event information. The challenge is that this information is spread across many different places and formats, which can make it difficult for residents to quickly find what they need.
+
+The SCHH Guide is intended to make that information easier to search, understand, and use. It brings together a growing collection of community-related materials and provides AI-supported search and discovery to help residents get to the right information faster.
+
+Independent Resident-Created Resource
+
+The SCHH Guide is a resident-created, independently maintained resource. It is not an official Community Association website and is not sponsored, endorsed, approved, or managed by the Association, the developer, or any affiliated entity.
+
+This guide does not replace official Association resources. Official websites, documents, communications, staff, committees, and Board actions remain the authoritative sources for policies, rules, fees, forms, services, events, announcements, and Association decisions.
+
+Because community information changes frequently, residents should confirm time-sensitive, financial, policy-related, or otherwise important matters with the original official source. Where possible, chatbot responses will reference or link to the relevant official documents or source materials. Some official documents may require residents to sign in through AAM or another authorized access point before they can view them.
+
+Name and Affiliation
+
+The name “SCHH Guide” is used as a practical shorthand to identify the intended community audience for this resident-created resource.
+
+References to the community, the Association, official documents, or official source materials are included only to help residents identify, search, and locate relevant information. The guide is not intended to imply official status, sponsorship, endorsement, approval, or affiliation.
+
+What the Guide Includes
+
+The guide draws from a growing collection of community-related materials, which may include public website content, available resident documents, newsletters, SunSations magazine issues, Association announcements, forms, emails, SCTV content, and other community resources.
+
+In addition to helping residents navigate official community information, the guide will also include helpful information about the surrounding area, local services, resident-recommended resources, and vendor listings for services offered by both residents and outside providers.
+
+The guide is not intended to be complete or exhaustive. It is best understood as an easier starting point for finding and using community information.
+
+AI-Supported Search and Chat
+
+The guide includes an AI-supported search and chat experience, currently powered by Google’s NotebookLM. The chatbot is intended as a helpful search and discovery tool, not as a final authority.
+
+AI-generated answers may be incomplete, outdated, or imperfect. Where possible, chatbot responses will point residents back to the relevant source materials, including official documents when available. Residents should review those sources and verify important information with official Association resources. Some official documents may require sign-in through AAM or another authorized access point.
+
+When using the AI chatbot, residents will be taken to Google’s NotebookLM site and will need to sign in with a Google account. Use of NotebookLM is governed by Google’s own terms and privacy policies.
+
+The guide can be especially useful for questions such as: Where can I find a form? What did a recent announcement say? What are the rules for a facility? Where was an event mentioned? What local services or resources are available nearby?
+
+Privacy and Resident Information
+
+The aggregated content used in this guide has been reviewed and sanitized to remove resident names, personal phone numbers, personal email addresses, and other personally identifiable information where practical. The intent is to protect resident privacy while still making community information easier to find and use.
+
+Some official names, roles, departmental contacts, business contacts, or other information that already appears in public official materials may remain where it is part of the source content.
+
+While care has been taken to remove personal resident information from aggregated content, no automated or manual review process is perfect. If residents find personal information that should not appear in the guide, they are encouraged to report it through the contact form so it can be reviewed and removed where appropriate.
+
+Vendor and Service Listings
+
+Vendor and service listings are provided as a convenience to residents. Inclusion in the guide does not necessarily mean endorsement, verification, or recommendation unless specifically stated.
+
+Residents should use their own judgment when hiring vendors or using local services.
+
+A Living Community Resource
+
+This guide is intended to be a living resource. It will be updated, corrected, and expanded over time as community information changes and as residents identify ways to make it more useful.
+
+Residents are encouraged to help improve the guide by reporting errors, suggesting additions, or contributing new information through the contact form.
+
+Resident suggestions and contributions are welcome, but submitted information may be reviewed, edited, reorganized, or omitted to keep the guide accurate, useful, respectful, and consistent with its purpose.
+
+Volunteering and Contributing
+
+Residents who would like to contribute more directly are encouraged to get involved.
+
+In addition to reporting errors or suggesting additions, residents may volunteer time to help with site quality control, review information for accuracy, identify outdated material, suggest improvements, or help keep guide content current as community information changes.
+
+Residents interested in assisting with the guide in this way should reach out using the contact form.
+
+The goal is simple: to provide a practical, easy-to-use companion that helps residents find and use community information more easily.

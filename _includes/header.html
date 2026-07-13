@@ -1,0 +1,47 @@
+{% assign nav    = site.nav %}
+{% assign hero   = site.hero %}
+{% assign colors = site.theme_colors %}
+
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand page-scroll" href="#page-top">{{ nav.brand | default: site.title }}</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="hidden"><a href="#page-top"></a></li>
+                {% for link in nav.links %}
+                <li><a class="page-scroll" href="#{{ link.anchor }}">{{ link.text }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Header -->
+<header>
+    <div class="container">
+        <div class="intro-text">
+            <div class="intro-heading">{{ hero.heading }}</div>
+            {% if hero.lead %}<div class="intro-lead-in">{{ hero.lead }}</div>{% endif %}
+            {% if hero.description %}<p class="intro-subtext">{{ hero.description }}</p>{% endif %}
+            {% if hero.primary_button %}
+            <a href="{{ hero.primary_button.url }}" target="_blank" rel="noopener" class="btn btn-xl btn-cta-primary">
+                {% if hero.primary_button.icon %}<i class="fa fa-{{ hero.primary_button.icon }} fa-lg"></i> {% endif %}{{ hero.primary_button.text }}
+            </a>
+            {% endif %}
+            {% if hero.secondary_button %}
+            <a href="#{{ hero.secondary_button.anchor }}" class="page-scroll btn btn-xl btn-cta-secondary">
+                {{ hero.secondary_button.text }}
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</header>
