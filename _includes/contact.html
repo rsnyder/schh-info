@@ -14,10 +14,17 @@
         <div class="row">
             <div class="col-lg-12">
                 <!--
-                    Contact form powered by Formspree (formspree.io).
-                    Set contact.formspree_id in _config.yml to activate.
+                    Contact form posts to the schh-contact-endpoint Netlify
+                    function (sends to contact@schh.info via ZeptoMail).
+                    Set contact.endpoint in _config.yml.
                 -->
-                <form action="https://formspree.io/f/{{ section.formspree_id }}" method="POST">
+                <form action="{{ section.endpoint }}" method="POST">
+                    <!-- honeypot: hidden from humans; bots that fill it are dropped -->
+                    <div style="position:absolute; left:-9999px;" aria-hidden="true">
+                        <label>Leave this field empty
+                            <input type="text" name="company" tabindex="-1" autocomplete="off">
+                        </label>
+                    </div>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
