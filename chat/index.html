@@ -1,18 +1,16 @@
 ---
-layout: null
-title: Ask the Chatbot
+layout: page
+title: Ask the Guide
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="0; url={{ site.chatbot.url }}">
-    <link rel="canonical" href="{{ site.chatbot.url }}">
-    <title>{{ page.title }} | {{ site.title }}</title>
-</head>
-<body>
-    <p>The chatbot has moved. Redirecting you to
-       <a href="{{ site.chatbot.url }}">{{ site.chatbot.url | remove: "https://" }}</a>&hellip;</p>
-</body>
-</html>
+<div class="row">
+  <div class="col-lg-12 text-center">
+    <h2 class="section-heading">Ask the Guide</h2>
+    <h3 class="section-subheading">Resident sign-in required &mdash; answers cite
+       official community sources.</h3>
+  </div>
+</div>
+
+<div id="guide-app" data-api-base="https://chat.schh.info"></div>
+
+<link rel="stylesheet" href="{{ "/css/guide-chat.css" | prepend: site.baseurl }}">
+<script src="{{ "/js/guide-chat.js" | prepend: site.baseurl }}" defer></script>

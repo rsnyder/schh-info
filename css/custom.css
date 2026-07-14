@@ -235,3 +235,30 @@ header .intro-text .intro-subtext {
    Footer
    ---------------------------------------------------------- */
 footer .text-muted { font-size: 0.78rem; }
+
+
+/* ------------------------------------------------------------------
+   Subpages (layout: page) — solid navbar (the theme's transparent
+   navbar is unreadable without the dark hero behind it) and room for
+   the fixed navbar.
+   ------------------------------------------------------------------ */
+.subpage .navbar-default {
+    background-color: {{ c.dark | default: "#222222" }};
+}
+.subpage-content {
+    padding-top: 120px;
+    padding-bottom: 60px;
+}
+
+/* ------------------------------------------------------------------
+   Community Guide chat component (js/guide-chat.js) — themed from
+   theme_colors / theme_fonts.
+   ------------------------------------------------------------------ */
+#guide-app {
+    --guide-accent: {{ c.primary | default: "#fed136" }};
+    --guide-accent-text: #ffffff;
+    --guide-ink: {{ c.body_text | default: "#333333" }};
+    --guide-font: "{{ f_body }}", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --guide-heading-font: "{{ f_heading }}", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --guide-chat-height: 55vh;
+}

@@ -33,6 +33,8 @@ nav:
       anchor: "about"
     - text: "Contact"
       anchor: "contact"
+    - text: "Ask the Guide"
+      url: "/chat/"
   cta:
     text: "Ask the Chatbot"
     icon: "comments"
@@ -49,7 +51,7 @@ hero:
     point, with AI-supported search and chat.
   primary_button:
     text:   "Ask the Chatbot"
-    url:    "https://chat.schh.info"
+    url:    "/chat/"
     icon:   "comments"
   secondary_button:
     text:   "Learn More About the Guide"

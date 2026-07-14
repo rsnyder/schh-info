@@ -1,0 +1,93 @@
+/* SCHH Community Guide chat component.
+   Canonical copy: schh-community-guide/webapp/chat.css — the schh-info
+   site repo carries a copy at css/guide-chat.css; edit here, then re-copy.
+
+   All colors/fonts come from CSS custom properties so the host page's
+   stylesheet can theme it (see css/custom.css in the site repo). The
+   fallbacks keep the standalone page at chat.schh.info presentable. */
+
+#guide-app {
+  --ga-accent: var(--guide-accent, #4a6741);
+  --ga-accent-text: var(--guide-accent-text, #ffffff);
+  --ga-ink: var(--guide-ink, #222222);
+  --ga-muted: var(--guide-muted, #666666);
+  --ga-line: var(--guide-line, #dddddd);
+  --ga-surface: var(--guide-surface, #ffffff);
+  --ga-bg: var(--guide-bg, transparent);
+  --ga-font: var(--guide-font, inherit);
+  --ga-heading-font: var(--guide-heading-font, inherit);
+  --ga-radius: var(--guide-radius, 10px);
+
+  font-family: var(--ga-font);
+  color: var(--ga-ink);
+  background: var(--ga-bg);
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+#guide-app *, #guide-app *::before, #guide-app *::after { box-sizing: border-box; }
+#guide-app h2 { font-family: var(--ga-heading-font); margin-top: 0; }
+
+#guide-app .ga-card {
+  background: var(--ga-surface); border: 1px solid var(--ga-line);
+  border-radius: var(--ga-radius); padding: 1.5rem; max-width: 26rem;
+  margin: 2rem auto;
+}
+#guide-app .ga-card p { color: var(--ga-muted); }
+#guide-app label { display: block; font-size: .9rem; margin-bottom: .3rem; }
+#guide-app input[type=email], #guide-app input[type=text] {
+  width: 100%; padding: .6rem; font-size: 1rem;
+  border: 1px solid var(--ga-line); border-radius: 6px;
+  background: var(--ga-surface); color: var(--ga-ink);
+}
+#guide-app .ga-otp { letter-spacing: .5em; text-align: center; font-size: 1.4rem; }
+#guide-app .ga-btn {
+  width: 100%; margin-top: 1rem; padding: .65rem; font-size: 1rem; border: 0;
+  border-radius: 6px; background: var(--ga-accent); color: var(--ga-accent-text);
+  cursor: pointer; font-family: var(--ga-heading-font);
+}
+#guide-app .ga-btn[disabled] { opacity: .5; cursor: default; }
+#guide-app .ga-linkish {
+  background: none; border: none; color: var(--ga-accent); cursor: pointer;
+  text-decoration: underline; padding: 0; font-size: .9rem;
+}
+#guide-app .ga-note { font-size: .85rem; color: var(--ga-muted); margin-top: 1rem; }
+#guide-app .ga-error { color: #a33; font-size: .9rem; min-height: 1.2em; margin-top: .6rem; }
+
+#guide-app .ga-toolbar { display: flex; justify-content: flex-end; padding: .3rem 0; }
+#guide-app .ga-messages {
+  height: var(--guide-chat-height, 60vh); overflow-y: auto; padding: .5rem 0;
+}
+#guide-app .ga-msg { margin: .6rem 0; display: flex; }
+#guide-app .ga-msg.ga-you { justify-content: flex-end; }
+#guide-app .ga-bubble {
+  max-width: 85%; padding: .6rem .9rem; border-radius: 12px; line-height: 1.45;
+  overflow-wrap: break-word;
+}
+#guide-app .ga-you .ga-bubble {
+  background: var(--ga-accent); color: var(--ga-accent-text);
+  border-bottom-right-radius: 4px;
+}
+#guide-app .ga-bot .ga-bubble {
+  background: var(--ga-surface); border: 1px solid var(--ga-line);
+  border-bottom-left-radius: 4px;
+}
+#guide-app .ga-bubble a { color: var(--ga-accent); }
+#guide-app .ga-bubble h2, #guide-app .ga-bubble h3 {
+  margin: .7em 0 .3em; font-size: 1.02em; font-family: var(--ga-heading-font);
+}
+#guide-app .ga-bubble p { margin: .4em 0; }
+#guide-app .ga-bubble ul { margin: .3em 0; padding-left: 1.2em; }
+#guide-app .ga-composer { display: flex; gap: .5rem; padding: .8rem 0 1.2rem; }
+#guide-app .ga-composer input {
+  flex: 1; padding: .6rem; font-size: 1rem;
+  border: 1px solid var(--ga-line); border-radius: 8px;
+  background: var(--ga-surface); color: var(--ga-ink);
+}
+#guide-app .ga-composer button {
+  padding: .6rem 1.1rem; border: 0; border-radius: 8px;
+  background: var(--ga-accent); color: var(--ga-accent-text);
+  font-size: 1rem; cursor: pointer; font-family: var(--ga-heading-font);
+}
+#guide-app .ga-hidden { display: none !important; }
+#guide-app .ga-typing { color: var(--ga-muted); font-style: italic; }
