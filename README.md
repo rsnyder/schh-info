@@ -4,11 +4,13 @@ A Jekyll-powered landing page for the SCHH Community Guide, a resident-created A
 
 ## Quick-start checklist
 
-### 1. Set the Dify chatbot embed URL
-The chatbot page at `/chat/` embeds a self-hosted [Dify Community Edition](https://github.com/langgenius/dify) chatbot in an iframe. In Dify, open the app and go to **Publish → Embed into Site** (iframe tab) to get the embed URL, then set it in `_config.yml`:
+### 1. Chatbot URL
+The chatbot is a self-hosted [Dify Community Edition](https://github.com/langgenius/dify) app served at <https://chat.schh.info>. Access is restricted to residents: the user's email is verified against the SCHH Resident Directory, then a one-time access code is emailed (currently valid for 60 days).
+
+The URL is set in `_config.yml`; the site's chatbot buttons link to it, and `/chat/` redirects there for older links:
 ```yaml
 chatbot:
-  embed_url: "https://YOUR-DIFY-HOST/chatbot/YOUR-CHATBOT-TOKEN"
+  url: "https://chat.schh.info"
 ```
 
 ### 2. Set up the contact form (Formspree)

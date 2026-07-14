@@ -30,11 +30,13 @@ The guide is not intended to be complete or exhaustive. It is best understood as
 
 AI-Supported Search and Chat
 
-The guide includes an AI-supported search and chat experience, available directly on this site at the Ask the Chatbot page. The chatbot is intended as a helpful search and discovery tool, not as a final authority.
+The guide includes an AI-supported search and chat experience for residents, available through the Ask the Chatbot button. The chatbot is intended as a helpful search and discovery tool, not as a final authority.
 
 AI-generated answers may be incomplete, outdated, or imperfect. Where possible, chatbot responses will point residents back to the relevant source materials, including official documents when available. Residents should review those sources and verify important information with official Association resources. Some official documents may require sign-in through AAM or another authorized access point.
 
-No account or sign-in is required to use the chatbot. Questions submitted to the chatbot are processed by the AI service that powers it and may be logged to help improve the guide, so residents should avoid including personal information in their questions.
+To help keep community information within the community, the chatbot is available to residents only. First-time users verify residency by entering the email address listed for them in the SCHH Resident Directory; a one-time access code is then sent to that address. Once verified, access remains valid for an extended period (currently 60 days) before re-verification is needed.
+
+Questions submitted to the chatbot are processed by the AI service that powers it and may be logged to help improve the guide, so residents should avoid including personal information in their questions.
 
 The guide can be especially useful for questions such as: Where can I find a form? What did a recent announcement say? What are the rules for a facility? Where was an event mentioned? What local services or resources are available nearby?
 

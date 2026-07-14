@@ -13,12 +13,13 @@ url:         "https://schh.info"
 baseurl:     ""   # e.g. /schh-info  (leave blank for a root-level Pages site)
 
 # -----------------------------------------------
-# Chatbot (self-hosted Dify Community Edition)
-# Embed URL from Dify: App > Publish > Embed into Site (iframe tab),
-# e.g. https://dify.example.com/chatbot/AbCdEfGh123
+# Chatbot (self-hosted, residents only)
+# The chat client is served at chat.schh.info. Access requires resident
+# verification: the user's email is checked against the SCHH Resident
+# Directory, then a one-time code is emailed (currently valid 60 days).
 # -----------------------------------------------
 chatbot:
-  embed_url: "https://chat.schh.info/chatbot/UXhwRs6EzreAxcLX"
+  url: "https://chat.schh.info"
 
 # -----------------------------------------------
 # Navigation
@@ -48,7 +49,7 @@ hero:
     point, with AI-supported search and chat.
   primary_button:
     text:   "Ask the Chatbot"
-    url:    "/chat/"
+    url:    "https://chat.schh.info"
     icon:   "comments"
   secondary_button:
     text:   "Learn More About the Guide"

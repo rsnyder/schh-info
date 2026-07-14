@@ -7,51 +7,12 @@ title: Ask the Chatbot
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="0; url={{ site.chatbot.url }}">
+    <link rel="canonical" href="{{ site.chatbot.url }}">
     <title>{{ page.title }} | {{ site.title }}</title>
-    <meta name="description" content="AI-supported search and chat for the {{ site.title }}.">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { height: 100%; }
-        body {
-            display: flex;
-            flex-direction: column;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background: {{ site.theme_colors.dark | default: "#222222" }};
-        }
-        .chat-topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            padding: 0.6rem 1rem;
-            background: {{ site.theme_colors.dark | default: "#222222" }};
-            color: #fff;
-        }
-        .chat-topbar a {
-            color: {{ site.theme_colors.primary | default: "#fed136" }};
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-        .chat-topbar a:hover { text-decoration: underline; }
-        .chat-topbar .brand { font-weight: 700; font-size: 1rem; color: #fff; }
-        .chat-frame {
-            flex: 1;
-            width: 100%;
-            border: 0;
-            background: #fff;
-        }
-    </style>
 </head>
 <body>
-    <div class="chat-topbar">
-        <span class="brand">{{ site.title }}</span>
-        <a href="{{ '/' | relative_url }}">&larr; Back to the Guide</a>
-    </div>
-    <iframe
-        class="chat-frame"
-        src="{{ site.chatbot.embed_url }}"
-        title="{{ site.title }} chatbot"
-        allow="microphone">
-    </iframe>
+    <p>The chatbot has moved. Redirecting you to
+       <a href="{{ site.chatbot.url }}">{{ site.chatbot.url | remove: "https://" }}</a>&hellip;</p>
 </body>
 </html>
