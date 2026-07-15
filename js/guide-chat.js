@@ -47,6 +47,8 @@
 
     <div class="ga-hidden" data-ga="chatWrap">
       <div class="ga-toolbar">
+        <button class="ga-linkish" data-ga="newConvo">New conversation</button>
+        <span class="ga-toolbar-sep">&middot;</span>
         <button class="ga-linkish" data-ga="logout">Sign out</button>
       </div>
       <div class="ga-messages" data-ga="messages" aria-live="polite"></div>
@@ -67,15 +69,49 @@
   let firstName = "";
   let timer = null;
 
+  function greet() {
+    const hello = firstName ? `Welcome, ${firstName}!` : "Welcome!";
+    addBubble("bot", hello + " Ask me about community events, recent news, amenities, "
+      + "or rules and procedures — answers include links to the source documents.");
+  }
+
   function show(screen) {
     el.login.classList.toggle("ga-hidden", screen !== "login");
     el.otp.classList.toggle("ga-hidden", screen !== "otp");
     el.chatWrap.classList.toggle("ga-hidden", screen !== "chat");
-    if (screen === "chat" && !el.messages.childElementCount) {
-      const hello = firstName ? `Welcome, ${firstName}!` : "Welcome!";
-      addBubble("bot", hello + " Ask me about community events, recent news, amenities, "
-        + "or rules and procedures — answers include links to the source documents.");
+    // history is loaded separately (enterChat); only greet here when we
+    // arrive at an empty panel through a path that doesn't load history
+    if (screen === "chat" && !el.messages.childElementCount) greet();
+  }
+
+  // Enter the chat screen, resuming the resident's most recent conversation
+  // across browser sessions (Dify stores it, keyed to the stable identity).
+  async function enterChat() {
+    el.chatWrap.classList.remove("ga-hidden");
+    el.login.classList.add("ga-hidden");
+    el.otp.classList.add("ga-hidden");
+    el.messages.innerHTML = "";
+    try {
+      const response = await api("/api/chat/latest", { method: "GET" });
+      const data = response.ok ? await response.json() : {};
+      conversationId = data.conversationId || null;
+      if (data.messages && data.messages.length) {
+        for (const m of data.messages) addBubble(m.role, m.text);
+      } else {
+        greet();
+      }
+    } catch {
+      greet();
     }
+    el.messages.scrollTop = el.messages.scrollHeight;
+    el.question.focus();
+  }
+
+  function startNewConversation() {
+    conversationId = null;
+    el.messages.innerHTML = "";
+    greet();
+    el.question.focus();
   }
 
   function api(path, options) {
@@ -165,8 +201,7 @@
     if (response.ok) {
       const body = await response.json().catch(() => ({}));
       firstName = (body.user && body.user.firstName) || "";
-      show("chat");
-      el.question.focus();
+      enterChat();
     } else {
       const body = await response.json().catch(() => ({}));
       el.otpError.textContent = (body.error && body.error.message)
@@ -176,6 +211,8 @@
   codeInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") { e.preventDefault(); el.verify.click(); }
   });
+
+  el.newConvo.addEventListener("click", startNewConversation);
 
   el.logout.addEventListener("click", async () => {
     await api("/api/auth/logout", { method: "POST" });
@@ -240,7 +277,7 @@
     .then(r => r.json())
     .then(s => {
       firstName = (s.user && s.user.firstName) || "";
-      show(s.authenticated ? "chat" : "login");
+      if (s.authenticated) enterChat(); else show("login");
     })
     .catch(() => show("login"));
 })();
