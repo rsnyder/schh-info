@@ -1,0 +1,26 @@
+---
+layout: app
+slug: about
+title: About
+---
+<div class="container prose">
+    <header class="page-header">
+        <h1>{{ site.about.heading }}</h1>
+    </header>
+
+    <div class="about-intro">
+        {{ site.data.about.intro | markdownify }}
+    </div>
+
+    {% for section in site.data.about.sections %}
+    <section class="section-block">
+        <h2 class="section-heading">
+            <span class="icon-badge">{% include icon.html name=section.icon %}</span>
+            <span>{{ section.heading }}</span>
+        </h2>
+        {{ section.body | markdownify }}
+    </section>
+    {% endfor %}
+
+    <p class="callout">{{ site.data.about.closing }}</p>
+</div>

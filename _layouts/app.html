@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include head.html %}
+<body class="page-{{ page.slug | default: 'misc' }}{% if page.fullscreen %} app-fullscreen{% endif %}">
+    <a class="skip-link" href="#main">Skip to content</a>
+    {% include topbar.html %}
+    <main id="main">
+        {{ content }}
+        {% unless page.fullscreen %}{% include footer.html %}{% endunless %}
+    </main>
+    {% include tabbar.html %}
+    <script>
+        if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
+    </script>
+</body>
+</html>

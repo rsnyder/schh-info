@@ -1,0 +1,11 @@
+<header class="topbar">
+    <a class="topbar-brand" href="/">
+        {% include icon.html name="chat" %}
+        <span>{{ site.nav.brand | default: site.title }}</span>
+    </a>
+    <nav class="topbar-nav" aria-label="Primary">
+        {% for link in site.nav.links %}
+        <a href="{{ link.url }}"{% if page.url == link.url %} aria-current="page"{% endif %}>{{ link.text }}</a>
+        {% endfor %}
+    </nav>
+</header>

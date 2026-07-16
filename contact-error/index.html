@@ -1,13 +1,12 @@
 ---
-layout: page
+layout: app
+slug: contact-error
 title: Something Went Wrong
 ---
-<div class="row">
-  <div class="col-lg-8 col-lg-offset-2 text-center">
-    <h2 class="section-heading">Something went wrong</h2>
+<div class="container prose text-center">
+    <h1>Something went wrong</h1>
     <p>Your message could not be sent. Please go back and check that all
        fields are filled in{% if site.contact.email %}, or email us directly at
        <a href="mailto:{{ site.contact.email }}">{{ site.contact.email }}</a>{% endif %}.</p>
-    <p><a class="btn btn-xl" href="/#contact">Back to the contact form</a></p>
-  </div>
+    <p><a class="btn" href="/contact/">Back to the contact form</a></p>
 </div>

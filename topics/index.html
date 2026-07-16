@@ -1,0 +1,23 @@
+---
+layout: app
+slug: topics
+title: What Can I Ask?
+---
+<div class="container">
+    <header class="page-header">
+        <h1>{{ site.features.heading }}</h1>
+        <p class="subheading">{{ site.features.subheading }}</p>
+    </header>
+
+    <div class="card-grid">
+        {% for card in site.data.features %}
+        <article class="card">
+            <span class="icon-badge">{% include icon.html name=card.icon %}</span>
+            <h3>{{ card.heading }}</h3>
+            {{ card.description | markdownify }}
+        </article>
+        {% endfor %}
+    </div>
+
+    <a class="btn btn-block" href="/">{% include icon.html name="chat" %} Ask the Guide</a>
+</div>
