@@ -255,8 +255,11 @@ footer .text-muted { font-size: 0.78rem; }
    theme_colors / theme_fonts.
    ------------------------------------------------------------------ */
 #guide-app {
-    --guide-accent: {{ c.primary | default: "#fed136" }};
-    --guide-accent-text: #ffffff;
+    /* Buttons/toolbar use the brand teal (hero gradient end) — readable
+       with white text, a palette fit, and distinct from both the theme's
+       yellow primary and the citation-link blue. Alternative:
+       c.hero_from (deep navy) for a higher-contrast, more formal accent. */
+    --guide-accent: {{ c.hero_to | default: "#1a6e6a" }};
     --guide-ink: {{ c.body_text | default: "#333333" }};
     --guide-font: "{{ f_body }}", "Helvetica Neue", Helvetica, Arial, sans-serif;
     --guide-heading-font: "{{ f_heading }}", "Helvetica Neue", Helvetica, Arial, sans-serif;

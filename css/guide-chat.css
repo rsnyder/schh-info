@@ -7,8 +7,16 @@
    fallbacks keep the standalone page at chat.schh.info presentable. */
 
 #guide-app {
-  --ga-accent: var(--guide-accent, #4a6741);
+  /* Two distinct roles:
+     --ga-accent  buttons, toolbar links, and the resident's own message
+                  bubbles. Defaults to the site's brand teal (readable
+                  with white text, fits the palette); mapped from the
+                  theme in css/custom.css. NOT the theme's yellow primary.
+     --ga-link    citation links inside answers — a standard readable blue,
+                  distinct from the accent so links look like links. */
+  --ga-accent: var(--guide-accent, #1a6e6a);
   --ga-accent-text: var(--guide-accent-text, #ffffff);
+  --ga-link: var(--guide-link, #1565c0);
   --ga-ink: var(--guide-ink, #222222);
   --ga-muted: var(--guide-muted, #666666);
   --ga-line: var(--guide-line, #dddddd);
@@ -19,11 +27,14 @@
   --ga-radius: var(--guide-radius, 10px);
 
   font-family: var(--ga-font);
+  font-size: var(--guide-font-size, 1.0625rem);
+  line-height: 1.5;
   color: var(--ga-ink);
   background: var(--ga-bg);
   max-width: 46rem;
   margin: 0 auto;
   padding: 0 1rem;
+  overflow-x: hidden;  /* belt-and-suspenders against mobile horizontal scroll */
 }
 #guide-app *, #guide-app *::before, #guide-app *::after { box-sizing: border-box; }
 #guide-app h2 { font-family: var(--ga-heading-font); margin-top: 0; }
@@ -36,13 +47,13 @@
 #guide-app .ga-card p { color: var(--ga-muted); }
 #guide-app label { display: block; font-size: .9rem; margin-bottom: .3rem; }
 #guide-app input[type=email], #guide-app input[type=text] {
-  width: 100%; padding: .6rem; font-size: 1rem;
+  width: 100%; padding: .6rem; font-size: 1.0625rem;
   border: 1px solid var(--ga-line); border-radius: 6px;
   background: var(--ga-surface); color: var(--ga-ink);
 }
-#guide-app .ga-otp { letter-spacing: .5em; text-align: center; font-size: 1.4rem; }
+#guide-app .ga-otp { letter-spacing: .5em; text-align: center; font-size: 1.5rem; }
 #guide-app .ga-btn {
-  width: 100%; margin-top: 1rem; padding: .65rem; font-size: 1rem; border: 0;
+  width: 100%; margin-top: 1rem; padding: .7rem; font-size: 1.0625rem; border: 0;
   border-radius: 6px; background: var(--ga-accent); color: var(--ga-accent-text);
   cursor: pointer; font-family: var(--ga-heading-font);
 }
@@ -51,7 +62,7 @@
   background: none; border: none; color: var(--ga-accent); cursor: pointer;
   text-decoration: underline; padding: 0; font-size: .9rem;
 }
-#guide-app .ga-note { font-size: .85rem; color: var(--ga-muted); margin-top: 1rem; }
+#guide-app .ga-note { font-size: .95rem; color: var(--ga-muted); margin-top: 1rem; }
 #guide-app .ga-error { color: #a33; font-size: .9rem; min-height: 1.2em; margin-top: .6rem; }
 
 #guide-app .ga-toolbar {
@@ -60,13 +71,15 @@
 }
 #guide-app .ga-toolbar-sep { color: var(--ga-line); }
 #guide-app .ga-messages {
-  height: var(--guide-chat-height, 60vh); overflow-y: auto; padding: .5rem 0;
+  height: var(--guide-chat-height, 60vh); overflow-y: auto; overflow-x: hidden;
+  padding: .5rem 0;
 }
 #guide-app .ga-msg { margin: .6rem 0; display: flex; }
 #guide-app .ga-msg.ga-you { justify-content: flex-end; }
 #guide-app .ga-bubble {
-  max-width: 85%; padding: .6rem .9rem; border-radius: 12px; line-height: 1.45;
-  overflow-wrap: break-word;
+  max-width: 85%; padding: .6rem .9rem; border-radius: 12px; line-height: 1.5;
+  overflow-wrap: anywhere;  /* long URLs/tokens wrap instead of forcing scroll */
+  min-width: 0;
 }
 #guide-app .ga-you .ga-bubble {
   background: var(--ga-accent); color: var(--ga-accent-text);
@@ -76,7 +89,7 @@
   background: var(--ga-surface); border: 1px solid var(--ga-line);
   border-bottom-left-radius: 4px;
 }
-#guide-app .ga-bubble a { color: var(--ga-accent); }
+#guide-app .ga-bubble a { color: var(--ga-link); }
 #guide-app .ga-bubble h2, #guide-app .ga-bubble h3 {
   margin: .7em 0 .3em; font-size: 1.02em; font-family: var(--ga-heading-font);
 }
@@ -84,14 +97,14 @@
 #guide-app .ga-bubble ul { margin: .3em 0; padding-left: 1.2em; }
 #guide-app .ga-composer { display: flex; gap: .5rem; padding: .8rem 0 1.2rem; }
 #guide-app .ga-composer input {
-  flex: 1; padding: .6rem; font-size: 1rem;
+  flex: 1; min-width: 0; padding: .6rem; font-size: 1.0625rem;
   border: 1px solid var(--ga-line); border-radius: 8px;
   background: var(--ga-surface); color: var(--ga-ink);
 }
 #guide-app .ga-composer button {
-  padding: .6rem 1.1rem; border: 0; border-radius: 8px;
+  padding: .6rem 1.1rem; border: 0; border-radius: 8px; white-space: nowrap;
   background: var(--ga-accent); color: var(--ga-accent-text);
-  font-size: 1rem; cursor: pointer; font-family: var(--ga-heading-font);
+  font-size: 1.0625rem; cursor: pointer; font-family: var(--ga-heading-font);
 }
 #guide-app .ga-hidden { display: none !important; }
 #guide-app .ga-typing { color: var(--ga-muted); font-style: italic; }
