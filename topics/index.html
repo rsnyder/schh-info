@@ -15,6 +15,21 @@ title: What Can I Ask?
             <span class="icon-badge">{% include icon.html name=card.icon %}</span>
             <h3>{{ card.heading }}</h3>
             {{ card.description | markdownify }}
+            {% if card.questions %}
+            <div class="card-questions">
+                <p class="card-questions-label">Try asking:</p>
+                <ul>
+                    {% for q in card.questions %}
+                    <li>
+                        <a href="/?q={{ q | cgi_escape }}">
+                            {% include icon.html name="chat" class="card-question-icon" %}
+                            <span>&ldquo;{{ q }}&rdquo;</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </article>
         {% endfor %}
     </div>

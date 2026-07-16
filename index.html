@@ -54,6 +54,31 @@ description: "Ask the SCHH Community Guide — AI-supported answers about commun
     document.addEventListener("scroll", engage, { capture: true, passive: true });
     document.addEventListener("focusin", engage, true);
 
+    /* A ?q= parameter (links on the Topics page) is submitted into the
+       chat automatically. The chat component owns sign-in and history
+       loading, so wait until its chat panel is visible AND has rendered
+       at least one bubble (greeting or history — by then the resident is
+       signed in and the conversation id is settled), then submit through
+       the real form so the component's own handler runs. If the resident
+       must sign in first, the question waits and sends afterward. */
+    var pending = new URLSearchParams(location.search).get("q");
+    if (pending && pending.trim()) {
+        var poll = setInterval(function () {
+            var wrap = document.querySelector('[data-ga="chatWrap"]');
+            var messages = document.querySelector('[data-ga="messages"]');
+            var input = document.querySelector('[data-ga="question"]');
+            var composer = document.querySelector('[data-ga="composer"]');
+            if (!wrap || wrap.classList.contains("ga-hidden")
+                || !messages || !messages.childElementCount) return;
+            clearInterval(poll);
+            input.value = pending.trim().slice(0, 500);
+            composer.requestSubmit();
+            input.blur();  /* don't pop the phone keyboard */
+            /* strip ?q= so a reload doesn't re-send the question */
+            history.replaceState(null, "", location.pathname);
+        }, 300);
+    }
+
     /* Dismiss the phone keyboard when the resident taps outside the
        composer — e.g. to scroll back through the conversation while
        composing. Tapping inside the composer (input or Send) keeps focus. */
