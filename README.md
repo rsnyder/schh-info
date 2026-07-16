@@ -63,6 +63,15 @@ Pushes to `main` deploy via GitHub Actions (`.github/workflows/pages.yml`,
 Pages source = "GitHub Actions"). Rollback = revert the merge commit; the
 service worker's network-first navigations make rollbacks safe.
 
+## Analytics
+
+Self-hosted [Umami](https://umami.is) (cookieless, no consent banner needed).
+The snippet in `_includes/head.html` is emitted only when
+`analytics.website_id` is set in `_config.yml` — blank disables tracking
+entirely. The Ask page also counts a `question-submitted` event (count only,
+never the question text). The Umami server runs alongside the chat BFF;
+dashboard at the URL configured in `analytics.script`.
+
 ## Content editing
 
 - Topic cards: `_data/features.yml` · About copy: `_data/about.yml`

@@ -79,6 +79,14 @@ description: "Ask the SCHH Community Guide — AI-supported answers about commun
         }, 300);
     }
 
+    /* Count question submissions (never the question text) when Umami
+       analytics is present; a no-op otherwise. */
+    document.addEventListener("submit", function (e) {
+        if (e.target.matches('[data-ga="composer"]') && window.umami) {
+            window.umami.track("question-submitted");
+        }
+    }, true);
+
     /* Dismiss the phone keyboard when the resident taps outside the
        composer — e.g. to scroll back through the conversation while
        composing. Tapping inside the composer (input or Send) keeps focus. */

@@ -25,4 +25,7 @@
     {% if page.chat %}<link rel="stylesheet" href="/css/guide-chat.css?v={{ v }}">{% endif %}
     <link rel="stylesheet" href="/css/app.css?v={{ v }}">
     {% if page.chat %}<script src="/js/guide-chat.js?v={{ v }}" defer></script>{% endif %}
+    {% if site.analytics.website_id and site.analytics.website_id != "" %}
+    <script defer src="{{ site.analytics.script }}" data-website-id="{{ site.analytics.website_id }}"></script>
+    {% endif %}
 </head>

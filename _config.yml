@@ -17,6 +17,14 @@ chatbot:
   url: "https://chat.schh.info"
 
 # -----------------------------------------------
+# Analytics (self-hosted Umami). Tracking is emitted only when
+# website_id is set — leave it blank to disable entirely.
+# -----------------------------------------------
+analytics:
+  script:     "https://analytics.schh.info/script.js"
+  website_id: ""
+
+# -----------------------------------------------
 # Navigation — rendered as the bottom tab bar on phones and the
 # top-bar links on larger screens. Icons map to _includes/icon.html.
 # -----------------------------------------------
