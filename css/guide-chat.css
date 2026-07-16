@@ -27,13 +27,13 @@
   --ga-radius: var(--guide-radius, 10px);
 
   font-family: var(--ga-font);
-  font-size: var(--guide-font-size, 1.0625rem);
+  font-size: var(--guide-font-size, 17px);
   line-height: 1.5;
   color: var(--ga-ink);
   background: var(--ga-bg);
-  max-width: 46rem;
+  max-width: 46em;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1em;
   overflow-x: hidden;  /* belt-and-suspenders against mobile horizontal scroll */
 }
 #guide-app *, #guide-app *::before, #guide-app *::after { box-sizing: border-box; }
@@ -41,43 +41,43 @@
 
 #guide-app .ga-card {
   background: var(--ga-surface); border: 1px solid var(--ga-line);
-  border-radius: var(--ga-radius); padding: 1.5rem; max-width: 26rem;
-  margin: 2rem auto;
+  border-radius: var(--ga-radius); padding: 1.5em; max-width: 26em;
+  margin: 2em auto;
 }
 #guide-app .ga-card p { color: var(--ga-muted); }
-#guide-app label { display: block; font-size: .9rem; margin-bottom: .3rem; }
+#guide-app label { display: block; font-size: .9em; margin-bottom: .3em; }
 #guide-app input[type=email], #guide-app input[type=text] {
-  width: 100%; padding: .6rem; font-size: 1.0625rem;
+  width: 100%; padding: .6em; font-size: 1em;
   border: 1px solid var(--ga-line); border-radius: 6px;
   background: var(--ga-surface); color: var(--ga-ink);
 }
-#guide-app .ga-otp { letter-spacing: .5em; text-align: center; font-size: 1.5rem; }
+#guide-app .ga-otp { letter-spacing: .5em; text-align: center; font-size: 1.4em; }
 #guide-app .ga-btn {
-  width: 100%; margin-top: 1rem; padding: .7rem; font-size: 1.0625rem; border: 0;
+  width: 100%; margin-top: 1em; padding: .7em; font-size: 1em; border: 0;
   border-radius: 6px; background: var(--ga-accent); color: var(--ga-accent-text);
   cursor: pointer; font-family: var(--ga-heading-font);
 }
 #guide-app .ga-btn[disabled] { opacity: .5; cursor: default; }
 #guide-app .ga-linkish {
   background: none; border: none; color: var(--ga-accent); cursor: pointer;
-  text-decoration: underline; padding: 0; font-size: .9rem;
+  text-decoration: underline; padding: 0; font-size: .9em;
 }
-#guide-app .ga-note { font-size: .95rem; color: var(--ga-muted); margin-top: 1rem; }
-#guide-app .ga-error { color: #a33; font-size: .9rem; min-height: 1.2em; margin-top: .6rem; }
+#guide-app .ga-note { font-size: .95em; color: var(--ga-muted); margin-top: 1em; }
+#guide-app .ga-error { color: #a33; font-size: .9em; min-height: 1.2em; margin-top: .6em; }
 
 #guide-app .ga-toolbar {
   display: flex; justify-content: flex-end; align-items: center;
-  gap: .5rem; padding: .3rem 0;
+  gap: .5em; padding: .3em 0;
 }
 #guide-app .ga-toolbar-sep { color: var(--ga-line); }
 #guide-app .ga-messages {
   height: var(--guide-chat-height, 60vh); overflow-y: auto; overflow-x: hidden;
-  padding: .5rem 0;
+  padding: .5em 0;
 }
-#guide-app .ga-msg { margin: .6rem 0; display: flex; }
+#guide-app .ga-msg { margin: .6em 0; display: flex; }
 #guide-app .ga-msg.ga-you { justify-content: flex-end; }
 #guide-app .ga-bubble {
-  max-width: 85%; padding: .6rem .9rem; border-radius: 12px; line-height: 1.5;
+  max-width: 85%; padding: .6em .9em; border-radius: 12px; line-height: 1.5;
   overflow-wrap: anywhere;  /* long URLs/tokens wrap instead of forcing scroll */
   min-width: 0;
 }
@@ -95,16 +95,16 @@
 }
 #guide-app .ga-bubble p { margin: .4em 0; }
 #guide-app .ga-bubble ul { margin: .3em 0; padding-left: 1.2em; }
-#guide-app .ga-composer { display: flex; gap: .5rem; padding: .8rem 0 1.2rem; }
+#guide-app .ga-composer { display: flex; gap: .5em; padding: .8em 0 1.2em; }
 #guide-app .ga-composer input {
-  flex: 1; min-width: 0; padding: .6rem; font-size: 1.0625rem;
+  flex: 1; min-width: 0; padding: .6em; font-size: 1em;
   border: 1px solid var(--ga-line); border-radius: 8px;
   background: var(--ga-surface); color: var(--ga-ink);
 }
 #guide-app .ga-composer button {
-  padding: .6rem 1.1rem; border: 0; border-radius: 8px; white-space: nowrap;
+  padding: .6em 1.1em; border: 0; border-radius: 8px; white-space: nowrap;
   background: var(--ga-accent); color: var(--ga-accent-text);
-  font-size: 1.0625rem; cursor: pointer; font-family: var(--ga-heading-font);
+  font-size: 1em; cursor: pointer; font-family: var(--ga-heading-font);
 }
 #guide-app .ga-hidden { display: none !important; }
 #guide-app .ga-typing { color: var(--ga-muted); font-style: italic; }
