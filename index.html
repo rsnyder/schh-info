@@ -6,9 +6,21 @@ chat: true
 description: "Ask the SCHH Community Guide — AI-supported answers about community information, drawn from official sources. Residents only."
 ---
 <header class="ask-header">
-    <h1>Ask the Guide</h1>
-    <p>Resident sign-in required &middot; answers cite official community sources.<br>
-       Unofficial resident-created resource &mdash; not affiliated with the Association.</p>
+    <h1 class="visually-hidden">Ask the Guide</h1>
+    <details class="ask-info">
+        <summary>
+            {% include icon.html name="info" class="ask-info-icon" %}
+            <span>Unofficial resident-created guide &middot; <span class="ask-info-more">details</span></span>
+        </summary>
+        <div class="ask-info-panel">
+            <p>Residents sign in with their email address to use the Guide, and
+               answers cite official community sources. This is an unofficial,
+               resident-created resource &mdash; it is not affiliated with,
+               sponsored by, or endorsed by the Community Association or the
+               developer. Please verify important information with official
+               sources.</p>
+        </div>
+    </details>
 </header>
 
 <div id="guide-app" data-api-base="{{ site.chatbot.url }}"></div>

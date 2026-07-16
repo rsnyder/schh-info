@@ -252,17 +252,38 @@ img, svg { max-width: 100%; }
   min-height: 0;
   display: flex; flex-direction: column;
 }
-.ask-header {
-  text-align: center;
-  padding: var(--space-3) var(--space-4) 0;
-}
-.ask-header h1 {
-  font-size: var(--text-xl); color: var(--color-primary);
-  margin-bottom: var(--space-1);
-}
-.ask-header p {
+/* Compact one-line header: the required disclaimer sits behind a native
+   <details> disclosure so it doesn't eat chat height. The expanded panel
+   overlays the chat instead of pushing it down. */
+.ask-header { position: relative; text-align: center; }
+.ask-info {
   font-size: var(--text-sm); color: var(--color-muted);
-  margin: 0; line-height: 1.4;
+  padding: var(--space-1) var(--space-4);
+}
+.ask-info summary {
+  list-style: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  min-height: 36px;
+}
+.ask-info summary::-webkit-details-marker { display: none; }
+.ask-info-icon { width: 18px; height: 18px; color: var(--color-primary); }
+.ask-info-more { color: var(--color-link); text-decoration: underline; }
+.ask-info-panel {
+  position: absolute; left: var(--space-4); right: var(--space-4); top: 100%;
+  z-index: 10;
+  max-width: 36em; margin-inline: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 20px rgba(20, 35, 50, .18);
+  padding: var(--space-4) var(--space-5);
+  text-align: left;
+}
+.ask-info-panel p { margin: 0; }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
 }
 
 .page-ask #guide-app {
@@ -294,6 +315,21 @@ img, svg { max-width: 100%; }
 .page-ask #guide-app .ga-messages {
   flex: 1 1 auto; height: auto; min-height: 0;
 }
+/* Toolbar actions (New conversation / Sign out): plain links in the
+   component; dressed up as ghost pill buttons here. Scoped to .ga-toolbar
+   so the OTP card's linkish buttons keep their inline-link look. */
+.page-ask #guide-app .ga-toolbar { gap: var(--space-2); padding: var(--space-2) 0; }
+.page-ask #guide-app .ga-toolbar .ga-linkish {
+  display: inline-flex; align-items: center;
+  min-height: 36px; padding: 4px 14px;
+  border: 1px solid var(--color-line); border-radius: 999px;
+  background: var(--color-surface); color: var(--color-primary);
+  font-weight: 600; font-size: var(--text-sm); text-decoration: none;
+}
+.page-ask #guide-app .ga-toolbar .ga-linkish:hover {
+  background: var(--color-primary-tint); border-color: var(--color-primary);
+}
+.page-ask #guide-app .ga-toolbar-sep { display: none; }
 
 /* ---------------------------------------------------------------- motion */
 @media (prefers-reduced-motion: no-preference) {
