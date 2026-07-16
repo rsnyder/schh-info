@@ -17,6 +17,7 @@ const PRECACHE = [
   "/topics/",
   "/about/",
   "/contact/",
+  "/install/",
   "/offline/",
   "/css/app.css?v=" + VERSION,
   "/css/guide-chat.css?v=" + VERSION,

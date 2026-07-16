@@ -51,6 +51,13 @@ sections:
 
       The guide can be especially useful for questions such as: Where can I find a form? What did a recent announcement say? What are the rules for a facility? Where was an event mentioned? What local services or resources are available nearby?
 
+  - icon: smartphone
+    heading: "Use It Like an App"
+    body: |-
+      The guide works right in your web browser, but it can also be added to your phone or tablet's home screen, where it opens with one tap and behaves like a regular app.
+
+      See the [step-by-step instructions](/install/) — it takes about a minute, works on iPhone, iPad, and Android devices, and doesn't require an app store.
+
   - icon: lock
     heading: "Privacy and Resident Information"
     body: |-

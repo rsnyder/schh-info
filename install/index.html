@@ -1,0 +1,140 @@
+---
+layout: app
+slug: install
+title: Put the Guide on Your Phone
+description: "Step-by-step instructions for adding the SCHH Community Guide to your phone's home screen, so it opens like a regular app."
+---
+<div class="container prose">
+    <header class="page-header">
+        <h1>Put the Guide on Your Phone</h1>
+        <p class="subheading">In about a minute, the Guide can sit on your
+           home screen and open with one tap &mdash; just like a regular app.
+           No app store needed, and it&rsquo;s free.</p>
+    </header>
+
+    <div class="install-installed" id="install-done" hidden>
+        <p><strong>Good news &mdash; you&rsquo;re already using the installed
+           app!</strong> You can find it on your home screen any time by
+           looking for the blue &ldquo;SCHH Guide&rdquo; icon.</p>
+    </div>
+
+    <section class="install-section" id="install-iphone">
+        <h2>{% include icon.html name="smartphone" %} On an iPhone or iPad</h2>
+        <p class="install-note">Use the <strong>Safari</strong> browser
+           (the compass icon) for these steps.</p>
+        <ol class="install-steps">
+            <li>
+                <p>Open <strong>schh.info</strong> in Safari &mdash; you may
+                   already be there right now.</p>
+            </li>
+            <li>
+                <p>Tap the <strong>Share</strong> button. It looks like a
+                   little box with an arrow pointing up
+                   <span class="install-glyph">{% include icon.html name="share-ios" %}</span>
+                   and sits at the bottom of the screen (top right on an iPad).</p>
+            </li>
+            <li>
+                <p>A menu will slide up. Scroll down the menu until you see
+                   <strong>&ldquo;Add to Home Screen&rdquo;</strong>
+                   <span class="install-glyph">{% include icon.html name="plus-square" %}</span>
+                   and tap it.</p>
+            </li>
+            <li>
+                <p>Tap the blue <strong>Add</strong> in the top-right corner.</p>
+            </li>
+            <li>
+                <p>That&rsquo;s it! Look on your home screen for the blue
+                   <strong>SCHH Guide</strong> icon
+                   <img src="/img/icon-32.png" alt="" class="install-appicon">
+                   and tap it whenever you have a question.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="install-section" id="install-android">
+        <h2>{% include icon.html name="smartphone" %} On an Android phone or tablet</h2>
+        <p class="install-note">Use the <strong>Chrome</strong> browser
+           (the red, yellow, green and blue circle) for these steps.</p>
+        <ol class="install-steps">
+            <li>
+                <p>Open <strong>schh.info</strong> in Chrome &mdash; you may
+                   already be there right now.</p>
+            </li>
+            <li>
+                <p>Tap the <strong>menu</strong> button. It looks like three
+                   dots stacked on top of each other
+                   <span class="install-glyph">{% include icon.html name="more-vert" %}</span>
+                   and sits in the top-right corner.</p>
+            </li>
+            <li>
+                <p>In the menu, tap <strong>&ldquo;Add to Home
+                   screen&rdquo;</strong> (on some phones it says
+                   <strong>&ldquo;Install app&rdquo;</strong>).</p>
+            </li>
+            <li>
+                <p>Tap <strong>Install</strong> (or <strong>Add</strong>) to
+                   confirm.</p>
+            </li>
+            <li>
+                <p>That&rsquo;s it! Look on your home screen for the blue
+                   <strong>SCHH Guide</strong> icon
+                   <img src="/img/icon-32.png" alt="" class="install-appicon">
+                   and tap it whenever you have a question.</p>
+            </li>
+        </ol>
+    </section>
+
+    <button type="button" class="btn install-switch" id="install-switch" hidden></button>
+
+    <section class="install-section install-faq">
+        <h2>Good to know</h2>
+        <ul>
+            <li>The first time you open the Guide from your home screen, it
+                may ask you to sign in with your email again. That only
+                happens once.</li>
+            <li>The icon doesn&rsquo;t take up storage space like a regular
+                app, and there&rsquo;s nothing to update &mdash; you always
+                get the newest version automatically.</li>
+            <li>Changed your mind? Press and hold the icon and choose
+                <strong>Remove</strong> / <strong>Delete</strong>, just like
+                any other app. The website keeps working either way.</li>
+            <li>Stuck? <a href="/contact/">Send us a message</a> and
+                we&rsquo;ll walk you through it.</li>
+        </ul>
+    </section>
+</div>
+
+<script>
+(function () {
+    /* Show only the instructions for the visitor's own device, with a
+       button to see the other kind. Without JavaScript, both sections
+       simply remain visible. */
+    var ua = navigator.userAgent;
+    var isIOS = /iPhone|iPad|iPod/.test(ua)
+        || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    var isAndroid = /Android/.test(ua);
+    var iphone = document.getElementById("install-iphone");
+    var android = document.getElementById("install-android");
+    var swap = document.getElementById("install-switch");
+
+    if (matchMedia("(display-mode: standalone)").matches || navigator.standalone) {
+        document.getElementById("install-done").hidden = false;
+    }
+    if (!isIOS && !isAndroid) return;   /* desktop: show both */
+
+    var shown = isIOS ? iphone : android;
+    var hidden = isIOS ? android : iphone;
+    hidden.hidden = true;
+    swap.hidden = false;
+    swap.textContent = isIOS
+        ? "See Android instructions instead"
+        : "See iPhone and iPad instructions instead";
+    swap.addEventListener("click", function () {
+        var h = hidden; hidden = shown; shown = h;
+        shown.hidden = false; hidden.hidden = true;
+        swap.textContent = (shown === iphone)
+            ? "See Android instructions instead"
+            : "See iPhone and iPad instructions instead";
+    });
+})();
+</script>
