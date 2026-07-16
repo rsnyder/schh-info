@@ -17,11 +17,12 @@ chatbot:
   url: "https://chat.schh.info"
 
 # -----------------------------------------------
-# Analytics (self-hosted Umami). Tracking is emitted only when
+# Analytics (Umami Cloud for now; point script at a self-hosted
+# instance later if we migrate). Tracking is emitted only when
 # website_id is set — leave it blank to disable entirely.
 # -----------------------------------------------
 analytics:
-  script:     "https://analytics.schh.info/script.js"
+  script:     "https://cloud.umami.is/script.js"
   website_id: ""
 
 # -----------------------------------------------
