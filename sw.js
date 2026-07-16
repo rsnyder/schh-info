@@ -9,15 +9,18 @@ permalink: /sw.js
 const VERSION = "{{ site.time | date: '%s' }}";
 const CACHE = "schh-guide-" + VERSION;
 
+/* Asset URLs carry the same ?v= stamp the pages reference (head.html),
+   so cached entries can only ever be served to markup from the same
+   release. */
 const PRECACHE = [
   "/",
   "/topics/",
   "/about/",
   "/contact/",
   "/offline/",
-  "/css/app.css",
-  "/css/guide-chat.css",
-  "/js/guide-chat.js",
+  "/css/app.css?v=" + VERSION,
+  "/css/guide-chat.css?v=" + VERSION,
+  "/js/guide-chat.js?v=" + VERSION,
   "/manifest.webmanifest",
   "/img/icon.svg",
   "/img/icon-192.png"

@@ -53,5 +53,16 @@ description: "Ask the SCHH Community Guide — AI-supported answers about commun
     }
     document.addEventListener("scroll", engage, { capture: true, passive: true });
     document.addEventListener("focusin", engage, true);
+
+    /* Dismiss the phone keyboard when the resident taps outside the
+       composer — e.g. to scroll back through the conversation while
+       composing. Tapping inside the composer (input or Send) keeps focus. */
+    document.addEventListener("pointerdown", function (e) {
+        var active = document.activeElement;
+        if (active && active.closest && active.closest(".ga-composer")
+            && !(e.target.closest && e.target.closest(".ga-composer"))) {
+            active.blur();
+        }
+    }, true);
 })();
 </script>

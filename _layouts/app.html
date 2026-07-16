@@ -10,7 +10,17 @@
     </main>
     {% include tabbar.html %}
     <script>
-        if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js");
+            /* After a deploy, reload once when the new service worker takes
+               over so residents get the new version on their first visit
+               instead of the second. The guard skips the very first
+               install, where there was no old version to replace. */
+            var hadController = !!navigator.serviceWorker.controller;
+            navigator.serviceWorker.addEventListener("controllerchange", function () {
+                if (hadController) { location.reload(); }
+            });
+        }
     </script>
 </body>
 </html>

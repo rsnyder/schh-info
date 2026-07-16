@@ -17,7 +17,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-    {% if page.chat %}<link rel="stylesheet" href="/css/guide-chat.css">{% endif %}
-    <link rel="stylesheet" href="/css/app.css">
-    {% if page.chat %}<script src="/js/guide-chat.js" defer></script>{% endif %}
+    {%- comment -%} ?v= keeps HTML and assets in lockstep across deploys:
+    new HTML (network-first) references URLs the old service-worker cache
+    has never seen, so it can't serve last release's CSS/JS with this
+    release's markup. {%- endcomment -%}
+    {% assign v = site.time | date: '%s' %}
+    {% if page.chat %}<link rel="stylesheet" href="/css/guide-chat.css?v={{ v }}">{% endif %}
+    <link rel="stylesheet" href="/css/app.css?v={{ v }}">
+    {% if page.chat %}<script src="/js/guide-chat.js?v={{ v }}" defer></script>{% endif %}
 </head>

@@ -47,7 +47,7 @@
 
     <div class="ga-hidden" data-ga="chatWrap">
       <div class="ga-toolbar">
-        <button class="ga-linkish" data-ga="newConvo">New conversation</button>
+        <button class="ga-linkish" data-ga="newConvo">Clear conversation</button>
         <span class="ga-toolbar-sep">&middot;</span>
         <button class="ga-linkish" data-ga="logout">Sign out</button>
       </div>
@@ -107,11 +107,13 @@
     el.question.focus();
   }
 
-  function startNewConversation() {
+  // Clears the visible conversation and detaches from the old thread.
+  // Deliberately does NOT focus the input: on phones that would pop the
+  // virtual keyboard the moment the resident taps Clear.
+  function clearConversation() {
     conversationId = null;
     el.messages.innerHTML = "";
     greet();
-    el.question.focus();
   }
 
   function api(path, options) {
@@ -212,7 +214,7 @@
     if (e.key === "Enter") { e.preventDefault(); el.verify.click(); }
   });
 
-  el.newConvo.addEventListener("click", startNewConversation);
+  el.newConvo.addEventListener("click", clearConversation);
 
   el.logout.addEventListener("click", async () => {
     await api("/api/auth/logout", { method: "POST" });
