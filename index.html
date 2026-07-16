@@ -7,20 +7,51 @@ description: "Ask the SCHH Community Guide — AI-supported answers about commun
 ---
 <header class="ask-header">
     <h1 class="visually-hidden">Ask the Guide</h1>
-    <details class="ask-info">
-        <summary>
-            {% include icon.html name="info" class="ask-info-icon" %}
-            <span>Unofficial resident-created guide &middot; <span class="ask-info-more">details</span></span>
-        </summary>
-        <div class="ask-info-panel">
-            <p>Residents sign in with their email address to use the Guide, and
-               answers cite official community sources. This is an unofficial,
-               resident-created resource &mdash; it is not affiliated with,
-               sponsored by, or endorsed by the Community Association or the
-               developer. Please verify important information with official
-               sources.</p>
+    <div class="ask-notice" id="ask-notice" data-open="true">
+        <button type="button" class="ask-notice-line" aria-expanded="true" aria-controls="ask-notice-body">
+            {% include icon.html name="info" class="ask-notice-icon" %}
+            <span>Unofficial resident-created guide</span>
+            {% include icon.html name="chevron-down" class="ask-notice-chevron" %}
+        </button>
+        <div class="ask-notice-body" id="ask-notice-body">
+            <div>
+                <p>Residents sign in with their email address to use the Guide,
+                   and answers cite official community sources. This is an
+                   unofficial, resident-created resource &mdash; it is not
+                   affiliated with, sponsored by, or endorsed by the Community
+                   Association or the developer. Please verify important
+                   information with official sources.</p>
+            </div>
         </div>
-    </details>
+    </div>
 </header>
 
 <div id="guide-app" data-api-base="{{ site.chatbot.url }}"></div>
+
+<script>
+(function () {
+    var notice = document.getElementById("ask-notice");
+    var line = notice.querySelector(".ask-notice-line");
+
+    function set(open) {
+        notice.dataset.open = String(open);
+        line.setAttribute("aria-expanded", String(open));
+    }
+    line.addEventListener("click", function () {
+        set(notice.dataset.open !== "true");
+    });
+
+    /* Auto-collapse to the one-liner the first time the resident engages
+       with the chat: scrolling the message pane (scroll events don't
+       bubble, so listen in the capture phase) or focusing an input.
+       The delay guard ignores scroll-restoration events fired on load. */
+    function engage(e) {
+        if (performance.now() < 800) return;
+        set(false);
+        document.removeEventListener("scroll", engage, true);
+        document.removeEventListener("focusin", engage, true);
+    }
+    document.addEventListener("scroll", engage, { capture: true, passive: true });
+    document.addEventListener("focusin", engage, true);
+})();
+</script>
