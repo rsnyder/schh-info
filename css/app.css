@@ -1,0 +1,307 @@
+/* SCHH Community Guide — app shell + design system.
+   One stylesheet, no frameworks. Tokens up top; everything below consumes
+   them. The chat component (css/guide-chat.css) is themed via the
+   --guide-* custom properties mapped onto #guide-app near the bottom. */
+
+/* ---------------------------------------------------------------- tokens */
+:root {
+  color-scheme: light;
+
+  /* "Lowcountry marsh" palette — all text pairs AA or better on white */
+  --color-primary:        #1B4965;   /* deep coastal blue */
+  --color-primary-strong: #123549;   /* hover / pressed */
+  --color-primary-tint:   #E4EBF1;   /* icon circles, active-tab wash */
+  --color-ink:            #1F2933;
+  --color-muted:          #4B5A66;
+  --color-link:           #1565C0;
+  --color-bg:             #F6F3EC;   /* warm sand */
+  --color-surface:        #FFFFFF;
+  --color-line:           #D8DDE2;
+  --color-error:          #B3261E;
+  --color-success:        #1E7B34;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+
+  --text-sm:  0.889rem;   /* 16px */
+  --text-lg:  1.111rem;   /* 20px */
+  --text-xl:  1.278rem;   /* 23px */
+  --text-2xl: 1.556rem;   /* 28px */
+  --text-3xl: 1.889rem;   /* 34px */
+
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+
+  --radius-sm: 8px;
+  --radius:    12px;
+  --shadow: 0 1px 3px rgba(20, 35, 50, .12);
+
+  --topbar-h: 56px;
+  --tabbar-h: 64px;
+}
+
+/* ------------------------------------------------------------------ base */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-size: 112.5%;               /* 18px base — senior-friendly */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  color: var(--color-ink);
+  background: var(--color-bg);
+  /* App shell: fixed top bar / scrolling main / fixed tab bar */
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overscroll-behavior: none;
+}
+
+main {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+h1, h2, h3, h4 { line-height: 1.25; margin: 0 0 var(--space-3); font-weight: 700; }
+h1 { font-size: var(--text-3xl); }
+h2 { font-size: var(--text-2xl); }
+h3 { font-size: var(--text-xl); }
+p  { margin: 0 0 var(--space-4); }
+
+a { color: var(--color-link); }
+a:hover { color: var(--color-primary-strong); }
+
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+img, svg { max-width: 100%; }
+.icon { width: 24px; height: 24px; flex: none; }
+
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  background: var(--color-surface); color: var(--color-primary);
+  padding: var(--space-3) var(--space-4);
+}
+.skip-link:focus { left: 0; }
+
+/* ---------------------------------------------------------------- topbar */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-4);
+  min-height: var(--topbar-h);
+  padding: var(--space-2) var(--space-4);
+  padding-top: calc(var(--space-2) + env(safe-area-inset-top));
+  background: var(--color-primary);
+  color: #fff;
+}
+.topbar-brand {
+  display: flex; align-items: center; gap: var(--space-2);
+  color: #fff; text-decoration: none;
+  font-size: var(--text-lg); font-weight: 700;
+}
+.topbar-nav { display: none; }
+
+@media (min-width: 768px) {
+  .topbar { padding-inline: var(--space-5); }
+  .topbar-nav { display: flex; gap: var(--space-2); }
+  .topbar-nav a {
+    color: #fff; text-decoration: none; font-weight: 600;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-sm);
+    min-height: 44px; display: inline-flex; align-items: center;
+  }
+  .topbar-nav a:hover { background: var(--color-primary-strong); color: #fff; }
+  .topbar-nav a[aria-current="page"] {
+    background: rgba(255, 255, 255, .16);
+  }
+}
+
+/* ---------------------------------------------------------------- tabbar */
+.tabbar {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  min-height: var(--tabbar-h);
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-line);
+}
+.tabbar a {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 2px;
+  padding: var(--space-2) var(--space-1);
+  color: var(--color-muted); text-decoration: none;
+  font-size: 13px; font-weight: 600; line-height: 1.2;
+}
+.tabbar a[aria-current="page"] { color: var(--color-primary); }
+.tabbar a[aria-current="page"] .icon { stroke-width: 2.5; }
+
+@media (min-width: 768px) {
+  .tabbar { display: none; }
+}
+
+/* --------------------------------------------------------------- content */
+.container {
+  max-width: 900px;
+  margin-inline: auto;
+  padding: var(--space-5) var(--space-4) var(--space-6);
+}
+.prose { max-width: 42em; margin-inline: auto; }
+
+.page-header { text-align: center; margin-bottom: var(--space-6); }
+.page-header h1 { color: var(--color-primary); }
+.page-header .subheading {
+  color: var(--color-muted); font-size: var(--text-lg);
+  max-width: 34em; margin-inline: auto;
+}
+
+.card-grid {
+  display: grid; gap: var(--space-4);
+  grid-template-columns: 1fr;
+  margin-bottom: var(--space-6);
+}
+@media (min-width: 640px)  { .card-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .card-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space-5);
+}
+.card h3 { font-size: var(--text-lg); }
+.card p:last-child { margin-bottom: 0; }
+.card .icon-badge { margin-bottom: var(--space-3); }
+
+.icon-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--color-primary-tint); color: var(--color-primary);
+}
+
+.text-center { text-align: center; }
+
+.about-intro > p:first-child {
+  font-size: var(--text-lg);
+  color: var(--color-primary);
+}
+
+.section-block { margin-bottom: var(--space-6); }
+.section-block > .section-heading {
+  display: flex; align-items: center; gap: var(--space-3);
+  color: var(--color-primary);
+  font-size: var(--text-xl);
+}
+.section-heading .icon-badge { flex: none; width: 44px; height: 44px; }
+.callout {
+  background: var(--color-primary-tint);
+  border-radius: var(--radius);
+  padding: var(--space-4) var(--space-5);
+  font-style: italic;
+}
+
+/* --------------------------------------------------------------- buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  padding: var(--space-3) var(--space-5);
+  border: 0; border-radius: var(--radius-sm);
+  background: var(--color-primary); color: #fff;
+  font-family: inherit; font-size: 1rem; font-weight: 600;
+  text-decoration: none; cursor: pointer;
+}
+.btn:hover { background: var(--color-primary-strong); color: #fff; }
+.btn-block { display: flex; width: 100%; }
+@media (min-width: 640px) { .btn-block { max-width: 22em; margin-inline: auto; } }
+
+/* ----------------------------------------------------------------- forms */
+.form-field { margin-bottom: var(--space-4); }
+.form-field label { display: block; font-weight: 600; margin-bottom: var(--space-1); }
+.form-field input, .form-field textarea {
+  width: 100%; min-height: 48px;
+  padding: var(--space-3);
+  font: inherit; color: var(--color-ink);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+}
+.form-field textarea { line-height: 1.5; }
+
+/* ---------------------------------------------------------------- footer */
+.site-footer {
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-line);
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+.site-footer .disclaimer { max-width: 38em; margin-inline: auto; }
+
+/* --------------------------------------------------- Ask screen (chat) */
+.app-fullscreen main {
+  min-height: 0;
+  display: flex; flex-direction: column;
+}
+.ask-header {
+  text-align: center;
+  padding: var(--space-3) var(--space-4) 0;
+}
+.ask-header h1 {
+  font-size: var(--text-xl); color: var(--color-primary);
+  margin-bottom: var(--space-1);
+}
+.ask-header p {
+  font-size: var(--text-sm); color: var(--color-muted);
+  margin: 0; line-height: 1.4;
+}
+
+.page-ask #guide-app {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column;
+  width: 100%;
+
+  /* Theme the chat component (host-facing --guide-* contract) */
+  --guide-accent: var(--color-primary);
+  --guide-accent-text: #ffffff;
+  --guide-link: var(--color-link);
+  --guide-ink: var(--color-ink);
+  --guide-muted: var(--color-muted);
+  --guide-line: var(--color-line);
+  --guide-surface: var(--color-surface);
+  --guide-bg: transparent;
+  --guide-font: var(--font-sans);
+  --guide-heading-font: var(--font-sans);
+  --guide-font-size: 18px;
+  --guide-radius: var(--radius);
+  --guide-chat-height: 60vh;   /* fallback only; flex rules below fill screen */
+}
+/* Fill the viewport: the chat wrap becomes a flex column and the message
+   pane takes all remaining height, scrolling internally. */
+.page-ask #guide-app [data-ga="chatWrap"]:not(.ga-hidden) {
+  display: flex; flex-direction: column;
+  flex: 1 1 auto; min-height: 0;
+}
+.page-ask #guide-app .ga-messages {
+  flex: 1 1 auto; height: auto; min-height: 0;
+}
+
+/* ---------------------------------------------------------------- motion */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}

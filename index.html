@@ -1,3 +1,14 @@
 ---
-layout: default
+layout: app
+slug: ask
+fullscreen: true
+chat: true
+description: "Ask the SCHH Community Guide — AI-supported answers about community information, drawn from official sources. Residents only."
 ---
+<header class="ask-header">
+    <h1>Ask the Guide</h1>
+    <p>Resident sign-in required &middot; answers cite official community sources.<br>
+       Unofficial resident-created resource &mdash; not affiliated with the Association.</p>
+</header>
+
+<div id="guide-app" data-api-base="{{ site.chatbot.url }}"></div>

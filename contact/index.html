@@ -1,0 +1,39 @@
+---
+layout: app
+slug: contact
+title: Contact
+---
+<div class="container prose">
+    <header class="page-header">
+        <h1>{{ site.contact.heading }}</h1>
+        <p class="subheading">{{ site.contact.subheading }}</p>
+    </header>
+
+    <!--
+        Posts to the schh-contact-endpoint Netlify function (sends to
+        contact@schh.info via ZeptoMail). Set contact.endpoint in _config.yml.
+    -->
+    <form action="{{ site.contact.endpoint }}" method="POST">
+        <!-- honeypot: hidden from humans; bots that fill it are dropped -->
+        <div style="position:absolute; left:-9999px;" aria-hidden="true">
+            <label>Leave this field empty
+                <input type="text" name="company" tabindex="-1" autocomplete="off">
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="contact-name">Your name</label>
+            <input id="contact-name" type="text" name="name" autocomplete="name" required>
+        </div>
+        <div class="form-field">
+            <label for="contact-email">Your email</label>
+            <input id="contact-email" type="email" name="email" autocomplete="email" required>
+        </div>
+        <div class="form-field">
+            <label for="contact-message">Your message</label>
+            <textarea id="contact-message" name="message" rows="6" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-block">Send Message</button>
+    </form>
+</div>

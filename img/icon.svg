@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- SCHH Community Guide app icon: chat bubble on deep coastal blue.
+       Art stays inside the central ~55% so the same shapes work for the
+       maskable variants (generated full-bleed, rx=0). -->
+  <rect width="512" height="512" rx="96" fill="#1B4965"/>
+  <path d="M256 138c-73 0-132 48-132 107 0 34 20 64 51 83l-13 48 58-28c11 3 23 4 36 4 73 0 132-48 132-107s-59-107-132-107z" fill="#F6F3EC"/>
+  <circle cx="214" cy="245" r="14" fill="#1B4965"/>
+  <circle cx="256" cy="245" r="14" fill="#1B4965"/>
+  <circle cx="298" cy="245" r="14" fill="#1B4965"/>
+</svg>

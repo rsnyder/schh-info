@@ -1,20 +1,15 @@
-remote_theme: y7kim/agency-jekyll-theme
-
-plugins:
-  - jekyll-remote-theme
-
 # -----------------------------------------------
 # Site identity
 # -----------------------------------------------
 title:       "SCHH Community Guide"
-email:       "info@schh-info.example.com"
 description: "A resident-created, AI-powered guide to community information and local resources."
+tagline:     "A resident-created companion for finding your way around community information."
 url:         "https://schh.info"
-baseurl:     ""   # e.g. /schh-info  (leave blank for a root-level Pages site)
+baseurl:     ""
 
 # -----------------------------------------------
-# Chatbot (self-hosted, residents only)
-# The chat client is served at chat.schh.info. Access requires resident
+# Chatbot backend (self-hosted, residents only)
+# The chat client on / talks to this API. Access requires resident
 # verification: the user's email is checked against the SCHH Resident
 # Directory, then a one-time code is emailed (currently valid 60 days).
 # -----------------------------------------------
@@ -22,59 +17,40 @@ chatbot:
   url: "https://chat.schh.info"
 
 # -----------------------------------------------
-# Navigation
+# Navigation — rendered as the bottom tab bar on phones and the
+# top-bar links on larger screens. Icons map to _includes/icon.html.
 # -----------------------------------------------
 nav:
-  brand: "SCHH Community Guide"
+  brand: "SCHH Guide"
   links:
-    - text: "Features"
-      anchor: "features"
+    - text: "Ask"
+      url: "/"
+      icon: "chat"
+    - text: "Topics"
+      url: "/topics/"
+      icon: "grid"
     - text: "About"
-      anchor: "about"
+      url: "/about/"
+      icon: "info"
     - text: "Contact"
-      anchor: "contact"
-    - text: "Ask the Guide"
-      url: "/chat/"
-  cta:
-    text: "Ask the Chatbot"
-    icon: "comments"
+      url: "/contact/"
+      icon: "mail"
 
 # -----------------------------------------------
-# Hero section
-# -----------------------------------------------
-hero:
-  lead:        "A resident-created companion for finding your way around community information."
-  heading:     "SCHH Community Guide"
-  description: >-
-    The SCHH Community Guide brings together official community materials, local
-    information, and vendor listings in one easier-to-search starting
-    point, with AI-supported search and chat.
-  primary_button:
-    text:   "Ask the Chatbot"
-    url:    "/chat/"
-    icon:   "comments"
-  secondary_button:
-    text:   "Learn More About the Guide"
-    anchor: "about"
-
-# -----------------------------------------------
-# Features section  (card content lives in _data/features.yml)
+# Topics page  (card content lives in _data/features.yml)
 # -----------------------------------------------
 features:
   heading:    "What Can I Ask?"
   subheading: "The guide covers the full breadth of community life."
-  cta:
-    text: "Open the Chatbot"
-    icon: "comments"
 
 # -----------------------------------------------
-# About section  (long-form copy lives in _data/about.yml)
+# About page  (long-form copy lives in _data/about.yml)
 # -----------------------------------------------
 about:
   heading: "About the SCHH Community Guide"
 
 # -----------------------------------------------
-# Contact section
+# Contact page
 # -----------------------------------------------
 contact:
   heading:      "Contact Us"
@@ -89,33 +65,6 @@ footer:
     This is an unofficial, resident-created resource. It is not affiliated
     with, sponsored by, or endorsed by the Community Association or the
     developer.
-
-# -----------------------------------------------
-# Theme colors
-# -----------------------------------------------
-theme_colors:
-  primary:    "#fed136"   # accent: buttons, icons, links, timeline circles
-  dark:       "#222222"   # dark bg: navbar (scrolled), contact section, social icons
-  body_text:  "#333333"   # main body text color
-  hero_from:  "#0d2137"   # hero gradient start (top-left)
-  hero_to:    "#1a6e6a"   # hero gradient end   (bottom-right)
-
-# -----------------------------------------------
-# Theme fonts  (Google Fonts names, case-sensitive)
-# See https://fonts.google.com
-# -----------------------------------------------
-theme_fonts:
-  heading: "Montserrat"      # h1-h6, nav links, buttons
-  body:    "Source Sans Pro" # body / paragraph text
-  accent:  "Droid Serif"     # italic accent: hero lead-in, section subheadings
-  brand:   "Kaushan Script"  # navbar brand / logo
-
-# -----------------------------------------------
-# Social links  (title = Font Awesome icon name, e.g. facebook, twitter)
-# -----------------------------------------------
-social:
-  - title: facebook
-    url:   "#"
 
 # -----------------------------------------------
 # Build settings

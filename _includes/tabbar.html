@@ -1,0 +1,8 @@
+<nav class="tabbar" aria-label="Primary">
+    {% for link in site.nav.links %}
+    <a href="{{ link.url }}"{% if page.url == link.url %} aria-current="page"{% endif %}>
+        {% include icon.html name=link.icon %}
+        <span>{{ link.text }}</span>
+    </a>
+    {% endfor %}
+</nav>
