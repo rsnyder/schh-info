@@ -23,7 +23,7 @@ chatbot:
 # -----------------------------------------------
 analytics:
   script:     "https://cloud.umami.is/script.js"
-  website_id: ""
+  website_id: "9a30006d-503a-4ab5-8c01-0f0705350c03"
 
 # -----------------------------------------------
 # Navigation — rendered as the bottom tab bar on phones and the
