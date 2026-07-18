@@ -1,0 +1,23 @@
+---
+layout: app
+slug: more
+title: More
+description: "More pages from the SCHH Community Guide."
+---
+<div class="container prose">
+    <header class="page-header">
+        <h1>More</h1>
+    </header>
+
+    <ul class="more-list">
+        {% for link in site.nav.more %}
+        <li>
+            <a href="{{ link.url }}">
+                <span class="icon-badge">{% include icon.html name=link.icon %}</span>
+                <span class="more-list-text">{{ link.text }}</span>
+                {% include icon.html name="chevron-right" class="more-list-chevron" %}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>

@@ -5,7 +5,12 @@
     </a>
     <nav class="topbar-nav" aria-label="Primary">
         {% for link in site.nav.links %}
+        {% unless link.url == "/more/" %}
         <a href="{{ link.url }}"{% if page.url == link.url %} aria-current="page"{% endif %}>{{ link.text }}</a>
+        {% endunless %}
+        {% endfor %}
+        {% for link in site.nav.more %}
+        <a href="{{ link.url }}"{% if page.url == link.url %} aria-current="page"{% endif %}>{{ link.short | default: link.text }}</a>
         {% endfor %}
     </nav>
 </header>

@@ -31,6 +31,8 @@ analytics:
 # -----------------------------------------------
 nav:
   brand: "SCHH Guide"
+  # Primary tab bar (phones) — hard limit of 5 slots. The desktop top
+  # bar shows these plus everything under `more`.
   links:
     - text: "Ask"
       url: "/"
@@ -38,12 +40,30 @@ nav:
     - text: "Topics"
       url: "/topics/"
       icon: "grid"
-    - text: "About"
+    - text: "Links"
+      url: "/links/"
+      icon: "link"
+    - text: "Vendors"
+      url: "/vendors/"
+      icon: "shopping-bag"
+    - text: "More"
+      url: "/more/"
+      icon: "more-horiz"
+  # Secondary destinations, listed on the /more/ page. `short` is the
+  # compact label used in the desktop top bar.
+  more:
+    - text: "About the Guide"
+      short: "About"
       url: "/about/"
       icon: "info"
-    - text: "Contact"
+    - text: "Contact Us"
+      short: "Contact"
       url: "/contact/"
       icon: "mail"
+    - text: "Put the Guide on Your Phone"
+      short: "Install"
+      url: "/install/"
+      icon: "smartphone"
 
 # -----------------------------------------------
 # Topics page  (card content lives in _data/features.yml)

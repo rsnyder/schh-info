@@ -1,0 +1,29 @@
+# Quick Links page content.
+#
+# links:   ordinary web links, opened in a new tab
+#          fields: title, url, description (optional)
+# prompts: commonly used questions — tapping one opens the chat page
+#          and submits the question automatically
+#
+# Entries marked "Sample" are placeholders — replace them with real
+# community links.
+
+links:
+  - title: "National Hurricane Center"
+    url: "https://www.nhc.noaa.gov"
+    description: "Current tropical storm and hurricane forecasts from NOAA."
+
+  - title: "Beaufort County Government"
+    url: "https://www.beaufortcountysc.gov"
+    description: "County services, tax information, and public notices."
+
+  - title: "Sample link — replace me"
+    url: "https://example.com"
+    description: "Replace these entries in _data/quicklinks.yml with real community links (Resident Central, activity calendars, and so on)."
+
+prompts:
+  - "What community events are coming up this week?"
+  - "What are the indoor pool hours?"
+  - "How do I submit a work order?"
+  - "How do I request a gate pass for a visitor?"
+  - "What did the latest Association announcement say?"

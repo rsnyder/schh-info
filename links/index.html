@@ -1,0 +1,47 @@
+---
+layout: app
+slug: links
+title: Quick Links
+description: "Handy community links and commonly asked questions, one tap away."
+---
+<div class="container prose">
+    <header class="page-header">
+        <h1>Quick Links</h1>
+        <p class="subheading">Handy destinations and common questions,
+           one tap away.</p>
+    </header>
+
+    <section class="section-block">
+        <h2>Handy links</h2>
+        <ul class="link-list">
+            {% for link in site.data.quicklinks.links %}
+            <li>
+                <a href="{{ link.url }}" target="_blank" rel="noopener">
+                    <span class="icon-badge">{% include icon.html name="external-link" %}</span>
+                    <span class="link-list-text">
+                        <strong>{{ link.title }}</strong>
+                        {% if link.description %}<span>{{ link.description }}</span>{% endif %}
+                    </span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section class="section-block">
+        <h2>Common questions</h2>
+        <p>Tap a question and the Guide will look it up for you.</p>
+        <div class="card-questions">
+            <ul>
+                {% for q in site.data.quicklinks.prompts %}
+                <li>
+                    <a href="/?q={{ q | cgi_escape }}">
+                        {% include icon.html name="chat" class="card-question-icon" %}
+                        <span>&ldquo;{{ q }}&rdquo;</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+</div>

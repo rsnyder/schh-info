@@ -1,6 +1,13 @@
+{%- comment -%} The More tab lights up on /more/ itself and on any page
+listed under nav.more, so the active state never disappears. {%- endcomment -%}
+{% assign on_more_page = false %}
+{% for m in site.nav.more %}{% if page.url == m.url %}{% assign on_more_page = true %}{% endif %}{% endfor %}
 <nav class="tabbar" aria-label="Primary">
     {% for link in site.nav.links %}
-    <a href="{{ link.url }}"{% if page.url == link.url %} aria-current="page"{% endif %}>
+    {% assign active = false %}
+    {% if page.url == link.url %}{% assign active = true %}{% endif %}
+    {% if link.url == "/more/" and on_more_page %}{% assign active = true %}{% endif %}
+    <a href="{{ link.url }}"{% if active %} aria-current="page"{% endif %}>
         {% include icon.html name=link.icon %}
         <span>{{ link.text }}</span>
     </a>

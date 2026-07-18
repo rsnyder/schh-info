@@ -1,0 +1,51 @@
+---
+layout: app
+slug: vendors
+title: Vendors
+description: "A curated list of local vendors and services, including resident-owned businesses."
+---
+<div class="container">
+    <header class="page-header">
+        <h1>Local Vendors &amp; Services</h1>
+        <p class="subheading">A curated list of vendors residents have found
+           helpful — including businesses run by fellow residents.</p>
+    </header>
+
+    <p class="callout vendor-disclaimer">Vendor and service listings are
+       provided as a convenience to residents. Inclusion in the guide does
+       not necessarily mean endorsement, verification, or recommendation
+       unless specifically stated. Residents should use their own judgment
+       when hiring vendors or using local services.</p>
+
+    {% for group in site.data.vendors %}
+    <section class="section-block">
+        <h2 class="section-heading">
+            <span class="icon-badge">{% include icon.html name="shopping-bag" %}</span>
+            <span>{{ group.category }}</span>
+        </h2>
+        <div class="card-grid">
+            {% for v in group.vendors %}
+            <article class="card vendor-card">
+                <h3>{{ v.name }}
+                    {% if v.resident %}<span class="vendor-badge">Resident-owned</span>{% endif %}
+                </h3>
+                {% if v.description %}<p>{{ v.description }}</p>{% endif %}
+                <p class="vendor-contact">
+                    {% if v.phone %}
+                    <a href="tel:{{ v.phone | remove: '(' | remove: ')' | remove: ' ' | remove: '-' }}">
+                        {{ v.phone }}</a>
+                    {% endif %}
+                    {% if v.phone and v.website %}<span class="vendor-sep">&middot;</span>{% endif %}
+                    {% if v.website %}
+                    <a href="{{ v.website }}" target="_blank" rel="noopener">Website</a>
+                    {% endif %}
+                </p>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% endfor %}
+
+    <p>Know a vendor who should be listed &mdash; or one that shouldn&rsquo;t?
+       <a href="/contact/">Let us know</a>.</p>
+</div>

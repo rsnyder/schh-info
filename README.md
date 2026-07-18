@@ -75,8 +75,12 @@ dashboard at the URL configured in `analytics.script`.
 ## Content editing
 
 - Topic cards: `_data/features.yml` · About copy: `_data/about.yml`
+- Quick Links (links + common prompts): `_data/quicklinks.yml`
+- Vendor listings (categories → vendors): `_data/vendors.yml`
 - Icon names in the data files map to inline SVGs in `_includes/icon.html`
-- Site/nav/contact settings: `_config.yml`
+- Site/nav/contact settings: `_config.yml`. The phone tab bar holds the
+  five `nav.links` entries (hard cap); additional destinations go under
+  `nav.more`, which feeds the /more/ page and the desktop top bar.
 
 ## Disclaimer
 
