@@ -411,6 +411,9 @@ img, svg { max-width: 100%; }
   text-align: center;
 }
 .ask-footer a { color: var(--color-link); }
+@media (max-width: 639px) {
+  .ask-footer { font-size: .8rem; line-height: 1.3; }
+}
 
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; margin: -1px;
