@@ -232,7 +232,9 @@
     el.question.value = "";
     addBubble("you", message);
     const bubble = addBubble("bot", "");
-    bubble.innerHTML = '<span class="ga-typing">Looking that up&hellip;</span>';
+    bubble.innerHTML = '<span class="ga-typing">Looking that up'
+      + '<span class="ga-typing-dots" aria-hidden="true">'
+      + '<span>.</span><span>.</span><span>.</span></span></span>';
 
     const response = await api("/api/chat/messages", {
       method: "POST",
