@@ -107,13 +107,17 @@
     el.question.focus();
   }
 
-  // Clears the visible conversation and detaches from the old thread.
-  // Deliberately does NOT focus the input: on phones that would pop the
-  // virtual keyboard the moment the resident taps Clear.
+  // Clears the conversation on both sides: the server deletes the Dify
+  // threads (otherwise /api/chat/latest resurrects them on the next page
+  // load) and the panel resets. Deliberately does NOT focus the input: on
+  // phones that would pop the virtual keyboard the moment the resident
+  // taps Clear. If the server call fails, the panel still clears; worst
+  // case the history returns on the next reload (the old behavior).
   function clearConversation() {
     conversationId = null;
     el.messages.innerHTML = "";
     greet();
+    api("/api/chat/clear", { method: "POST" }).catch(() => {});
   }
 
   function api(path, options) {
