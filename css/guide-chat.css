@@ -104,6 +104,15 @@
   white-space: nowrap;
 }
 #guide-app .ga-bubble thead th { background: var(--ga-line); font-weight: 600; }
+#guide-app .ga-bubble .ga-maplink {
+  color: var(--ga-link); text-decoration: none;
+  border-bottom: 1px dotted currentColor; white-space: nowrap;
+}
+#guide-app .ga-bubble .ga-maplink:hover { border-bottom-style: solid; }
+#guide-app .ga-mapicon {
+  width: .85em; height: .85em; vertical-align: -.12em;
+  margin-left: .1em; fill: currentColor; opacity: .55;
+}
 #guide-app .ga-composer { display: flex; gap: .5em; padding: .8em 0 1.2em; }
 #guide-app .ga-composer input {
   flex: 1; min-width: 0; padding: .6em; font-size: 1em;
