@@ -123,17 +123,48 @@
     }, options));
   }
 
-  // minimal safe markdown: escape first, then links/bold/headings/lists
+  // GFM pipe tables -> <table>. Runs after inline formatting so cells keep
+  // their links/bold, and before the paragraph split so the multi-line block
+  // collapses to one block element. A table is a header row, an alignment
+  // delimiter row (dashes/colons), then data rows.
+  function renderTables(text) {
+    const cells = row => row.trim().replace(/^\||\|$/g, "").split("|").map(c => c.trim());
+    const isDelim = row => /-/.test(row) && /^\s*\|?(\s*:?-+:?\s*\|)*\s*:?-+:?\s*\|?\s*$/.test(row);
+    const lines = text.split("\n");
+    const out = [];
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes("|") && i + 1 < lines.length && isDelim(lines[i + 1])) {
+        const head = cells(lines[i]);
+        const align = cells(lines[i + 1]).map(c =>
+          c.startsWith(":") && c.endsWith(":") ? "center" : c.endsWith(":") ? "right" : c.startsWith(":") ? "left" : "");
+        const sty = j => align[j] ? ` style="text-align:${align[j]}"` : "";
+        const body = [];
+        i += 2;
+        while (i < lines.length && lines[i].includes("|") && lines[i].trim() !== "") { body.push(cells(lines[i])); i++; }
+        i--; // the for-loop re-increments past the last consumed row
+        out.push(
+          "<table><thead><tr>" + head.map((c, j) => `<th${sty(j)}>${c}</th>`).join("") + "</tr></thead><tbody>" +
+          body.map(r => "<tr>" + head.map((_, j) => `<td${sty(j)}>${r[j] || ""}</td>`).join("") + "</tr>").join("") +
+          "</tbody></table>");
+      } else {
+        out.push(lines[i]);
+      }
+    }
+    return out.join("\n");
+  }
+
+  // minimal safe markdown: escape first, then links/bold/headings/tables/lists
   function render(md) {
     let h = md.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     h = h.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,
       '<a href="$2" target="_blank" rel="noopener">$1</a>');
     h = h.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    h = renderTables(h);
     h = h.replace(/^###\s?(.+)$/gm, "<h3>$1</h3>").replace(/^##\s?(.+)$/gm, "<h2>$1</h2>");
     h = h.replace(/^[-*]\s+(.+)$/gm, "<li>$1</li>")
          .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`);
     return h.split(/\n{2,}/).map(p =>
-      /^<(h\d|ul)/.test(p) ? p : `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
+      /^<(h\d|ul|table)/.test(p) ? p : `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
   }
 
   function addBubble(who, text) {

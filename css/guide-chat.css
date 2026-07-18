@@ -95,6 +95,15 @@
 }
 #guide-app .ga-bubble p { margin: .4em 0; }
 #guide-app .ga-bubble ul { margin: .3em 0; padding-left: 1.2em; }
+#guide-app .ga-bubble table {
+  display: block; overflow-x: auto; border-collapse: collapse;
+  margin: .6em 0; font-size: .95em;
+}
+#guide-app .ga-bubble th, #guide-app .ga-bubble td {
+  border: 1px solid var(--ga-line); padding: .35em .6em; text-align: left;
+  white-space: nowrap;
+}
+#guide-app .ga-bubble thead th { background: var(--ga-line); font-weight: 600; }
 #guide-app .ga-composer { display: flex; gap: .5em; padding: .8em 0 1.2em; }
 #guide-app .ga-composer input {
   flex: 1; min-width: 0; padding: .6em; font-size: 1em;
