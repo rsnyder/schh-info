@@ -3,39 +3,135 @@ layout: app
 slug: ask
 fullscreen: true
 chat: true
-description: "Ask the SCHH Community Guide — AI-supported answers about community information, drawn from official sources. Residents only."
+description: "The SCHH Community Guide — a resident-created guide with AI-supported answers about community information, each linked back to official sources. Residents only."
 ---
-<header class="ask-header">
-    <h1 class="visually-hidden">Ask the Guide</h1>
-    <div class="ask-notice" id="ask-notice" data-open="true">
-        <button type="button" class="ask-notice-line" aria-expanded="true" aria-controls="ask-notice-body">
-            {% include icon.html name="info" class="ask-notice-icon" %}
-            <span>Unofficial resident-created guide</span>
-            {% include icon.html name="chevron-down" class="ask-notice-chevron" %}
-        </button>
-        <div class="ask-notice-body" id="ask-notice-body">
+<div class="welcome" id="welcome-view" hidden>
+    <img class="welcome-icon" src="/img/icon-192.png" alt="">
+    <h1>Welcome to the SCHH Community Guide</h1>
+    <p class="welcome-lede">A resident-created guide that answers your
+       questions about life in the community &mdash; with every answer
+       linked back to the official source documents.</p>
+
+    <div class="welcome-points">
+        <div class="card welcome-point">
+            <span class="icon-badge">{% include icon.html name="chat" %}</span>
             <div>
-                <p>Residents sign in with their email address to use the Guide,
-                   and answers cite official community sources. This is an
-                   unofficial, resident-created resource &mdash; it is not
-                   affiliated with, sponsored by, or endorsed by the Community
-                   Association or the developer. Please verify important
-                   information with official sources.</p>
-                <p><a href="/about/">More information about this guide</a></p>
+                <h2>Ask in plain language</h2>
+                <p>Ask about rules, events, forms, amenities, clubs, and more
+                   &mdash; the Guide searches a large collection of community
+                   materials for you.</p>
+            </div>
+        </div>
+        <div class="card welcome-point">
+            <span class="icon-badge">{% include icon.html name="link" %}</span>
+            <div>
+                <h2>Answers you can check</h2>
+                <p>Every answer cites the official documents it drew from,
+                   often linking to the exact page &mdash; so you can always
+                   go straight to the source.</p>
+            </div>
+        </div>
+        <div class="card welcome-point">
+            <span class="icon-badge">{% include icon.html name="lock" %}</span>
+            <div>
+                <h2>For residents only</h2>
+                <p>Sign in with the email address listed for you in the SCHH
+                   Resident Directory. We&rsquo;ll email you a six-digit code
+                   &mdash; no password to create or remember &mdash; and
+                   you&rsquo;ll stay signed in for about 60 days.</p>
             </div>
         </div>
     </div>
-</header>
 
-<div id="guide-app" data-api-base="{{ site.chatbot.url }}"></div>
+    <button type="button" class="btn btn-block" id="welcome-signin">
+        Sign in as a resident
+    </button>
 
-<footer class="ask-footer">
-    AI can make mistakes &mdash; please verify important information with the source
-    documents. Spot an error or omission? <a href="/contact/">Let us know</a>.
-</footer>
+    <p class="welcome-extra">Curious what you can ask? Browse the
+       <a href="/links/">frequently asked questions</a>.</p>
+    <p class="welcome-extra">Tip: you can add the Guide to your phone&rsquo;s
+       home screen so it opens like a regular app &mdash;
+       <a href="/install/">here&rsquo;s how</a>.</p>
+
+    <p class="welcome-fineprint">This is an unofficial, resident-created
+       resource. It is not affiliated with, sponsored by, or endorsed by the
+       Community Association or the developer.
+       <a href="/about/">More about this guide</a></p>
+</div>
+
+<div id="chat-view" hidden>
+    <header class="ask-header">
+        <h1 class="visually-hidden">Ask the Guide</h1>
+        <div class="ask-notice" id="ask-notice" data-open="true">
+            <button type="button" class="ask-notice-line" aria-expanded="true" aria-controls="ask-notice-body">
+                {% include icon.html name="info" class="ask-notice-icon" %}
+                <span>Unofficial resident-created guide</span>
+                {% include icon.html name="chevron-down" class="ask-notice-chevron" %}
+            </button>
+            <div class="ask-notice-body" id="ask-notice-body">
+                <div>
+                    <p>Residents sign in with their email address to use the Guide,
+                       and answers cite official community sources. This is an
+                       unofficial, resident-created resource &mdash; it is not
+                       affiliated with, sponsored by, or endorsed by the Community
+                       Association or the developer. Please verify important
+                       information with official sources.</p>
+                    <p><a href="/about/">More information about this guide</a></p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="guide-app" data-api-base="{{ site.chatbot.url }}"></div>
+
+    <footer class="ask-footer">
+        AI can make mistakes &mdash; please verify important information with the source
+        documents. Spot an error or omission? <a href="/contact/">Let us know</a>.
+    </footer>
+</div>
 
 <script>
 (function () {
+    /* -------- Landing vs chat.
+       New visitors get the welcome view; anyone who has reached the
+       signed-in chat on this device before (localStorage flag), or who
+       arrives with a ?q= question from the FAQ links, goes straight to
+       the chat view. The chat component initializes either way; the
+       moment it reaches its signed-in state we remember that and make
+       sure the chat view is showing (covers cleared storage, shared
+       links, etc.). */
+    var welcomeView = document.getElementById("welcome-view");
+    var chatView = document.getElementById("chat-view");
+    var KNOWN = "guide-known-resident";
+
+    function showChat() { welcomeView.hidden = true; chatView.hidden = false; }
+    function showWelcome() { welcomeView.hidden = false; chatView.hidden = true; }
+
+    var known = false;
+    try { known = !!localStorage.getItem(KNOWN); } catch (e) {}
+    if (known || new URLSearchParams(location.search).get("q")) {
+        showChat();
+    } else {
+        showWelcome();
+    }
+
+    document.getElementById("welcome-signin").addEventListener("click", function () {
+        if (window.umami) { window.umami.track("welcome-sign-in"); }
+        showChat();
+    });
+
+    var observer = new MutationObserver(function () {
+        var wrap = document.querySelector('[data-ga="chatWrap"]');
+        if (wrap && !wrap.classList.contains("ga-hidden")) {
+            try { localStorage.setItem(KNOWN, "1"); } catch (e) {}
+            showChat();
+            observer.disconnect();
+        }
+    });
+    observer.observe(document.getElementById("guide-app"),
+        { attributes: true, subtree: true, attributeFilter: ["class"] });
+
+    /* -------- Disclaimer notice (chat view). */
     var notice = document.getElementById("ask-notice");
     var line = notice.querySelector(".ask-notice-line");
 
@@ -60,8 +156,8 @@ description: "Ask the SCHH Community Guide — AI-supported answers about commun
     document.addEventListener("scroll", engage, { capture: true, passive: true });
     document.addEventListener("focusin", engage, true);
 
-    /* A ?q= parameter (links on the Topics page) is submitted into the
-       chat automatically. The chat component owns sign-in and history
+    /* A ?q= parameter (FAQ links) is submitted into the chat
+       automatically. The chat component owns sign-in and history
        loading, so wait until its chat panel is visible AND has rendered
        at least one bubble (greeting or history — by then the resident is
        signed in and the conversation id is settled), then submit through

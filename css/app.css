@@ -84,6 +84,8 @@ a:hover { color: var(--color-primary-strong); }
 img, svg { max-width: 100%; }
 .icon { width: 24px; height: 24px; flex: none; }
 
+[hidden] { display: none !important; }
+
 .skip-link {
   position: absolute; left: -9999px; top: 0; z-index: 100;
   background: var(--color-surface); color: var(--color-primary);
@@ -381,6 +383,43 @@ img, svg { max-width: 100%; }
 .app-fullscreen main {
   min-height: 0;
   display: flex; flex-direction: column;
+}
+/* The Ask page holds two swappable views; the chat one must preserve the
+   flex chain from <main> down to the message pane. */
+#chat-view {
+  display: flex; flex-direction: column;
+  flex: 1 1 auto; min-height: 0;
+}
+
+/* Welcome view for first-time (signed-out) visitors */
+.welcome {
+  max-width: 42em;
+  margin-inline: auto;
+  padding: var(--space-6) var(--space-4) var(--space-7);
+  text-align: center;
+}
+.welcome-icon {
+  width: 88px; height: 88px;
+  border-radius: 22%;
+  margin-bottom: var(--space-4);
+}
+.welcome h1 { font-size: var(--text-2xl); color: var(--color-primary); }
+.welcome-lede { font-size: var(--text-lg); color: var(--color-muted); }
+.welcome-points {
+  display: grid; gap: var(--space-4);
+  margin: var(--space-6) 0;
+  text-align: left;
+}
+.welcome-point { display: flex; gap: var(--space-4); align-items: flex-start; }
+.welcome-point .icon-badge { flex: none; }
+.welcome-point h2 { font-size: var(--text-lg); margin-bottom: var(--space-1); }
+.welcome-point p { margin: 0; }
+.welcome-extra { margin-top: var(--space-4); }
+.welcome-fineprint {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-line);
+  font-size: var(--text-sm); color: var(--color-muted);
 }
 /* Disclaimer notice: starts as a full panel, collapses into a one-line
    pill the first time the resident scrolls or starts typing (small script
