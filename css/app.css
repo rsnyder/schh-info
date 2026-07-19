@@ -282,6 +282,8 @@ img, svg { max-width: 100%; }
 .more-list-text { flex: 1; }
 .more-list-chevron { color: var(--color-muted); }
 
+#faq { scroll-margin-top: var(--space-4); }
+
 .faq-card h3 {
   display: flex; align-items: center; gap: var(--space-3);
   color: var(--color-primary);
