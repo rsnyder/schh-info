@@ -1,37 +1,157 @@
-# Quick Links page: the "Important links" section, grouped by category.
-# Categories and links render in file order.
+# Quick Links page — resident contact directory, grouped by category.
+# Rendered by links/index.html. Each entry: title (required), plus any of
+# phone, url, description. Phones render as tap-to-call links.
 #
-# Each category:
-#   category: display name
-#   icon:     name from _includes/icon.html
-#   links:    entries with fields:
-#     title       (required)
-#     url         website, opened in a new tab (optional)
-#     phone       shown as a tap-to-call link (optional)
-#     description short blurb (optional)
-#   Most entries will have both url and phone; either alone is fine.
-#
-# The FAQ section of the page comes from _data/features.yml. Entries
-# marked "Sample" are placeholders — replace them with real links.
+# Sources: SCHHCA "Contact Us", the SunSations Community Directory (July 2026),
+# and the community "Who to Call in an Emergency" sheet. External (county,
+# police, fire, utility) numbers were web-verified 2026-07-19 — worth a periodic
+# recheck, as agency lines change. Internal 843-705-xxxx numbers are the
+# Association's own published numbers.
 
-- category: "Official"
+- category: "Emergency & Safety"
+  icon: exclamation-triangle
+  links:
+    - title: "Emergency — Fire, Police, Medical"
+      phone: "911"
+      description: "Any life-threatening emergency, fire, or crime in progress."
+    - title: "Sun City Gate Security — non-emergency"
+      phone: "(843) 705-4083"
+      description: "Securitas: suspicious activity, vendor passes, and after-hours help."
+    - title: "Poison Control"
+      phone: "1-800-222-1222"
+      description: "Free, confidential poison-exposure help, 24/7."
+
+- category: "Sun City Community Association"
+  icon: home
+  links:
+    - title: "Resident Services"
+      phone: "(843) 705-4000"
+      url: "https://www.suncityhiltonhead.org"
+      description: "Main line at Palmetto Commons — general questions, activity cards, rules. Mon–Fri 8 a.m.–5 p.m. Email resident.services@schhca.com"
+    - title: "Billing & Statements"
+      phone: "(843) 705-4446"
+      description: "Assessment billing and account questions."
+    - title: "Modifications"
+      phone: "(843) 705-4000"
+      description: "Exterior home changes and ARB applications. Email modifications@schhca.com"
+    - title: "Report a covenant violation (Compliance)"
+      phone: "(843) 705-4000"
+      description: "Community-standards and compliance concerns."
+    - title: "Lifestyle Services"
+      phone: "(843) 705-4027"
+      description: "Events, clubs, tickets, and room reservations. Email reservations@schhca.com"
+    - title: "Communications"
+      phone: "(843) 705-4113"
+      description: "SunSations magazine and website content. Email communications@schhca.com"
+    - title: "Vehicle & golf-cart registration (RFID)"
+      phone: "(843) 705-4000"
+      description: "Decals and RFID gate tags. Email RFID@schhca.com to schedule installation."
+    - title: "Managed Neighborhoods"
+      phone: "(843) 705-4068"
+      description: "Villa and cottage exterior maintenance and work orders."
+    - title: "Board of Directors"
+      description: "Email the Board at board@schhbod.com."
+    - title: "Del Webb Customer Service — home warranty"
+      phone: "(843) 203-0360"
+      description: "Warranty service for newer homes. Email hiltonheadservice@delwebb.com"
+
+- category: "Gates & Guest Passes"
+  icon: lock
+  links:
+    - title: "Main Gate"
+      phone: "(843) 705-4035"
+    - title: "North Gate"
+      phone: "(843) 705-4688"
+    - title: "Riverbend Gate"
+      phone: "(843) 379-5528"
+    - title: "Sun City West Gate"
+      phone: "(843) 705-4043"
+
+- category: "Amenities & Recreation"
+  icon: heart
+  links:
+    - title: "Fitness — Breakwater Collective"
+      phone: "(854) 540-1924"
+    - title: "Fitness — Hidden Cypress"
+      phone: "(843) 705-4030"
+    - title: "Fitness — Lakehouse"
+      phone: "(843) 645-4515"
+    - title: "Fitness — Purrysburg"
+      phone: "(843) 705-4022"
+    - title: "Golf — Argent Lakes pro shop"
+      phone: "(843) 645-0507"
+    - title: "Golf — Hidden Cypress pro shop"
+      phone: "(843) 705-4999"
+    - title: "Golf — Okatie Creek pro shop"
+      phone: "(843) 705-4653"
+    - title: "Logo Building — tennis, pickleball & bocce reservations"
+      phone: "(843) 705-4034"
+    - title: "Boat/RV Facility"
+      phone: "(843) 705-3525"
+    - title: "The Book Exchange"
+      phone: "(843) 705-5402"
+
+- category: "Dining — on-site restaurants"
+  icon: shopping-bag
+  links:
+    - title: "AL's Pub at Argent Lakes"
+      phone: "(843) 548-7677"
+    - title: "The Brackish Bar & Lounge"
+      phone: "(854) 540-1003"
+    - title: "Jameson's Charhouse at Hidden Cypress"
+      phone: "(843) 705-8200"
+    - title: "The Clubhouse at Okatie Creek"
+      phone: "(843) 705-4005"
+
+- category: "Utilities"
+  icon: refresh
+  links:
+    - title: "Dominion Energy — gas leak / emergency"
+      phone: "1-800-815-0083"
+      url: "https://www.dominionenergy.com/south-carolina/report-outage-or-emergency"
+      description: "Smell gas? Leave the area first, then call from a safe place. Downed power lines: call 911."
+    - title: "Palmetto Electric — outages (PowerTouch)"
+      phone: "1-866-445-5551"
+      url: "https://www.palmetto.coop/report-power-outage"
+      description: "Report and check power outages. For downed wires, call 911."
+    - title: "Beaufort-Jasper Water & Sewer (BJWSA)"
+      phone: "(843) 987-9200"
+      url: "https://www.bjwsa.org"
+      description: "24/7 water and sewer emergency dispatch."
+
+- category: "Police, Fire & County Government"
   icon: shield
   links:
-    - title: "Sample link — replace me"
-      url: "https://example.com"
-      phone: "(843) 555-0100"
-      description: "Replace with real official links in _data/quicklinks.yml (Resident Central, the Association website, activity calendars, and so on). Entries can have a website, a phone number, or both."
-
-- category: "Local Area"
-  icon: map-marker
-  links:
+    - title: "Beaufort County Sheriff's Office — non-emergency"
+      phone: "(843) 524-2777"
+      description: "For the Beaufort County (Bluffton) side of Sun City."
+    - title: "Jasper County Sheriff — non-emergency"
+      phone: "(843) 726-7519"
+      description: "For the Jasper County (Hardeeville) side of Sun City; also Lift & Assist."
+    - title: "Hardeeville Police — non-emergency"
+      phone: "(843) 784-2233"
+      description: "After hours 843-784-6668 · anonymous tip line 1-800-446-1006."
+    - title: "SC Highway Patrol (Troop 6)"
+      phone: "(843) 661-4705"
+      description: "Report unsafe driving. From a cell phone, dial *HP (*47)."
+    - title: "Bluffton Township Fire District — non-emergency"
+      phone: "(843) 757-2800"
+      description: "Administration and non-emergency fire/EMS (incl. lift-assist)."
     - title: "Beaufort County Government"
+      phone: "(843) 255-9403"
       url: "https://www.beaufortcountysc.gov"
-      description: "County services, tax information, and public notices."
+      description: "County services, taxes, voter registration, and public notices."
+    - title: "Jasper County Government"
+      phone: "(843) 726-7700"
+      url: "https://www.jaspercountysc.gov"
+      description: "County services and public information."
 
-- category: "Weather & Emergencies"
+- category: "Weather & Storms"
   icon: exclamation-triangle
   links:
     - title: "National Hurricane Center"
       url: "https://www.nhc.noaa.gov"
       description: "Current tropical storm and hurricane forecasts from NOAA."
+    - title: "Beaufort County Emergency Management"
+      url: "https://www.beaufortcountysc.gov/emergency-management/index.html"
+      description: "Local evacuation info, alerts, and storm preparedness."
