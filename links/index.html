@@ -13,19 +13,27 @@ description: "Important community links and frequently asked questions — one t
 
     <section class="section-block">
         <h2>Important links</h2>
-        <ul class="link-list">
-            {% for link in site.data.quicklinks.links %}
-            <li>
-                <a href="{{ link.url }}" target="_blank" rel="noopener">
-                    <span class="icon-badge">{% include icon.html name="external-link" %}</span>
-                    <span class="link-list-text">
-                        <strong>{{ link.title }}</strong>
-                        {% if link.description %}<span>{{ link.description }}</span>{% endif %}
-                    </span>
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
+        {% for group in site.data.quicklinks %}
+        <div class="link-group">
+            <h3>
+                <span class="icon-badge">{% include icon.html name=group.icon %}</span>
+                <span>{{ group.category }}</span>
+            </h3>
+            <ul class="link-list">
+                {% for link in group.links %}
+                <li>
+                    <a href="{{ link.url }}" target="_blank" rel="noopener">
+                        <span class="icon-badge">{% include icon.html name="external-link" %}</span>
+                        <span class="link-list-text">
+                            <strong>{{ link.title }}</strong>
+                            {% if link.description %}<span>{{ link.description }}</span>{% endif %}
+                        </span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
     </section>
 
     <section class="section-block">

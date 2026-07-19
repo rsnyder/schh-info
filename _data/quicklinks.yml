@@ -1,19 +1,31 @@
-# Quick Links page: the "Important links" list, in display order.
-# Fields: title, url, description (optional). Opened in a new tab.
+# Quick Links page: the "Important links" section, grouped by category.
+# Categories and links render in file order.
 #
-# The FAQ section of the page comes from _data/features.yml (questions
-# grouped by topic). Entries below marked "Sample" are placeholders —
-# replace and reorder freely; the list renders in this order.
+# Each category:
+#   category: display name
+#   icon:     name from _includes/icon.html
+#   links:    list of {title, url, description (optional)} — open in a new tab
+#
+# The FAQ section of the page comes from _data/features.yml. Entries
+# marked "Sample" are placeholders — replace them with real links.
 
-links:
-  - title: "National Hurricane Center"
-    url: "https://www.nhc.noaa.gov"
-    description: "Current tropical storm and hurricane forecasts from NOAA."
+- category: "Official"
+  icon: shield
+  links:
+    - title: "Sample link — replace me"
+      url: "https://example.com"
+      description: "Replace with real official links in _data/quicklinks.yml (Resident Central, the Association website, activity calendars, and so on)."
 
-  - title: "Beaufort County Government"
-    url: "https://www.beaufortcountysc.gov"
-    description: "County services, tax information, and public notices."
+- category: "Local Area"
+  icon: map-marker
+  links:
+    - title: "Beaufort County Government"
+      url: "https://www.beaufortcountysc.gov"
+      description: "County services, tax information, and public notices."
 
-  - title: "Sample link — replace me"
-    url: "https://example.com"
-    description: "Replace these entries in _data/quicklinks.yml with real community links (Resident Central, activity calendars, and so on)."
+- category: "Weather & Emergencies"
+  icon: exclamation-triangle
+  links:
+    - title: "National Hurricane Center"
+      url: "https://www.nhc.noaa.gov"
+      description: "Current tropical storm and hurricane forecasts from NOAA."

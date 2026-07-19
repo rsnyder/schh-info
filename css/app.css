@@ -287,7 +287,15 @@ img, svg { max-width: 100%; }
 .faq-card h3 .icon-badge { flex: none; width: 40px; height: 40px; }
 .faq-card .card-questions { margin-top: var(--space-2); padding-top: 0; border-top: 0; }
 
-.link-list { list-style: none; margin: 0; padding: 0; max-width: 42em; margin-inline: auto; }
+.link-group { max-width: 42em; margin-inline: auto; }
+.link-group + .link-group { margin-top: var(--space-5); }
+.link-group h3 {
+  display: flex; align-items: center; gap: var(--space-3);
+  color: var(--color-primary);
+}
+.link-group h3 .icon-badge { flex: none; width: 40px; height: 40px; }
+
+.link-list { list-style: none; margin: 0; padding: 0; }
 .link-list li + li { margin-top: var(--space-3); }
 .link-list a {
   display: flex; align-items: flex-start; gap: var(--space-3);
