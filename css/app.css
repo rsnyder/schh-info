@@ -301,20 +301,25 @@ img, svg { max-width: 100%; }
 
 .link-list { list-style: none; margin: 0; padding: 0; }
 .link-list li + li { margin-top: var(--space-3); }
-.link-list a {
+.link-list li {
   display: flex; align-items: flex-start; gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
   background: var(--color-surface);
   border: 1px solid var(--color-line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  color: var(--color-ink); text-decoration: none;
 }
-.link-list a:hover { border-color: var(--color-primary); color: var(--color-ink); }
 .link-list .icon-badge { flex: none; width: 40px; height: 40px; }
-.link-list-text { display: block; }
-.link-list-text strong { color: var(--color-link); text-decoration: underline; text-underline-offset: 3px; }
-.link-list-text span { display: block; color: var(--color-muted); font-size: var(--text-sm); }
+.link-list-text { display: block; min-width: 0; }
+.link-list-text strong { color: var(--color-ink); }
+.link-list-text > span { display: block; color: var(--color-muted); font-size: var(--text-sm); }
+.link-list .link-contact {
+  color: inherit; font-size: 1rem; font-weight: 600;
+  margin-top: var(--space-1);
+}
+.link-contact a {
+  display: inline-flex; align-items: center; min-height: 32px;
+}
 
 .vendor-disclaimer { margin-bottom: var(--space-6); font-style: normal; }
 .vendor-badge {

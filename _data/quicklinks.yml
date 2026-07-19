@@ -4,7 +4,12 @@
 # Each category:
 #   category: display name
 #   icon:     name from _includes/icon.html
-#   links:    list of {title, url, description (optional)} — open in a new tab
+#   links:    entries with fields:
+#     title       (required)
+#     url         website, opened in a new tab (optional)
+#     phone       shown as a tap-to-call link (optional)
+#     description short blurb (optional)
+#   Most entries will have both url and phone; either alone is fine.
 #
 # The FAQ section of the page comes from _data/features.yml. Entries
 # marked "Sample" are placeholders — replace them with real links.
@@ -14,7 +19,8 @@
   links:
     - title: "Sample link — replace me"
       url: "https://example.com"
-      description: "Replace with real official links in _data/quicklinks.yml (Resident Central, the Association website, activity calendars, and so on)."
+      phone: "(843) 555-0100"
+      description: "Replace with real official links in _data/quicklinks.yml (Resident Central, the Association website, activity calendars, and so on). Entries can have a website, a phone number, or both."
 
 - category: "Local Area"
   icon: map-marker

@@ -22,13 +22,23 @@ description: "Important community links and frequently asked questions — one t
             <ul class="link-list">
                 {% for link in group.links %}
                 <li>
-                    <a href="{{ link.url }}" target="_blank" rel="noopener">
-                        <span class="icon-badge">{% include icon.html name="external-link" %}</span>
-                        <span class="link-list-text">
-                            <strong>{{ link.title }}</strong>
-                            {% if link.description %}<span>{{ link.description }}</span>{% endif %}
+                    <span class="icon-badge">
+                        {% if link.url %}{% include icon.html name="external-link" %}
+                        {% else %}{% include icon.html name="phone" %}{% endif %}
+                    </span>
+                    <span class="link-list-text">
+                        <strong>{{ link.title }}</strong>
+                        {% if link.description %}<span>{{ link.description }}</span>{% endif %}
+                        <span class="link-contact">
+                            {% if link.phone %}
+                            <a href="tel:{{ link.phone | remove: '(' | remove: ')' | remove: ' ' | remove: '-' }}">{{ link.phone }}</a>
+                            {% endif %}
+                            {% if link.phone and link.url %}<span class="vendor-sep">&middot;</span>{% endif %}
+                            {% if link.url %}
+                            <a href="{{ link.url }}" target="_blank" rel="noopener">Visit website</a>
+                            {% endif %}
                         </span>
-                    </a>
+                    </span>
                 </li>
                 {% endfor %}
             </ul>
