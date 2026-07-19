@@ -20,6 +20,9 @@
     - title: "Poison Control"
       phone: "1-800-222-1222"
       description: "Free, confidential poison-exposure help, 24/7."
+    - title: "AED Locations Map"
+      url: "https://www.google.com/maps/d/viewer?mid=1x0ON3ll3boO-naCum_4vDHgonx-IIWC4&ll=32.301469249269886%2C-80.99033342365341&z=14"
+      description: "Google map of every AED (automated external defibrillator) placed throughout the community."
 
 - category: "Sun City Community Association"
   icon: home
