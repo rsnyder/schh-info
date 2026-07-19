@@ -1,12 +1,9 @@
-# Quick Links page content.
+# Quick Links page: the "Important links" list, in display order.
+# Fields: title, url, description (optional). Opened in a new tab.
 #
-# links:   ordinary web links, opened in a new tab
-#          fields: title, url, description (optional)
-# prompts: commonly used questions — tapping one opens the chat page
-#          and submits the question automatically
-#
-# Entries marked "Sample" are placeholders — replace them with real
-# community links.
+# The FAQ section of the page comes from _data/features.yml (questions
+# grouped by topic). Entries below marked "Sample" are placeholders —
+# replace and reorder freely; the list renders in this order.
 
 links:
   - title: "National Hurricane Center"
@@ -20,10 +17,3 @@ links:
   - title: "Sample link — replace me"
     url: "https://example.com"
     description: "Replace these entries in _data/quicklinks.yml with real community links (Resident Central, activity calendars, and so on)."
-
-prompts:
-  - "What community events are coming up this week?"
-  - "What are the indoor pool hours?"
-  - "How do I submit a work order?"
-  - "How do I request a gate pass for a visitor?"
-  - "What did the latest Association announcement say?"

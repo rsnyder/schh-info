@@ -37,9 +37,6 @@ nav:
     - text: "Ask"
       url: "/"
       icon: "chat"
-    - text: "Topics"
-      url: "/topics/"
-      icon: "grid"
     - text: "Links"
       url: "/links/"
       icon: "link"
@@ -64,13 +61,6 @@ nav:
       short: "Install"
       url: "/install/"
       icon: "smartphone"
-
-# -----------------------------------------------
-# Topics page  (card content lives in _data/features.yml)
-# -----------------------------------------------
-features:
-  heading:    "What Can I Ask?"
-  subheading: "The guide covers the full breadth of community life."
 
 # -----------------------------------------------
 # About page  (long-form copy lives in _data/about.yml)

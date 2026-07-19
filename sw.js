@@ -14,7 +14,6 @@ const CACHE = "schh-guide-" + VERSION;
    release. */
 const PRECACHE = [
   "/",
-  "/topics/",
   "/about/",
   "/contact/",
   "/links/",

@@ -13,7 +13,7 @@ screens, all rendered by the single layout `_layouts/app.html`:
 | URL | Screen |
 |---|---|
 | `/` | Ask the Guide — chat client, fills the viewport |
-| `/topics/` | "What can I ask?" cards from `_data/features.yml` |
+| `/links/` | Important links (`_data/quicklinks.yml`) + FAQs by topic (`_data/features.yml`) |
 | `/about/` | Long-form about from `_data/about.yml` |
 | `/contact/` | Contact form (Netlify function endpoint) |
 | `/chat/` | Redirect stub to `/` (kept for old shared links) |
@@ -74,8 +74,8 @@ dashboard at the URL configured in `analytics.script`.
 
 ## Content editing
 
-- Topic cards: `_data/features.yml` · About copy: `_data/about.yml`
-- Quick Links (links + common prompts): `_data/quicklinks.yml`
+- FAQ topics/questions: `_data/features.yml` · About copy: `_data/about.yml`
+- Important links (ordered list): `_data/quicklinks.yml`
 - Vendor listings (categories → vendors): `_data/vendors.yml`
 - Icon names in the data files map to inline SVGs in `_includes/icon.html`
 - Site/nav/contact settings: `_config.yml`. The phone tab bar holds the

@@ -1,38 +1,19 @@
 ---
-layout: app
-slug: topics
-title: What Can I Ask?
+layout: null
+permalink: /topics/
 ---
-<div class="container">
-    <header class="page-header">
-        <h1>{{ site.features.heading }}</h1>
-        <p class="subheading">{{ site.features.subheading }}</p>
-    </header>
-
-    <div class="card-grid">
-        {% for card in site.data.features %}
-        <article class="card">
-            <span class="icon-badge">{% include icon.html name=card.icon %}</span>
-            <h3>{{ card.heading }}</h3>
-            {{ card.description | markdownify }}
-            {% if card.questions %}
-            <div class="card-questions">
-                <p class="card-questions-label">Try asking:</p>
-                <ul>
-                    {% for q in card.questions %}
-                    <li>
-                        <a href="/?q={{ q | cgi_escape }}">
-                            {% include icon.html name="chat" class="card-question-icon" %}
-                            <span>&ldquo;{{ q }}&rdquo;</span>
-                        </a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-        </article>
-        {% endfor %}
-    </div>
-
-    <a class="btn btn-block" href="/">{% include icon.html name="chat" %} Ask the Guide</a>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="0; url=/links/">
+    <link rel="canonical" href="{{ '/links/' | absolute_url }}">
+    <title>Quick Links &amp; FAQs | {{ site.title }}</title>
+    <script>location.replace("/links/");</script>
+</head>
+<body>
+    <p>This page has moved.
+       <a href="/links/">Continue to Quick Links &amp; FAQs</a></p>
+</body>
+</html>

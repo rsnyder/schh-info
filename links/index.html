@@ -1,18 +1,18 @@
 ---
 layout: app
 slug: links
-title: Quick Links
-description: "Handy community links and commonly asked questions, one tap away."
+title: Quick Links & FAQs
+description: "Important community links and frequently asked questions — one tap away."
 ---
-<div class="container prose">
+<div class="container">
     <header class="page-header">
         <h1>Quick Links</h1>
-        <p class="subheading">Handy destinations and common questions,
-           one tap away.</p>
+        <p class="subheading">Important links and frequently asked questions
+           &mdash; one tap away.</p>
     </header>
 
     <section class="section-block">
-        <h2>Handy links</h2>
+        <h2>Important links</h2>
         <ul class="link-list">
             {% for link in site.data.quicklinks.links %}
             <li>
@@ -29,19 +29,30 @@ description: "Handy community links and commonly asked questions, one tap away."
     </section>
 
     <section class="section-block">
-        <h2>Common questions</h2>
-        <p>Tap a question and the Guide will look it up for you.</p>
-        <div class="card-questions">
-            <ul>
-                {% for q in site.data.quicklinks.prompts %}
-                <li>
-                    <a href="/?q={{ q | cgi_escape }}">
-                        {% include icon.html name="chat" class="card-question-icon" %}
-                        <span>&ldquo;{{ q }}&rdquo;</span>
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
+        <h2>Frequently asked questions</h2>
+        <p class="text-center">Tap a question and the Guide will look it up for you.</p>
+        <div class="card-grid">
+            {% for topic in site.data.features %}
+            <article class="card faq-card">
+                <h3>
+                    <span class="icon-badge">{% include icon.html name=topic.icon %}</span>
+                    <span>{{ topic.heading }}</span>
+                </h3>
+                <div class="card-questions">
+                    <ul>
+                        {% for q in topic.questions %}
+                        <li>
+                            <a href="/?q={{ q | cgi_escape }}">
+                                {% include icon.html name="chat" class="card-question-icon" %}
+                                <span>&ldquo;{{ q }}&rdquo;</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </article>
+            {% endfor %}
         </div>
+        <a class="btn btn-block" href="/">{% include icon.html name="chat" %} Ask something else</a>
     </section>
 </div>
