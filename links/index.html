@@ -24,20 +24,26 @@ description: "Important community links and frequently asked questions — one t
                 <li>
                     <span class="icon-badge">
                         {% if link.url %}{% include icon.html name="external-link" %}
-                        {% else %}{% include icon.html name="phone" %}{% endif %}
+                        {% elsif link.phone %}{% include icon.html name="phone" %}
+                        {% elsif link.email %}{% include icon.html name="mail" %}
+                        {% else %}{% include icon.html name="map-marker" %}{% endif %}
                     </span>
                     <span class="link-list-text">
                         <strong>{{ link.title }}</strong>
                         {% if link.description %}<span>{{ link.description }}</span>{% endif %}
+                        {% if link.phone or link.email or link.url %}
                         <span class="link-contact">
-                            {% if link.phone %}
-                            <a href="tel:{{ link.phone | remove: '(' | remove: ')' | remove: ' ' | remove: '-' }}">{{ link.phone }}</a>
-                            {% endif %}
-                            {% if link.phone and link.url %}<span class="vendor-sep">&middot;</span>{% endif %}
-                            {% if link.url %}
-                            <a href="{{ link.url }}" target="_blank" rel="noopener">Visit website</a>
-                            {% endif %}
+                            {% if link.phone %}<a href="tel:{{ link.phone | remove: '(' | remove: ')' | remove: ' ' | remove: '-' }}">{{ link.phone }}</a>{% endif %}
+                            {% if link.email %}{% if link.phone %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="mailto:{{ link.email }}">{{ link.email }}</a>{% endif %}
+                            {% if link.url %}{% if link.phone or link.email %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="{{ link.url }}" target="_blank" rel="noopener">Visit website</a>{% endif %}
                         </span>
+                        {% endif %}
+                        {% if link.address %}
+                        <span class="link-address">
+                            {% include icon.html name="map-marker" class="link-address-icon" %}
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ link.address | url_encode }}" target="_blank" rel="noopener">{{ link.address }}</a>
+                        </span>
+                        {% endif %}
                     </span>
                 </li>
                 {% endfor %}

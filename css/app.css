@@ -320,6 +320,13 @@ img, svg { max-width: 100%; }
 .link-contact a {
   display: inline-flex; align-items: center; min-height: 32px;
 }
+.link-address {
+  display: flex; align-items: flex-start; gap: var(--space-1);
+  margin-top: var(--space-1); font-size: var(--text-sm);
+}
+.link-address-icon {
+  width: 16px; height: 16px; flex: none; margin-top: 2px; color: var(--color-muted);
+}
 
 .vendor-disclaimer { margin-bottom: var(--space-6); font-style: normal; }
 .vendor-badge {

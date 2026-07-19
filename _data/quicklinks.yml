@@ -1,6 +1,10 @@
 # Quick Links page — resident contact directory, grouped by category.
-# Rendered by links/index.html. Each entry: title (required), plus any of
-# phone, url, description. Phones render as tap-to-call links.
+# Rendered by links/index.html. Each entry: title (required), plus any of:
+#   phone     tap-to-call link
+#   email     tap-to-email (mailto) link
+#   url        website, opens in a new tab
+#   address    shown as a Google Maps link
+#   description short blurb
 #
 # Sources: SCHHCA "Contact Us", the SunSations Community Directory (July 2026),
 # and the community "Who to Call in an Emergency" sheet. External (county,
@@ -29,82 +33,109 @@
   links:
     - title: "Resident Services"
       phone: "(843) 705-4000"
+      email: "resident.services@schhca.com"
       url: "https://www.suncityhiltonhead.org"
-      description: "Main line at Palmetto Commons — general questions, activity cards, rules. Mon–Fri 8 a.m.–5 p.m. Email resident.services@schhca.com"
+      address: "Palmetto Commons, 127 Sun City Lane, Okatie, SC 29909"
+      description: "Main line — general questions, activity cards, rules. Mon–Fri 8 a.m.–5 p.m."
     - title: "Billing & Statements"
       phone: "(843) 705-4446"
       description: "Assessment billing and account questions."
     - title: "Modifications"
       phone: "(843) 705-4000"
-      description: "Exterior home changes and ARB applications. Email modifications@schhca.com"
+      email: "modifications@schhca.com"
+      description: "Exterior home changes and ARB applications."
     - title: "Report a covenant violation (Compliance)"
       phone: "(843) 705-4000"
       description: "Community-standards and compliance concerns."
     - title: "Lifestyle Services"
       phone: "(843) 705-4027"
-      description: "Events, clubs, tickets, and room reservations. Email reservations@schhca.com"
+      email: "reservations@schhca.com"
+      description: "Events, clubs, tickets, and room reservations."
     - title: "Communications"
       phone: "(843) 705-4113"
-      description: "SunSations magazine and website content. Email communications@schhca.com"
+      email: "communications@schhca.com"
+      description: "SunSations magazine and website content."
     - title: "Vehicle & golf-cart registration (RFID)"
       phone: "(843) 705-4000"
-      description: "Decals and RFID gate tags. Email RFID@schhca.com to schedule installation."
+      email: "RFID@schhca.com"
+      address: "Palmetto Commons, 127 Sun City Lane, Okatie, SC 29909"
+      description: "Decals and RFID gate tags. Email to schedule installation (Mon–Fri 8–11 a.m.)."
     - title: "Managed Neighborhoods"
       phone: "(843) 705-4068"
       description: "Villa and cottage exterior maintenance and work orders."
     - title: "Board of Directors"
-      description: "Email the Board at board@schhbod.com."
+      email: "board@schhbod.com"
+      description: "Elected and developer-appointed directors."
     - title: "Del Webb Customer Service — home warranty"
       phone: "(843) 203-0360"
-      description: "Warranty service for newer homes. Email hiltonheadservice@delwebb.com"
+      email: "hiltonheadservice@delwebb.com"
+      description: "Warranty service for newer homes."
 
 - category: "Gates & Guest Passes"
   icon: lock
   links:
     - title: "Main Gate"
       phone: "(843) 705-4035"
+      address: "1 Sun City Blvd, Okatie, SC 29909"
     - title: "North Gate"
       phone: "(843) 705-4688"
+      address: "401 West Fording Island Road, Okatie, SC 29909"
     - title: "Riverbend Gate"
       phone: "(843) 379-5528"
+      address: "1 Tidewatch Drive, Okatie, SC 29909"
     - title: "Sun City West Gate"
       phone: "(843) 705-4043"
+      address: "434 Sundance Drive, Okatie, SC 29909"
 
 - category: "Amenities & Recreation"
   icon: heart
   links:
     - title: "Fitness — Breakwater Collective"
       phone: "(854) 540-1924"
+      description: "Sun City West amenity center."
     - title: "Fitness — Hidden Cypress"
       phone: "(843) 705-4030"
+      address: "673 Cypress Hills Drive, Okatie, SC 29909"
     - title: "Fitness — Lakehouse"
       phone: "(843) 645-4515"
+      address: "1251 Sgt. William Jasper Blvd, Okatie, SC 29909"
     - title: "Fitness — Purrysburg"
       phone: "(843) 705-4022"
+      address: "122 Del Webb Blvd, Okatie, SC 29909"
     - title: "Golf — Argent Lakes pro shop"
       phone: "(843) 645-0507"
+      address: "1251 Sgt. William Jasper Blvd, Okatie, SC 29909"
     - title: "Golf — Hidden Cypress pro shop"
       phone: "(843) 705-4999"
+      address: "672 Cypress Hills Drive, Okatie, SC 29909"
     - title: "Golf — Okatie Creek pro shop"
       phone: "(843) 705-4653"
+      address: "60 Sun City Club Lane, Okatie, SC 29909"
     - title: "Logo Building — tennis, pickleball & bocce reservations"
       phone: "(843) 705-4034"
+      address: "124 Del Webb Blvd, Okatie, SC 29909"
     - title: "Boat/RV Facility"
       phone: "(843) 705-3525"
+      address: "25 Okatie Maintenance Yard Road, Okatie, SC 29909"
     - title: "The Book Exchange"
       phone: "(843) 705-5402"
+      address: "Palmetto Commons, 127 Sun City Lane, Okatie, SC 29909"
 
 - category: "Dining — on-site restaurants"
   icon: shopping-bag
   links:
     - title: "AL's Pub at Argent Lakes"
       phone: "(843) 548-7677"
+      address: "1291 Sgt. William Jasper Blvd, Okatie, SC 29909"
     - title: "The Brackish Bar & Lounge"
       phone: "(854) 540-1003"
+      address: "1190 Sundance Drive, Okatie, SC 29909"
     - title: "Jameson's Charhouse at Hidden Cypress"
       phone: "(843) 705-8200"
+      address: "672 Cypress Hills Drive, Okatie, SC 29909"
     - title: "The Clubhouse at Okatie Creek"
       phone: "(843) 705-4005"
+      address: "60 Sun City Club Lane, Okatie, SC 29909"
 
 - category: "Utilities"
   icon: refresh
