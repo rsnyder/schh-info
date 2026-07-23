@@ -14,10 +14,12 @@ title: Contact
         contact@schh.info via ZeptoMail). Set contact.endpoint in _config.yml.
     -->
     <form action="{{ site.contact.endpoint }}" method="POST">
-        <!-- honeypot: hidden from humans; bots that fill it are dropped -->
+        <!-- honeypot: hidden from humans; bots that fill it are dropped. The name
+             must stay something browser autofill does not recognise (never
+             "company"/"organization") or real submissions get silently dropped. -->
         <div style="position:absolute; left:-9999px;" aria-hidden="true">
             <label>Leave this field empty
-                <input type="text" name="company" tabindex="-1" autocomplete="off">
+                <input type="text" name="schh_hp" tabindex="-1" autocomplete="off">
             </label>
         </div>
 
