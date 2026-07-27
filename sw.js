@@ -54,9 +54,11 @@ self.addEventListener("fetch", event => {
 
   if (req.mode === "navigate") {
     /* Pages: network-first so content updates show up immediately;
-       fall back to cache, then the offline page. */
+       fall back to cache, then the offline page. "no-cache" bypasses the
+       HTTP cache (GitHub Pages sends max-age=600) and revalidates via
+       ETag, so a deploy shows up on the very next load. */
     event.respondWith(
-      fetch(req)
+      fetch(req, { cache: "no-cache" })
         .then(res => {
           const copy = res.clone();
           caches.open(CACHE).then(cache => cache.put(req, copy));
