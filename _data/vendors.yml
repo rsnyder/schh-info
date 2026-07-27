@@ -6,33 +6,14 @@
 #     name        (required)
 #     resident    true = resident-owned business (shows a badge)
 #     description short blurb of services offered
-#     phone       business phone, shown as a tap-to-call link
+#     phone       business phone, shown as a tap-to-call link (optional)
+#     email       business email, shown as a tap-to-email link (optional)
 #     website     business website (optional)
-#
-# Everything below is SAMPLE DATA — replace with the real curated list.
 
-- category: "Home Services (samples — replace)"
+- category: "Technology & Computer Help"
   vendors:
-    - name: "Sample Handyman Services"
+    - name: "Spartina Technical Services"
       resident: true
-      description: "Example entry. Replace with a real vendor in _data/vendors.yml — small repairs, painting, fixture installation."
-      phone: "(843) 555-0101"
-      website: "https://example.com"
-
-    - name: "Sample Heating & Air"
-      resident: false
-      description: "Example entry. HVAC maintenance, repair, and replacement."
-      phone: "(843) 555-0102"
-
-- category: "Lawn & Landscaping (samples — replace)"
-  vendors:
-    - name: "Sample Lawn Care"
-      resident: true
-      description: "Example entry. Mowing, trimming, seasonal cleanup."
-      phone: "(843) 555-0103"
-
-    - name: "Sample Landscape Design"
-      resident: false
-      description: "Example entry. Planting beds, irrigation adjustments, hardscaping."
-      phone: "(843) 555-0104"
-      website: "https://example.com"
+      description: "Mac setup and troubleshooting, home Wi-Fi and printer help, photo and document scanning, simple one-page websites, and one-on-one AI tools training. Serves SCHH and nearby Bluffton communities."
+      email: "contact@spartina.io"
+      website: "https://services.spartina.io"

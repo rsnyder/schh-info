@@ -31,14 +31,9 @@ description: "A curated list of local vendors and services, including resident-o
                 </h3>
                 {% if v.description %}<p>{{ v.description }}</p>{% endif %}
                 <p class="vendor-contact">
-                    {% if v.phone %}
-                    <a href="tel:{{ v.phone | remove: '(' | remove: ')' | remove: ' ' | remove: '-' }}">
-                        {{ v.phone }}</a>
-                    {% endif %}
-                    {% if v.phone and v.website %}<span class="vendor-sep">&middot;</span>{% endif %}
-                    {% if v.website %}
-                    <a href="{{ v.website }}" target="_blank" rel="noopener">Website</a>
-                    {% endif %}
+                    {% if v.phone %}<a href="tel:{{ v.phone | remove: '(' | remove: ')' | remove: ' ' | remove: '-' }}">{{ v.phone }}</a>{% endif %}
+                    {% if v.email %}{% if v.phone %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="mailto:{{ v.email }}">{{ v.email }}</a>{% endif %}
+                    {% if v.website %}{% if v.phone or v.email %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="{{ v.website }}" target="_blank" rel="noopener">Website</a>{% endif %}
                 </p>
             </article>
             {% endfor %}
