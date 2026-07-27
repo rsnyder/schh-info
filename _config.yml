@@ -61,6 +61,14 @@ nav:
       short: "Install"
       url: "/install/"
       icon: "smartphone"
+    # Lives on chat.schh.info, outside the PWA scope, so it is marked
+    # external — the templates open those in a browser tab rather than
+    # replacing the installed app's window, which has no back button.
+    - text: "Recent Updates"
+      short: "Updates"
+      url: "https://chat.schh.info/sources/updates.html"
+      icon: "refresh"
+      external: true
 
 # -----------------------------------------------
 # About page  (long-form copy lives in _data/about.yml)

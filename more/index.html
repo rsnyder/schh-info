@@ -12,10 +12,15 @@ description: "More pages from the SCHH Community Guide."
     <ul class="more-list">
         {% for link in site.nav.more %}
         <li>
-            <a href="{{ link.url }}">
+            <a href="{{ link.url }}"{% if link.external %} target="_blank" rel="noopener"{% endif %}>
                 <span class="icon-badge">{% include icon.html name=link.icon %}</span>
                 <span class="more-list-text">{{ link.text }}</span>
+                {% if link.external %}
+                {% include icon.html name="external-link" class="more-list-chevron" %}
+                <span class="visually-hidden">(opens in a new tab)</span>
+                {% else %}
                 {% include icon.html name="chevron-right" class="more-list-chevron" %}
+                {% endif %}
             </a>
         </li>
         {% endfor %}
