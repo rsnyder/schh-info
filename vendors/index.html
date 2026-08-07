@@ -17,6 +17,56 @@ description: "A curated list of local vendors and services, including resident-o
        unless specifically stated. Residents should use their own judgment
        when hiring vendors or using local services.</p>
 
+    <section class="section-block" id="featured-providers" hidden>
+        <h2 class="section-heading">
+            <span class="icon-badge">{% include icon.html name="star" %}</span>
+            <span>Featured Providers</span>
+        </h2>
+        <div class="card-grid" id="featured-cards"></div>
+        <p class="callout vendor-disclaimer">Featured placements are sponsored
+           listings drawn from the resident-recommended vendor list.</p>
+    </section>
+    <script>
+    (function () {
+        "use strict";
+        function esc(s) {
+            return String(s || "").replace(/[&<>"']/g, function (c) {
+                return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c];
+            });
+        }
+        function contact(v) {
+            var parts = [];
+            if (v.phone) parts.push('<a href="tel:' + esc(String(v.phone).replace(/\D/g, "")) + '">' + esc(v.phone) + "</a>");
+            if (v.email) parts.push('<a href="mailto:' + esc(v.email) + '">' + esc(v.email) + "</a>");
+            if (v.website) {
+                var url = /^https?:/.test(v.website) ? v.website : "https://" + v.website;
+                parts.push('<a href="' + esc(url) + '" target="_blank" rel="noopener">Website</a>');
+            }
+            return parts.join('<span class="vendor-sep">&middot;</span>');
+        }
+        fetch("https://chat.schh.info/api/vendors/featured")
+            .then(function (r) { return r.ok ? r.json() : {vendors: []}; })
+            .then(function (data) {
+                var vendors = (data && data.vendors) || [];
+                if (!vendors.length) return;  // section stays hidden
+                var grid = document.getElementById("featured-cards");
+                grid.innerHTML = vendors.map(function (v) {
+                    return '<article class="card vendor-card">'
+                        + "<h3>" + esc(v.name)
+                        + (v.resident ? '<span class="vendor-badge">Resident-owned</span>' : "")
+                        + "</h3>"
+                        + (v.service_category ? "<p><strong>" + esc(v.service_category) + "</strong>"
+                            + (v.area ? " &mdash; " + esc(v.area) : "") + "</p>" : "")
+                        + (v.notes ? "<p>" + esc(v.notes) + "</p>" : "")
+                        + '<p class="vendor-contact">' + contact(v) + "</p>"
+                        + "</article>";
+                }).join("");
+                document.getElementById("featured-providers").hidden = false;
+            })
+            .catch(function () { /* section stays hidden */ });
+    })();
+    </script>
+
     {% for group in site.data.vendors %}
     <section class="section-block">
         <h2 class="section-heading">
