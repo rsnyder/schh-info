@@ -160,7 +160,9 @@
   // minimal safe markdown: escape first, then links/bold/headings/tables/lists
   function render(md) {
     let h = md.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    h = h.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,
+    // Scheme allowlist, not a free-for-all: web links open a tab; tel:
+    // and mailto: hand off to the phone/mail app (vendor answers emit them).
+    h = h.replace(/\[([^\]]+)\]\(((?:https?:|tel:|mailto:)[^)\s]+)\)/g,
       '<a href="$2" target="_blank" rel="noopener">$1</a>');
     h = h.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
     h = renderTables(h);
