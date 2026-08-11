@@ -23,7 +23,8 @@ description: "Important community links and frequently asked questions — one t
                 {% for link in group.links %}
                 <li>
                     <span class="icon-badge">
-                        {% if link.url %}{% include icon.html name="external-link" %}
+                        {% if link.page %}{% include icon.html name="map-marker" %}
+                        {% elsif link.url %}{% include icon.html name="external-link" %}
                         {% elsif link.phone %}{% include icon.html name="phone" %}
                         {% elsif link.email %}{% include icon.html name="mail" %}
                         {% else %}{% include icon.html name="map-marker" %}{% endif %}
@@ -31,11 +32,13 @@ description: "Important community links and frequently asked questions — one t
                     <span class="link-list-text">
                         <strong>{{ link.title }}</strong>
                         {% if link.description %}<span>{{ link.description }}</span>{% endif %}
-                        {% if link.phone or link.email or link.url %}
+                        {% if link.phone or link.email or link.url or link.page %}
                         <span class="link-contact">
                             {% if link.phone %}<a href="tel:{{ link.phone | remove: '(' | remove: ')' | remove: ' ' | remove: '-' }}">{{ link.phone }}</a>{% endif %}
                             {% if link.email %}{% if link.phone %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="mailto:{{ link.email }}">{{ link.email }}</a>{% endif %}
                             {% if link.url %}{% if link.phone or link.email %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="{{ link.url }}" target="_blank" rel="noopener">Visit website</a>{% endif %}
+                            {%- comment -%} page = same-site path (e.g. /map/): stays in this tab / the installed app {%- endcomment -%}
+                            {% if link.page %}{% if link.phone or link.email or link.url %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="{{ link.page }}">Open</a>{% endif %}
                         </span>
                         {% endif %}
                         {% if link.address %}

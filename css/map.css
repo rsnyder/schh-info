@@ -1,0 +1,97 @@
+/* Community map page (/map/) — loaded only when a page sets `map: true`.
+   The map fills the fullscreen main; the category chip bar doubles as
+   the legend. Pin styles cover the custom AdvancedMarkerElement content
+   built in js/map.js. */
+
+.map-page {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column;
+}
+
+.map-controls {
+  flex: none;
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border, #e3ded2);
+}
+#chips {
+  flex: 1; display: flex; gap: var(--space-1);
+  overflow-x: auto; scrollbar-width: thin;
+  padding-bottom: 2px;
+}
+.map-chip {
+  flex: none; display: inline-flex; align-items: center; gap: 6px;
+  font: inherit; font-size: var(--text-sm, .85rem);
+  padding: 5px 12px; cursor: pointer;
+  border: 1px solid var(--color-border, #cfcdc6); border-radius: 999px;
+  background: var(--color-surface); color: inherit;
+}
+.map-chip .dot { width: .65em; height: .65em; border-radius: 50%; display: inline-block; }
+.map-chip .count { color: var(--color-muted, #888); font-size: .9em; }
+.map-chip.off { opacity: .45; background: var(--color-primary-tint, #f1efe9); }
+.map-side {
+  flex: none; display: flex; flex-direction: column; gap: 2px;
+  align-items: flex-start; font-size: var(--text-sm, .8rem);
+}
+.map-side button {
+  font: inherit; background: none; border: 0;
+  color: var(--color-link); cursor: pointer; padding: 0;
+}
+.map-side label {
+  display: flex; align-items: center; gap: 5px;
+  color: var(--color-muted, #555); white-space: nowrap; cursor: pointer;
+}
+
+#map { flex: 1; min-height: 0; }
+
+#notice {
+  position: absolute; inset: auto 0 0 0;
+  margin: 0 auto calc(var(--tabbar-h, 64px) + var(--space-5));
+  max-width: 26rem;
+  background: var(--color-surface); border: 1px solid #e2b3ae;
+  border-radius: 10px; padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm, .9rem); line-height: 1.45;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .15);
+}
+#notice.hidden { display: none; }
+
+/* Marker pins: colored circle + glyph, expanding to a detail card on
+   click. --accent is set per-marker from the feature's marker-color. */
+.pin {
+  --accent: #c62828;
+  position: relative; display: flex; align-items: center; gap: .6rem;
+  background: var(--accent); width: 30px; height: 30px; border-radius: 50%;
+  justify-content: center; padding: 4px; transform: translateY(-9px);
+  transition: all .2s ease-out; box-shadow: 0 1px 4px rgba(0, 0, 0, .35);
+  cursor: pointer;
+}
+.pin::after {
+  content: ""; position: absolute; top: 92%; left: 50%;
+  transform: translate(-50%, 0); width: 0; height: 0;
+  border-left: 8px solid transparent; border-right: 8px solid transparent;
+  border-top: 9px solid var(--accent); transition: all .2s ease-out;
+}
+.pin .glyph { font-size: 16px; line-height: 1; }
+.pin .details { display: none; flex-direction: column; gap: 2px; min-width: 0; }
+.pin.expanded {
+  background: var(--color-surface); border-radius: 9px;
+  width: auto; height: auto; padding: .6rem .8rem; z-index: 10;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .3);
+}
+.pin.expanded::after { border-top-color: var(--color-surface); }
+.pin.expanded .glyph { font-size: 1.7em; }
+.pin.expanded .details { display: flex; }
+.pin .title { font-weight: 700; font-size: .9rem; white-space: nowrap; }
+.pin .category {
+  color: var(--accent); font-size: .72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .03em;
+}
+.pin .description { color: var(--color-muted, #555); font-size: .8rem; max-width: 16rem; }
+.pin .link { font-size: .8rem; white-space: nowrap; }
+.pin .link a { color: var(--color-link); text-decoration: none; }
+
+@media (max-width: 639px) {
+  .map-side { flex-direction: row; gap: var(--space-3); }
+  .map-controls { flex-wrap: wrap; }
+}

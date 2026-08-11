@@ -1,0 +1,22 @@
+---
+layout: app
+slug: map
+title: Community Map
+description: "Interactive map of Sun City amenities — pools, golf, gates, dog parks, dining, and more."
+fullscreen: true
+map: true
+---
+<div class="map-page">
+    <div class="map-controls">
+        <div id="chips" role="group" aria-label="Filter by category"></div>
+        <div class="map-side">
+            <span>
+                <button type="button" id="all-btn">All</button> &middot;
+                <button type="button" id="none-btn">None</button>
+            </span>
+            <label><input type="checkbox" id="boundary-toggle" checked> Boundary</label>
+        </div>
+    </div>
+    <div id="map"></div>
+    <div id="notice" class="hidden"></div>
+</div>
