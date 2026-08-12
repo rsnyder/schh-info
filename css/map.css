@@ -56,6 +56,26 @@
 }
 #notice.hidden { display: none; }
 
+/* "Show my location" toggle, pushed into the map's bottom-right corner
+   controls. .active while the geolocation watch is running. */
+.locate-btn {
+  width: 40px; height: 40px; margin: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--color-surface); color: var(--color-muted, #555);
+  border: 0; border-radius: 8px; cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+}
+.locate-btn.active { color: #1a73e8; }
+
+/* The visitor's blue dot. AdvancedMarkerElement anchors content at its
+   bottom center; the translate re-centers the dot on the position. */
+.user-dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #1a73e8; border: 3px solid #fff;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, .4), 0 1px 4px rgba(0, 0, 0, .3);
+  transform: translateY(50%);
+}
+
 /* Marker pins: colored circle + glyph, expanding to a detail card on
    click. --accent is set per-marker from the feature's marker-color. */
 .pin {

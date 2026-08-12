@@ -36,6 +36,9 @@ const state = {
   categories: new Map(),   // name -> {color, glyph, markers: [], on: bool}
   expanded: null,          // currently expanded marker content element
   boundary: null,          // google.maps.Data layer
+  watchId: null,           // geolocation watch while "my location" is on
+  userMarker: null,        // blue-dot AdvancedMarkerElement
+  userCircle: null,        // accuracy circle around the dot
 };
 
 function notice(html) {
@@ -187,6 +190,88 @@ function buildControls() {
   });
 }
 
+/* --- user location -------------------------------------------------- */
+
+/* A "show my location" toggle in the map's corner: on → a blue dot (plus
+ * accuracy circle) follows the visitor via watchPosition; off → cleared.
+ * Requires the standard browser permission prompt; HTTPS-only API. */
+function addLocateControl() {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "locate-btn";
+  btn.title = "Show my location";
+  btn.setAttribute("aria-label", "Show my location");
+  btn.innerHTML =
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="2" stroke-linecap="round" aria-hidden="true">' +
+    '<line x1="2" x2="5" y1="12" y2="12"/><line x1="19" x2="22" y1="12" y2="12"/>' +
+    '<line x1="12" x2="12" y1="2" y2="5"/><line x1="12" x2="12" y1="19" y2="22"/>' +
+    '<circle cx="12" cy="12" r="7"/></svg>';
+  btn.addEventListener("click", () =>
+    state.watchId === null ? startLocate(btn) : stopLocate(btn));
+  state.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(btn);
+}
+
+let noticeTimer = null;
+function transientNotice(html) {
+  notice(html);
+  clearTimeout(noticeTimer);
+  noticeTimer = setTimeout(() => notice(""), 6000);
+}
+
+async function startLocate(btn) {
+  if (!("geolocation" in navigator)) {
+    transientNotice("This browser doesn't support location.");
+    return;
+  }
+  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+  btn.classList.add("active");
+  let firstFix = true;
+  state.watchId = navigator.geolocation.watchPosition(
+    (pos) => {
+      const p = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      if (!state.userMarker) {
+        const dot = document.createElement("div");
+        dot.className = "user-dot";
+        state.userMarker = new AdvancedMarkerElement({
+          map: state.map, position: p, content: dot,
+          title: "Your location", zIndex: 20,
+        });
+        state.userCircle = new google.maps.Circle({
+          map: state.map, center: p, radius: pos.coords.accuracy,
+          fillColor: "#1a73e8", fillOpacity: 0.12,
+          strokeColor: "#1a73e8", strokeOpacity: 0.3, strokeWeight: 1,
+          clickable: false,
+        });
+      } else {
+        state.userMarker.position = p;
+        state.userCircle.setCenter(p);
+        state.userCircle.setRadius(pos.coords.accuracy);
+      }
+      if (firstFix) {
+        firstFix = false;
+        state.map.panTo(p);
+        if (state.map.getZoom() < 14) state.map.setZoom(15);
+      }
+    },
+    (err) => {
+      stopLocate(btn);
+      transientNotice(err.code === 1
+        ? "Location permission was denied. Allow location access for this " +
+          "site in your browser settings to see yourself on the map."
+        : "Couldn't determine your location — please try again.");
+    },
+    { enableHighAccuracy: true, maximumAge: 10000, timeout: 20000 });
+}
+
+function stopLocate(btn) {
+  if (state.watchId !== null) navigator.geolocation.clearWatch(state.watchId);
+  state.watchId = null;
+  if (state.userMarker) { state.userMarker.map = null; state.userMarker = null; }
+  if (state.userCircle) { state.userCircle.setMap(null); state.userCircle = null; }
+  btn.classList.remove("active");
+}
+
 /* ?category=Pool or ?category=pools,gates reproduces the old themed
  * pages (pools/gates/…) as links into this one. Trailing "s" tolerated. */
 function applyUrlFilter() {
@@ -243,6 +328,7 @@ window.gm_authFailure = () => {
     addBoundary(boundary);
     await addAmenities(amenities);
     buildControls();
+    addLocateControl();
     applyUrlFilter();
   } catch (error) {
     console.error("Error initializing map:", error);
