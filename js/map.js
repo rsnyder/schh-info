@@ -13,8 +13,12 @@
 const MAPS_API_KEY = "AIzaSyDBejEEEQsERva2YklfOU4iWjgRBVdsOc8";  // referrer-restricted browser key
 const MAP_ID = "DEMO_MAP_ID";       // replace with a real Map ID to customize styling
 const CENTER = { lat: 32.304481, lng: -80.9572716 };
-const AMENITIES_URL = "/geojson/Amenity_Locations.geojson?v=1";
-const BOUNDARY_URL = "/geojson/Sun_City,_Hilton_Head.geojson?v=1";
+/* Data layers come straight from the guide repo's reference/ dir,
+ * served by the droplet with CORS for this origin (see
+ * docs/community_map.md there) — edits to the canonical GeoJSON are
+ * live here within the endpoint's five-minute cache, no copies. */
+const AMENITIES_URL = "https://chat.schh.info/geojson/Amenity_Locations.geojson";
+const BOUNDARY_URL = "https://chat.schh.info/geojson/Sun_City,_Hilton_Head.geojson";
 
 /* The GeoJSON's marker-symbol values are Font Awesome icon names (the old
  * site loaded FA); this app is dependency-free, so map them to glyphs. */
