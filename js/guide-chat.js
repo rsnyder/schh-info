@@ -26,7 +26,28 @@
       <input type="email" id="ga-email" autocomplete="email" required>
       <button class="ga-btn" data-ga="sendCode">Send code</button>
       <p class="ga-note">You will not need to create or remember a password.</p>
+      <p class="ga-note">Not receiving a code?
+        <button class="ga-linkish" data-ga="showAccessFromLogin">Request access</button></p>
       <p class="ga-error" data-ga="loginError" role="alert"></p>
+    </section>
+
+    <section class="ga-card ga-hidden" data-ga="access">
+      <h2>Request access</h2>
+      <p data-ga="accessIntro">If your entry in the resident directory is set to private
+         (or uses a different email), we can&rsquo;t verify you automatically.
+         Send a request and a community volunteer will review it &mdash;
+         you&rsquo;ll be able to sign in once it&rsquo;s approved.</p>
+      <div data-ga="accessForm">
+        <label for="ga-acc-email">Email address</label>
+        <input type="email" id="ga-acc-email" autocomplete="email" required>
+        <label for="ga-acc-name">Your name</label>
+        <input type="text" id="ga-acc-name" autocomplete="name" maxlength="100" required>
+        <label for="ga-acc-note">Street address (optional &mdash; helps confirm residency)</label>
+        <input type="text" id="ga-acc-note" autocomplete="street-address" maxlength="300">
+        <button class="ga-btn" data-ga="sendAccess">Send request</button>
+      </div>
+      <p class="ga-note"><button class="ga-linkish" data-ga="accessBack">Back to sign-in</button></p>
+      <p class="ga-error" data-ga="accessError" role="alert"></p>
     </section>
 
     <section class="ga-card ga-hidden" data-ga="otp">
@@ -42,6 +63,8 @@
         &nbsp;&middot;&nbsp;
         <button class="ga-linkish" data-ga="changeEmail">Use a different email</button>
       </p>
+      <p class="ga-note">No code after a few minutes? Check your spam folder, or
+        <button class="ga-linkish" data-ga="showAccessFromOtp">request access</button>.</p>
       <p class="ga-error" data-ga="otpError" role="alert"></p>
     </section>
 
@@ -78,6 +101,7 @@
   function show(screen) {
     el.login.classList.toggle("ga-hidden", screen !== "login");
     el.otp.classList.toggle("ga-hidden", screen !== "otp");
+    el.access.classList.toggle("ga-hidden", screen !== "access");
     el.chatWrap.classList.toggle("ga-hidden", screen !== "chat");
     // history is loaded separately (enterChat); only greet here when we
     // arrive at an empty panel through a path that doesn't load history
@@ -343,6 +367,45 @@
   });
 
   el.changeEmail.addEventListener("click", () => show("login"));
+
+  // ---------------------------------------------------- request access
+  const accEmail = root.querySelector("#ga-acc-email");
+  const accName = root.querySelector("#ga-acc-name");
+  const accNote = root.querySelector("#ga-acc-note");
+
+  function openAccess(prefill) {
+    el.accessError.textContent = "";
+    if (prefill && !accEmail.value) accEmail.value = prefill;
+    show("access");
+    (accEmail.value ? accName : accEmail).focus();
+  }
+  el.showAccessFromLogin.addEventListener("click", () => openAccess(emailInput.value.trim()));
+  el.showAccessFromOtp.addEventListener("click", () => openAccess(pendingEmail));
+  el.accessBack.addEventListener("click", () => show("login"));
+
+  el.sendAccess.addEventListener("click", async () => {
+    el.accessError.textContent = "";
+    const email = accEmail.value.trim();
+    const name = accName.value.trim();
+    if (!email) { el.accessError.textContent = "Enter your email address."; return; }
+    if (!name) { el.accessError.textContent = "Enter your name."; return; }
+    el.sendAccess.disabled = true;
+    try {
+      const response = await api("/api/auth/request-access",
+        { method: "POST", body: JSON.stringify({ email, name, note: accNote.value.trim() }) });
+      if (response.ok) {
+        el.accessIntro.textContent = "Request received! It will be reviewed shortly "
+          + "— you’ll get an email when your access is approved. "
+          + "Then come back here and sign in with your email address.";
+        el.accessForm.classList.add("ga-hidden");
+      } else {
+        const body = await response.json().catch(() => ({}));
+        el.accessError.textContent = (body.error && body.error.message)
+          || "Something went wrong. Try again.";
+      }
+    } catch { el.accessError.textContent = "Something went wrong. Try again."; }
+    el.sendAccess.disabled = false;
+  });
 
   el.verify.addEventListener("click", async () => {
     el.otpError.textContent = "";

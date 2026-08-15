@@ -46,6 +46,7 @@
 }
 #guide-app .ga-card p { color: var(--ga-muted); }
 #guide-app label { display: block; font-size: .9em; margin-bottom: .3em; }
+#guide-app input + label { margin-top: 1em; }
 #guide-app input[type=email], #guide-app input[type=text] {
   width: 100%; padding: .6em; font-size: 1em;
   border: 1px solid var(--ga-line); border-radius: 6px;
