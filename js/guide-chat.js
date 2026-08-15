@@ -72,7 +72,23 @@
       <div class="ga-toolbar">
         <button class="ga-linkish" data-ga="newConvo">Clear conversation</button>
         <span class="ga-toolbar-sep">&middot;</span>
+        <button class="ga-linkish" data-ga="inviteOpen">Invite a fellow resident</button>
+        <span class="ga-toolbar-sep">&middot;</span>
         <button class="ga-linkish" data-ga="logout">Sign out</button>
+      </div>
+      <div class="ga-invite ga-hidden" data-ga="invitePanel">
+        <p data-ga="inviteIntro">Know a resident who can&rsquo;t sign in
+           (a private directory entry, for example)? Vouch for them here and
+           they&rsquo;ll be able to sign in right away.</p>
+        <div data-ga="inviteForm">
+          <label for="ga-inv-email">Their email address</label>
+          <input type="email" id="ga-inv-email" autocomplete="off">
+          <label for="ga-inv-name">Their name (optional)</label>
+          <input type="text" id="ga-inv-name" autocomplete="off" maxlength="100">
+          <button class="ga-btn" data-ga="inviteSend">Invite</button>
+        </div>
+        <p class="ga-note"><button class="ga-linkish" data-ga="inviteClose">Close</button></p>
+        <p class="ga-error" data-ga="inviteError" role="alert"></p>
       </div>
       <div class="ga-messages" data-ga="messages" aria-live="polite"></div>
       <form class="ga-composer" data-ga="composer">
@@ -432,6 +448,44 @@
   });
 
   el.newConvo.addEventListener("click", clearConversation);
+
+  // ---------------------------------------------------------- invitations
+  const invEmail = root.querySelector("#ga-inv-email");
+  const invName = root.querySelector("#ga-inv-name");
+  const INVITE_INTRO = el.inviteIntro.innerHTML;
+
+  el.inviteOpen.addEventListener("click", () => {
+    el.inviteIntro.innerHTML = INVITE_INTRO;
+    el.inviteForm.classList.remove("ga-hidden");
+    el.inviteError.textContent = "";
+    invEmail.value = ""; invName.value = "";
+    el.invitePanel.classList.toggle("ga-hidden");
+    if (!el.invitePanel.classList.contains("ga-hidden")) invEmail.focus();
+  });
+  el.inviteClose.addEventListener("click", () => el.invitePanel.classList.add("ga-hidden"));
+
+  el.inviteSend.addEventListener("click", async () => {
+    el.inviteError.textContent = "";
+    const email = invEmail.value.trim();
+    if (!email) { el.inviteError.textContent = "Enter their email address."; return; }
+    el.inviteSend.disabled = true;
+    try {
+      const response = await api("/api/auth/invite",
+        { method: "POST", body: JSON.stringify({ email, name: invName.value.trim() }) });
+      if (response.ok) {
+        el.inviteIntro.textContent = "Done! Tell them to visit chat.schh.info and sign in "
+          + "with that email address — a sign-in code will be emailed to them.";
+        el.inviteForm.classList.add("ga-hidden");
+      } else if (response.status === 401) {
+        show("login");
+      } else {
+        const body = await response.json().catch(() => ({}));
+        el.inviteError.textContent = (body.error && body.error.message)
+          || "Something went wrong. Try again.";
+      }
+    } catch { el.inviteError.textContent = "Something went wrong. Try again."; }
+    el.inviteSend.disabled = false;
+  });
 
   el.logout.addEventListener("click", async () => {
     await api("/api/auth/logout", { method: "POST" });
