@@ -43,6 +43,7 @@ description: "A curated list of local vendors and services, including resident-o
             <p class="cat-back-line"><a href="#" id="cat-back">&larr; All categories</a></p>
             <h3 class="cat-title" id="cat-title"></h3>
             <div class="card-grid" id="cat-cards"></div>
+            <div id="nearby"></div>
         </div>
     </section>
 
@@ -106,6 +107,61 @@ description: "A curated list of local vendors and services, including resident-o
         $("cat-grid").hidden = false;
         $("browse-heading").scrollIntoView({block: "nearest"});
     }
+    var nearbyResults = {};  // slug -> rendered HTML for this visit
+
+    function webCard(v) {
+        var meta = [];
+        if (v.rating) meta.push("&#9733; " + esc(v.rating) + (v.review_count ? " (" + v.review_count + " reviews)" : ""));
+        if (v.address) meta.push(esc(v.address));
+        var links = [];
+        if (v.phone) links.push('<a href="tel:' + esc(String(v.phone).replace(/\D/g, "")) + '">' + esc(prettyPhone(v.phone)) + "</a>");
+        if (v.website) links.push('<a href="' + esc(v.website) + '" target="_blank" rel="noopener">Website</a>');
+        if (v.maps_url) links.push('<a href="' + esc(v.maps_url) + '" target="_blank" rel="noopener">Map</a>');
+        return '<article class="card vendor-card vendor-card-web">'
+            + "<h3>" + esc(v.name) + "</h3>"
+            + (meta.length ? "<p>" + meta.join("<br>") + "</p>" : "")
+            + '<p class="vendor-contact">' + links.join('<span class="vendor-sep">&middot;</span>') + "</p>"
+            + "</article>";
+    }
+
+    function nearbyResultsHtml(name, body) {
+        var list = (body && body.vendors) || [];
+        if (!body || body.available === false || !list.length) {
+            return '<p class="hint">No web results available right now.</p>';
+        }
+        return '<div class="card-grid">' + list.map(webCard).join("") + "</div>"
+            + (body.cached === "stale" ? '<p class="hint">These results may be a little out of date.</p>' : "")
+            + '<p class="hint">From a Google search of the area &mdash; not resident-recommended. '
+            + 'Hired one and had a great experience? '
+            + '<a href="https://chat.schh.info/recommend-vendor.html">Recommend them</a>.</p>';
+    }
+
+    function renderNearby(slug) {
+        var group = groups[slug];
+        var box = $("nearby");
+        if (nearbyResults[slug]) { box.innerHTML = nearbyResults[slug]; return; }
+        box.innerHTML = '<div class="nearby-offer">'
+            + '<h4>More options nearby</h4>'
+            + '<p class="hint">Search the wider area with Google &mdash; results are not resident-recommended.</p>'
+            + '<button type="button" id="nearby-go" class="nearby-btn">Search the web for '
+            + esc(group.name) + "</button></div>";
+        document.getElementById("nearby-go").addEventListener("click", function () {
+            this.disabled = true;
+            this.textContent = "Searching…";
+            fetch("https://chat.schh.info/api/vendors/nearby?category=" + encodeURIComponent(group.name))
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (body) {
+                    nearbyResults[slug] = '<div class="nearby-offer"><h4>More options nearby</h4>'
+                        + nearbyResultsHtml(group.name, body) + "</div>";
+                    box.innerHTML = nearbyResults[slug];
+                })
+                .catch(function () {
+                    box.innerHTML = '<div class="nearby-offer"><h4>More options nearby</h4>'
+                        + '<p class="hint">No web results available right now.</p></div>';
+                });
+        });
+    }
+
     function renderCategory(slug) {
         var group = groups[slug];
         if (!group) { renderGrid(); return; }
@@ -114,6 +170,7 @@ description: "A curated list of local vendors and services, including resident-o
         $("cat-cards").innerHTML = group.vendors.map(function (v) {
             return vendorCard(v, false);
         }).join("");
+        renderNearby(slug);
         $("cat-view").hidden = false;
         $("browse-heading").scrollIntoView({block: "nearest"});
     }

@@ -358,6 +358,19 @@ img, svg { max-width: 100%; }
 .cat-card .cat-name { font-weight: 700; }
 .cat-card .cat-count { color: var(--color-muted); font-size: .88em; }
 .cat-back-line { margin-bottom: var(--space-3); }
+.nearby-offer {
+  border-top: 1px dashed var(--color-line);
+  margin-top: var(--space-5); padding-top: var(--space-4);
+}
+.nearby-offer h4 { margin-bottom: .3rem; }
+.nearby-btn {
+  padding: .6rem 1.2rem; font: inherit; font-weight: 600; cursor: pointer;
+  background: var(--color-surface); color: var(--color-primary);
+  border: 1px solid var(--color-primary); border-radius: var(--radius);
+  margin-top: var(--space-2);
+}
+.nearby-btn[disabled] { opacity: .6; cursor: default; }
+.vendor-card-web { border-style: dashed; box-shadow: none; }
 .cat-title { font-size: var(--text-xl); margin-bottom: var(--space-3); }
 .vendor-recs { color: var(--color-muted); font-size: .9em; }
 .vendor-contact { font-weight: 600; overflow-wrap: anywhere; }
