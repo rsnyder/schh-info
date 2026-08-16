@@ -169,6 +169,10 @@ img, svg { max-width: 100%; }
   grid-template-columns: 1fr;
   margin-bottom: var(--space-6);
 }
+/* grid items default to min-width:auto, so one unbreakable string (a long
+   vendor email) widens the track past the viewport → page scrolls sideways
+   on phones. Let content shrink instead. */
+.card-grid > * { min-width: 0; }
 @media (min-width: 640px)  { .card-grid { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 1024px) { .card-grid { grid-template-columns: 1fr 1fr 1fr; } }
 
@@ -336,7 +340,10 @@ img, svg { max-width: 100%; }
   border-radius: 999px;
   font-size: 13px; font-weight: 600; white-space: nowrap;
 }
-.vendor-contact { font-weight: 600; }
+.vendor-contact { font-weight: 600; overflow-wrap: anywhere; }
+/* each contact wraps to a new line as a unit; only a link that is itself
+   wider than the card ever breaks mid-string (overflow-wrap above) */
+.vendor-contact a { display: inline-block; }
 .vendor-sep { color: var(--color-muted); margin-inline: var(--space-1); }
 
 /* --------------------------------------------------------- install page */
