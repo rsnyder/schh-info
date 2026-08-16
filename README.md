@@ -65,12 +65,21 @@ service worker's network-first navigations make rollbacks safe.
 
 ## Analytics
 
-Self-hosted [Umami](https://umami.is) (cookieless, no consent banner needed).
+[Umami](https://umami.is) (cookieless, no consent banner needed), currently
+on **Umami Cloud** — dashboard at <https://cloud.umami.is> (sign in with the
+Umami account; the site id is `analytics.website_id` in `_config.yml`).
+Self-hosting alongside the chat BFF remains an option later: point
+`analytics.script` at the self-hosted instance and nothing else changes.
+
 The snippet in `_includes/head.html` is emitted only when
 `analytics.website_id` is set in `_config.yml` — blank disables tracking
 entirely. The Ask page also counts a `question-submitted` event (count only,
-never the question text). The Umami server runs alongside the chat BFF;
-dashboard at the URL configured in `analytics.script`.
+never the question text).
+
+This covers the public site only. Chat usage lives in the Dify console
+(dify-admin.schh.info → Monitoring) and per-resident detail in the BFF's
+SQLite on the droplet — see "Usage & monitoring" in the
+schh-community-guide repo's `docs/production_deployment.md`.
 
 ## Content editing
 
