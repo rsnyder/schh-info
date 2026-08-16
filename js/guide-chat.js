@@ -75,6 +75,12 @@
       </p>
       <p class="ga-note">No code after a few minutes? Check your spam folder, or
         <button class="ga-linkish" data-ga="showAccessFromOtp">request access</button>.</p>
+      <div class="ga-nudge ga-hidden" data-ga="stuckNudge" role="alert">
+        <p><strong>Still no code?</strong> If your entry in the resident directory
+           is set to private, a code can&rsquo;t be sent to you. You can get
+           verified another way &mdash; it takes about a minute.</p>
+        <button class="ga-btn" data-ga="nudgeAccess">Get verified another way</button>
+      </div>
       <p class="ga-error" data-ga="otpError" role="alert"></p>
     </section>
 
@@ -117,6 +123,22 @@
   let pendingEmail = "";
   let firstName = "";
   let timer = null;
+  let nudgeTimer = null;
+  let resendCount = 0;
+
+  // The "still no code?" nudge is a CLIENT-SIDE timer shown to everyone on
+  // the code screen after 75s — verified residents have long since entered
+  // their code, so in practice only stuck (directory-invisible) users see
+  // it, without the server ever revealing eligibility (spec §25.5).
+  function armNudge() {
+    clearTimeout(nudgeTimer);
+    el.stuckNudge.classList.add("ga-hidden");
+    nudgeTimer = setTimeout(() => el.stuckNudge.classList.remove("ga-hidden"), 75000);
+  }
+  function disarmNudge() {
+    clearTimeout(nudgeTimer);
+    el.stuckNudge.classList.add("ga-hidden");
+  }
 
   function greet() {
     const hello = firstName ? `Welcome, ${firstName}!` : "Welcome!";
@@ -363,7 +385,8 @@
       pendingEmail = email;
       el.maskedEmail.textContent = email.replace(/^(.).*(@.*)$/, "$1***$2");
       codeInput.value = "";
-      show("otp"); codeInput.focus(); startCountdown();
+      resendCount = 0;
+      show("otp"); codeInput.focus(); startCountdown(); armNudge();
     } catch { el.loginError.textContent = "Something went wrong. Try again."; }
     el.sendCode.disabled = false;
   });
@@ -390,9 +413,14 @@
     el.resend.innerHTML = 'Resend code (<span data-ga="countdown">60</span>s)';
     el.countdown = el.resend.querySelector("[data-ga=countdown]");
     startCountdown();
+    // a second resend is the clearest stuck-user signal — nudge immediately
+    if (++resendCount >= 2) {
+      clearTimeout(nudgeTimer);
+      el.stuckNudge.classList.remove("ga-hidden");
+    }
   });
 
-  el.changeEmail.addEventListener("click", () => show("login"));
+  el.changeEmail.addEventListener("click", () => { disarmNudge(); show("login"); });
 
   // ---------------------------------------------------- request access
   const accEmail = root.querySelector("#ga-acc-email");
@@ -426,7 +454,8 @@
     loadChallenge();
   }
   el.showAccessFromLogin.addEventListener("click", () => openAccess(emailInput.value.trim()));
-  el.showAccessFromOtp.addEventListener("click", () => openAccess(pendingEmail));
+  el.showAccessFromOtp.addEventListener("click", () => { disarmNudge(); openAccess(pendingEmail); });
+  el.nudgeAccess.addEventListener("click", () => { disarmNudge(); openAccess(pendingEmail); });
   el.accessBack.addEventListener("click", () => show("login"));
 
   el.sendAccess.addEventListener("click", async () => {
@@ -475,6 +504,7 @@
     if (response.ok) {
       const body = await response.json().catch(() => ({}));
       firstName = (body.user && body.user.firstName) || "";
+      disarmNudge();
       enterChat();
     } else {
       const body = await response.json().catch(() => ({}));
