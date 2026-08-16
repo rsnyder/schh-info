@@ -26,70 +26,25 @@ description: "A curated list of local vendors and services, including resident-o
         <p class="callout vendor-disclaimer">Featured placements are sponsored
            listings drawn from the resident-recommended vendor list.</p>
     </section>
-    <script>
-    (function () {
-        "use strict";
-        function esc(s) {
-            return String(s || "").replace(/[&<>"']/g, function (c) {
-                return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c];
-            });
-        }
-        function contact(v) {
-            var parts = [];
-            if (v.phone) parts.push('<a href="tel:' + esc(String(v.phone).replace(/\D/g, "")) + '">' + esc(v.phone) + "</a>");
-            if (v.email) parts.push('<a href="mailto:' + esc(v.email) + '">' + esc(v.email) + "</a>");
-            if (v.website) {
-                var url = /^https?:/.test(v.website) ? v.website : "https://" + v.website;
-                parts.push('<a href="' + esc(url) + '" target="_blank" rel="noopener">Website</a>');
-            }
-            return parts.join('<span class="vendor-sep">&middot;</span>');
-        }
-        fetch("https://chat.schh.info/api/vendors/featured")
-            .then(function (r) { return r.ok ? r.json() : {vendors: []}; })
-            .then(function (data) {
-                var vendors = (data && data.vendors) || [];
-                if (!vendors.length) return;  // section stays hidden
-                var grid = document.getElementById("featured-cards");
-                grid.innerHTML = vendors.map(function (v) {
-                    return '<article class="card vendor-card">'
-                        + "<h3>" + esc(v.name)
-                        + (v.resident ? '<span class="vendor-badge">Resident-owned</span>' : "")
-                        + "</h3>"
-                        + (v.service_category ? "<p><strong>" + esc(v.service_category) + "</strong>"
-                            + (v.area ? " &mdash; " + esc(v.area) : "") + "</p>" : "")
-                        + (v.notes ? "<p>" + esc(v.notes) + "</p>" : "")
-                        + '<p class="vendor-contact">' + contact(v) + "</p>"
-                        + "</article>";
-                }).join("");
-                document.getElementById("featured-providers").hidden = false;
-            })
-            .catch(function () { /* section stays hidden */ });
-    })();
-    </script>
 
-    {% for group in site.data.vendors %}
-    <section class="section-block">
-        <h2 class="section-heading">
+    <section class="section-block" id="browse">
+        <h2 class="section-heading" id="browse-heading">
             <span class="icon-badge">{% include icon.html name="shopping-bag" %}</span>
-            <span>{{ group.category }}</span>
+            <span>Browse by Category</span>
         </h2>
-        <div class="card-grid">
-            {% for v in group.vendors %}
-            <article class="card vendor-card">
-                <h3>{{ v.name }}
-                    {% if v.resident %}<span class="vendor-badge">Resident-owned</span>{% endif %}
-                </h3>
-                {% if v.description %}<p>{{ v.description }}</p>{% endif %}
-                <p class="vendor-contact">
-                    {% if v.phone %}<a href="tel:{{ v.phone | remove: '(' | remove: ')' | remove: ' ' | remove: '-' }}">{{ v.phone }}</a>{% endif %}
-                    {% if v.email %}{% if v.phone %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="mailto:{{ v.email }}">{{ v.email }}</a>{% endif %}
-                    {% if v.website %}{% if v.phone or v.email %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="{{ v.website }}" target="_blank" rel="noopener">Website</a>{% endif %}
-                </p>
-            </article>
-            {% endfor %}
+        <p id="vendors-loading">Loading the vendor list&hellip;</p>
+        <p id="vendors-error" class="callout" hidden>The vendor list couldn&rsquo;t be
+           loaded right now &mdash; please try again in a few minutes, or
+           <a href="/contact/">let us know</a> if it keeps happening.</p>
+
+        <div id="cat-grid" class="cat-grid" hidden></div>
+
+        <div id="cat-view" hidden>
+            <p class="cat-back-line"><a href="#" id="cat-back">&larr; All categories</a></p>
+            <h3 class="cat-title" id="cat-title"></h3>
+            <div class="card-grid" id="cat-cards"></div>
         </div>
     </section>
-    {% endfor %}
 
     <p>Used a great local vendor? <a
        href="https://chat.schh.info/recommend-vendor.html">Recommend them to
@@ -99,3 +54,120 @@ description: "A curated list of local vendors and services, including resident-o
        listed here that shouldn&rsquo;t be?
        <a href="/contact/">Let us know</a>.</p>
 </div>
+
+<script>
+(function () {
+    "use strict";
+    var $ = function (id) { return document.getElementById(id); };
+
+    function esc(s) {
+        return String(s || "").replace(/[&<>"']/g, function (c) {
+            return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c];
+        });
+    }
+    function prettyPhone(p) {
+        var d = String(p || "").replace(/\D/g, "");
+        return d.length === 10 ? "(" + d.slice(0, 3) + ") " + d.slice(3, 6) + "-" + d.slice(6) : p;
+    }
+    function contact(v) {
+        var parts = [];
+        if (v.phone) parts.push('<a href="tel:' + esc(String(v.phone).replace(/\D/g, "")) + '">' + esc(prettyPhone(v.phone)) + "</a>");
+        if (v.email) parts.push('<a href="mailto:' + esc(v.email) + '">' + esc(v.email) + "</a>");
+        if (v.website) {
+            var url = /^https?:/.test(v.website) ? v.website : "https://" + v.website;
+            parts.push('<a href="' + esc(url) + '" target="_blank" rel="noopener">Website</a>');
+        }
+        return parts.join('<span class="vendor-sep">&middot;</span>');
+    }
+    function vendorCard(v, showCategory) {
+        return '<article class="card vendor-card">'
+            + "<h3>" + esc(v.name)
+            + (v.resident ? '<span class="vendor-badge">Resident-owned</span>' : "")
+            + "</h3>"
+            + (showCategory && v.service_category
+                ? "<p><strong>" + esc(v.service_category) + "</strong>"
+                  + (v.area ? " &mdash; " + esc(v.area) : "") + "</p>"
+                : (v.area ? "<p>" + esc(v.area) + "</p>" : ""))
+            + (v.notes ? "<p>" + esc(v.notes) + "</p>" : "")
+            + (v.recommendations >= 2
+                ? '<p class="vendor-recs">Recommended by ' + v.recommendations + " residents</p>" : "")
+            + '<p class="vendor-contact">' + contact(v) + "</p>"
+            + "</article>";
+    }
+
+    var slugOf = function (name) {
+        return String(name).toLowerCase().replace(/&amp;|&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    };
+    var groups = {};   // slug -> {name, vendors: []}
+    var order = [];    // slugs, alphabetical with Other last
+
+    function renderGrid() {
+        $("cat-view").hidden = true;
+        $("cat-grid").hidden = false;
+        $("browse-heading").scrollIntoView({block: "nearest"});
+    }
+    function renderCategory(slug) {
+        var group = groups[slug];
+        if (!group) { renderGrid(); return; }
+        $("cat-grid").hidden = true;
+        $("cat-title").textContent = group.name + " (" + group.vendors.length + ")";
+        $("cat-cards").innerHTML = group.vendors.map(function (v) {
+            return vendorCard(v, false);
+        }).join("");
+        $("cat-view").hidden = false;
+        $("browse-heading").scrollIntoView({block: "nearest"});
+    }
+    function route() {
+        var slug = location.hash.replace(/^#/, "");
+        if (slug && groups[slug]) renderCategory(slug); else renderGrid();
+    }
+
+    fetch("https://chat.schh.info/api/vendors")
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (data) {
+            var vendors = (data && data.vendors) || [];
+            $("vendors-loading").hidden = true;
+            if (!vendors.length) { $("vendors-error").hidden = false; return; }
+
+            var featured = vendors.filter(function (v) { return v.featured; });
+            if (featured.length) {
+                $("featured-cards").innerHTML = featured.map(function (v) {
+                    return vendorCard(v, true);
+                }).join("");
+                $("featured-providers").hidden = false;
+            }
+
+            vendors.forEach(function (v) {
+                var name = v.service_category || "Other";
+                var slug = slugOf(name);
+                if (!groups[slug]) { groups[slug] = {name: name, vendors: []}; order.push(slug); }
+                groups[slug].vendors.push(v);
+            });
+            order.sort(function (a, b) {
+                if (a === "other") return 1;
+                if (b === "other") return -1;
+                return groups[a].name.localeCompare(groups[b].name);
+            });
+
+            $("cat-grid").innerHTML = order.map(function (slug) {
+                var g = groups[slug];
+                return '<a class="cat-card" href="#' + esc(slug) + '">'
+                    + '<span class="cat-name">' + esc(g.name) + "</span>"
+                    + '<span class="cat-count">' + g.vendors.length
+                    + (g.vendors.length === 1 ? " vendor" : " vendors") + "</span></a>";
+            }).join("");
+
+            $("cat-back").addEventListener("click", function (e) {
+                e.preventDefault();
+                history.pushState(null, "", location.pathname);
+                renderGrid();
+            });
+            window.addEventListener("hashchange", route);
+            route();
+        })
+        .catch(function () {
+            $("vendors-loading").hidden = true;
+            $("vendors-error").hidden = false;
+        });
+})();
+</script>

@@ -340,6 +340,26 @@ img, svg { max-width: 100%; }
   border-radius: 999px;
   font-size: 13px; font-weight: 600; white-space: nowrap;
 }
+.cat-grid {
+  display: grid; gap: var(--space-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: var(--space-6);
+}
+@media (min-width: 640px)  { .cat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .cat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.cat-card {
+  display: flex; flex-direction: column; gap: .25rem;
+  background: var(--color-surface); border: 1px solid var(--color-line);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: var(--space-3) var(--space-4);
+  text-decoration: none; color: inherit;
+}
+.cat-card:hover, .cat-card:focus-visible { border-color: var(--color-primary); }
+.cat-card .cat-name { font-weight: 700; }
+.cat-card .cat-count { color: var(--color-muted); font-size: .88em; }
+.cat-back-line { margin-bottom: var(--space-3); }
+.cat-title { font-size: var(--text-xl); margin-bottom: var(--space-3); }
+.vendor-recs { color: var(--color-muted); font-size: .9em; }
 .vendor-contact { font-weight: 600; overflow-wrap: anywhere; }
 /* each contact wraps to a new line as a unit; only a link that is itself
    wider than the card ever breaks mid-string (overflow-wrap above) */

@@ -85,7 +85,8 @@ schh-community-guide repo's `docs/production_deployment.md`.
 
 - FAQ topics/questions: `_data/features.yml` · About copy: `_data/about.yml`
 - Important links (ordered list): `_data/quicklinks.yml`
-- Vendor listings (categories → vendors): `_data/vendors.yml`
+- Vendor listings: live from the vendor sheet via `chat.schh.info/api/vendors`
+  (edit the sheet + run the admin ingest; `_data/vendors.yml` was retired 2026-08-16)
 - Icon names in the data files map to inline SVGs in `_includes/icon.html`
 - Site/nav/contact settings: `_config.yml`. The phone tab bar holds the
   five `nav.links` entries (hard cap); additional destinations go under
