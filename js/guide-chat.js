@@ -44,6 +44,15 @@
         <input type="text" id="ga-acc-name" autocomplete="name" maxlength="100" required>
         <label for="ga-acc-note">Street address (optional &mdash; helps confirm residency)</label>
         <input type="text" id="ga-acc-note" autocomplete="street-address" maxlength="300">
+        <div class="ga-challenge ga-hidden" data-ga="challengeWrap">
+          <p><strong>Skip the wait (optional):</strong> if you can sign in to
+             <a data-ga="challengeLink" href="#" target="_blank" rel="noopener">the community
+             website&rsquo;s Forms page</a>, find the form listed directly below
+             &ldquo;<strong data-ga="challengeAnchor"></strong>&rdquo; and enter its
+             name here &mdash; you&rsquo;ll be verified instantly.</p>
+          <label for="ga-acc-challenge">Form name</label>
+          <input type="text" id="ga-acc-challenge" autocomplete="off" maxlength="150">
+        </div>
         <button class="ga-btn" data-ga="sendAccess">Send request</button>
       </div>
       <p class="ga-note"><button class="ga-linkish" data-ga="accessBack">Back to sign-in</button></p>
@@ -389,11 +398,31 @@
   const accName = root.querySelector("#ga-acc-name");
   const accNote = root.querySelector("#ga-acc-note");
 
+  const accChallenge = root.querySelector("#ga-acc-challenge");
+  let challengeId = null;
+
+  async function loadChallenge() {
+    challengeId = null;
+    accChallenge.value = "";
+    el.challengeWrap.classList.add("ga-hidden");
+    try {
+      const r = await api("/api/auth/challenge", { method: "GET" });
+      if (!r.ok) return;
+      const d = await r.json();
+      if (!d.available) return;
+      challengeId = d.challengeId;
+      el.challengeAnchor.textContent = d.anchor;
+      el.challengeLink.href = d.url;
+      el.challengeWrap.classList.remove("ga-hidden");
+    } catch { /* challenge stays hidden; manual path still works */ }
+  }
+
   function openAccess(prefill) {
     el.accessError.textContent = "";
     if (prefill && !accEmail.value) accEmail.value = prefill;
     show("access");
     (accEmail.value ? accName : accEmail).focus();
+    loadChallenge();
   }
   el.showAccessFromLogin.addEventListener("click", () => openAccess(emailInput.value.trim()));
   el.showAccessFromOtp.addEventListener("click", () => openAccess(pendingEmail));
@@ -407,12 +436,21 @@
     if (!name) { el.accessError.textContent = "Enter your name."; return; }
     el.sendAccess.disabled = true;
     try {
+      const payload = { email, name, note: accNote.value.trim() };
+      if (challengeId && accChallenge.value.trim()) {
+        payload.challengeId = challengeId;
+        payload.challengeAnswer = accChallenge.value.trim();
+      }
       const response = await api("/api/auth/request-access",
-        { method: "POST", body: JSON.stringify({ email, name, note: accNote.value.trim() }) });
+        { method: "POST", body: JSON.stringify(payload) });
       if (response.ok) {
-        el.accessIntro.textContent = "Request received! It will be reviewed shortly "
-          + "— you’ll get an email when your access is approved. "
-          + "Then come back here and sign in with your email address.";
+        const body = await response.json().catch(() => ({}));
+        el.accessIntro.textContent = body.verified
+          ? "You're verified! Go back to sign-in and enter your email address "
+            + "— a sign-in code will be emailed to you."
+          : (body.message || "Request received! It will be reviewed shortly "
+            + "— you’ll get an email when your access is approved. "
+            + "Then come back here and sign in with your email address.");
         el.accessForm.classList.add("ga-hidden");
       } else {
         const body = await response.json().catch(() => ({}));

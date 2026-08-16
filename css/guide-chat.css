@@ -64,6 +64,11 @@
   text-decoration: underline; padding: 0; font-size: .9em;
 }
 #guide-app .ga-note { font-size: .95em; color: var(--ga-muted); margin-top: 1em; }
+#guide-app .ga-challenge {
+  border: 1px solid var(--ga-line); border-radius: 6px;
+  padding: .8em 1em; margin-top: 1em; background: var(--ga-bg, transparent);
+}
+#guide-app .ga-challenge p { font-size: .92em; margin-bottom: .6em; }
 #guide-app .ga-invite {
   background: var(--ga-surface); border: 1px solid var(--ga-line);
   border-radius: var(--ga-radius); padding: 1em 1.5em; margin-bottom: 1em;
