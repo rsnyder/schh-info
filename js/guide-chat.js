@@ -45,12 +45,13 @@
         <label for="ga-acc-note">Street address (optional &mdash; helps confirm residency)</label>
         <input type="text" id="ga-acc-note" autocomplete="street-address" maxlength="300">
         <div class="ga-challenge ga-hidden" data-ga="challengeWrap">
-          <p><strong>Skip the wait (optional):</strong> if you can sign in to
+          <p><strong>Skip the wait (optional):</strong> open
              <a data-ga="challengeLink" href="#" target="_blank" rel="noopener">the community
-             website&rsquo;s Forms page</a>, find the form listed directly below
-             &ldquo;<strong data-ga="challengeAnchor"></strong>&rdquo; and enter its
-             name here &mdash; you&rsquo;ll be verified instantly.</p>
-          <label for="ga-acc-challenge">Form name</label>
+             website&rsquo;s Forms page</a> (sign in if asked) and find the form named
+             &ldquo;<strong data-ga="challengeAnchor"></strong>&rdquo;.
+             What is the name of the <strong>next</strong> form after it in the list?
+             Enter it here and you&rsquo;ll be verified instantly.</p>
+          <label for="ga-acc-challenge">Name of the next form</label>
           <input type="text" id="ga-acc-challenge" autocomplete="off" maxlength="150">
         </div>
         <button class="ga-btn" data-ga="sendAccess">Send request</button>
