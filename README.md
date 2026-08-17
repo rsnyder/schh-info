@@ -13,7 +13,8 @@ screens, all rendered by the single layout `_layouts/app.html`:
 | URL | Screen |
 |---|---|
 | `/` | Ask the Guide — chat client, fills the viewport |
-| `/links/` | Important links (`_data/quicklinks.yml`) + FAQs by topic (`_data/features.yml`) |
+| `/links/` | Important links (`_data/quicklinks.yml`) with a category anchor index |
+| `/faq/` | FAQs by topic (`_data/features.yml`), questions submit to chat |
 | `/about/` | Long-form about from `_data/about.yml` |
 | `/contact/` | Contact form (Netlify function endpoint) |
 | `/chat/` | Redirect stub to `/` (kept for old shared links) |
