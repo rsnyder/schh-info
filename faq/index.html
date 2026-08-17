@@ -1,0 +1,39 @@
+---
+layout: app
+slug: faq
+title: FAQs
+description: "Frequently asked questions — tap one and the Guide looks it up for you."
+---
+<div class="container">
+    <header class="page-header">
+        <h1>Frequently Asked Questions</h1>
+        <p class="subheading">Tap a question and the Guide will look it up
+           for you &mdash; or <a href="/">ask anything in your own words</a>.</p>
+    </header>
+
+    <section class="section-block" id="faq">
+        <div class="card-grid">
+            {% for topic in site.data.features %}
+            <article class="card faq-card">
+                <h3>
+                    <span class="icon-badge">{% include icon.html name=topic.icon %}</span>
+                    <span>{{ topic.heading }}</span>
+                </h3>
+                <div class="card-questions">
+                    <ul>
+                        {% for q in topic.questions %}
+                        <li>
+                            <a href="/?q={{ q | cgi_escape }}">
+                                {% include icon.html name="chat" class="card-question-icon" %}
+                                <span>&ldquo;{{ q }}&rdquo;</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        <a class="btn btn-block" href="/">{% include icon.html name="chat" %} Ask something else</a>
+    </section>
+</div>

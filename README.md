@@ -83,7 +83,7 @@ schh-community-guide repo's `docs/production_deployment.md`.
 
 ## Content editing
 
-- FAQ topics/questions: `_data/features.yml` · About copy: `_data/about.yml`
+- FAQ topics/questions (rendered at /faq/): `_data/features.yml` · About copy: `_data/about.yml`
 - Important links (ordered list): `_data/quicklinks.yml`
 - Vendor listings: live from the vendor sheet via `chat.schh.info/api/vendors`
   (edit the sheet + run the admin ingest; `_data/vendors.yml` was retired 2026-08-16)

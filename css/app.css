@@ -368,6 +368,9 @@ img, svg { max-width: 100%; }
 }
 .button-primary:hover, .button-primary:focus-visible { opacity: .92; }
 .section-block[id] { scroll-margin-top: var(--space-4); }  /* deep-linked anchors */
+.link-group[id] { scroll-margin-top: var(--space-4); }
+.link-index { margin-bottom: var(--space-5); }
+.link-index .cat-icon svg { width: 1.4rem; height: 1.4rem; color: var(--color-primary); }
 .nearby-offer {
   border-top: 1px dashed var(--color-line);
   margin-top: var(--space-5); padding-top: var(--space-4);
