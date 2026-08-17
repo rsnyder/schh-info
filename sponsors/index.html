@@ -1,0 +1,130 @@
+---
+layout: app
+slug: sponsors
+title: Sponsors
+description: "The sponsors who help keep the SCHH Community Guide free for every resident — and how to become one."
+---
+<div class="container prose">
+    <header class="page-header">
+        <h1>Sponsors</h1>
+        <p class="subheading">The businesses and neighbors who help keep the
+           guide free for every resident.</p>
+    </header>
+
+    <section class="section-block" id="what">
+        <h2 class="section-heading">
+            <span class="icon-badge">{% include icon.html name="info" %}</span>
+            <span>What this is</span>
+        </h2>
+        <p>The Community Guide is free for every resident, independent, and
+           built by residents — and it has real ongoing costs: AI services,
+           hosting, search, development tools, domains, and email delivery,
+           which together run well over $100 a month and grow as more
+           residents use the guide. Sponsor support covers those operating
+           costs first; what remains funds continued development and the time
+           that goes into it.</p>
+        <p>Support is entirely optional. Nothing in the guide is ever gated
+           on payment, and the guide will never ask you for money — this
+           page simply exists for those who want to help.</p>
+    </section>
+
+    <section class="section-block" id="businesses">
+        <h2 class="section-heading">
+            <span class="icon-badge">{% include icon.html name="briefcase" %}</span>
+            <span>Business sponsors</span>
+        </h2>
+        <div id="sponsor-list"><p class="hint" id="sponsor-loading">Loading&hellip;</p></div>
+        <p>Business sponsors receive the labeled <strong>Featured</strong>
+           placement at the top of their category in the
+           <a href="/vendors/">vendor listings</a>, and a listing here.
+           Sponsorship is open only to businesses already on the
+           resident-recommended vendor list &mdash; placement elevates an
+           earned listing; it never creates one. Sponsorship is not
+           endorsement and buys no influence over the guide&rsquo;s content
+           or answers.</p>
+    </section>
+
+    <section class="section-block" id="friends">
+        <h2 class="section-heading">
+            <span class="icon-badge">{% include icon.html name="users" %}</span>
+            <span>Friends of the Guide</span>
+        </h2>
+        <p>Residents who support the guide are acknowledged here — first name
+           and neighborhood at most, and only with their permission
+           (anonymous is the default, and most common). This list is just
+           getting started.</p>
+    </section>
+
+    <section class="section-block" id="become">
+        <h2 class="section-heading">
+            <span class="icon-badge">{% include icon.html name="heart" %}</span>
+            <span>Become a sponsor</span>
+        </h2>
+        <p><strong>Residents:</strong> any amount, one time, entirely
+           voluntary:</p>
+        <p><a class="button-primary" href="https://www.paypal.com/ncp/payment/3GNBTXFUWE6JL"
+              target="_blank" rel="noopener">Support the Guide (PayPal)</a></p>
+        <p><strong>Businesses:</strong> Featured sponsorship is
+           <strong>$200/year</strong> (or $20/month), flat for every
+           category, limited to two Featured vendors per category.
+           <a href="/contact/">Contact the guide</a> to get started —
+           you&rsquo;ll receive a regular PayPal invoice for your records.</p>
+        <p class="callout"><strong>Charter Sponsors:</strong> businesses and
+           residents who join before <strong>December&nbsp;31, 2026</strong>
+           (or the first ten business sponsors, whichever comes first) carry
+           a permanent Charter Sponsor designation on this page, and charter
+           businesses keep today&rsquo;s rate for as long as they remain
+           sponsors. Same placement, same rules as everyone — being first is
+           the only thing that can&rsquo;t be bought later.</p>
+    </section>
+
+    <section class="section-block" id="fine-print">
+        <h2 class="section-heading">
+            <span class="icon-badge">{% include icon.html name="shield" %}</span>
+            <span>The fine print</span>
+        </h2>
+        <ul>
+            <li>The guide is an independent resident project, not a charity —
+                support is <strong>not tax-deductible</strong>.</li>
+            <li>Sponsorship is not endorsement, and never affects the
+                guide&rsquo;s content, chat answers, or vendor reviews. The
+                one thing it buys is the clearly-labeled Featured placement.</li>
+            <li>The guide stays free for every resident regardless — that is
+                the point of all of this.</li>
+        </ul>
+    </section>
+</div>
+
+<script>
+(function () {
+    "use strict";
+    function esc(s) {
+        return String(s || "").replace(/[&<>"']/g, function (c) {
+            return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c];
+        });
+    }
+    fetch("https://chat.schh.info/api/vendors")
+        .then(function (r) { return r.ok ? r.json() : {vendors: []}; })
+        .then(function (data) {
+            var featured = ((data && data.vendors) || []).filter(function (v) { return v.featured; });
+            var box = document.getElementById("sponsor-list");
+            if (!featured.length) {
+                box.innerHTML = '<p class="hint">Business sponsorships are just opening '
+                    + '&mdash; charter spots are available.</p>';
+                return;
+            }
+            box.innerHTML = "<ul>" + featured.map(function (v) {
+                var name = v.website
+                    ? '<a href="' + esc(/^https?:/.test(v.website) ? v.website : "https://" + v.website)
+                      + '" target="_blank" rel="noopener">' + esc(v.name) + "</a>"
+                    : esc(v.name);
+                return "<li>" + name + (v.service_category
+                    ? ' <span class="hint">&mdash; ' + esc(v.service_category) + "</span>" : "") + "</li>";
+            }).join("") + "</ul>";
+        })
+        .catch(function () {
+            document.getElementById("sponsor-list").innerHTML =
+                '<p class="hint">Sponsor list is unavailable right now.</p>';
+        });
+})();
+</script>

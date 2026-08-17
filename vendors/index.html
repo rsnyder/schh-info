@@ -17,16 +17,6 @@ description: "A curated list of local vendors and services, including resident-o
        unless specifically stated. Residents should use their own judgment
        when hiring vendors or using local services.</p>
 
-    <section class="section-block" id="featured-providers" hidden>
-        <h2 class="section-heading">
-            <span class="icon-badge">{% include icon.html name="star" %}</span>
-            <span>Featured Providers</span>
-        </h2>
-        <div class="card-grid" id="featured-cards"></div>
-        <p class="callout vendor-disclaimer">Featured placements are sponsored
-           listings drawn from the resident-recommended vendor list.</p>
-    </section>
-
     <section class="section-block" id="browse">
         <h2 class="section-heading" id="browse-heading">
             <span class="icon-badge">{% include icon.html name="shopping-bag" %}</span>
@@ -215,13 +205,9 @@ description: "A curated list of local vendors and services, including resident-o
             $("vendors-loading").hidden = true;
             if (!vendors.length) { $("vendors-error").hidden = false; return; }
 
-            var featured = vendors.filter(function (v) { return v.featured; });
-            if (featured.length) {
-                $("featured-cards").innerHTML = featured.map(function (v) {
-                    return vendorCard(v, true);
-                }).join("");
-                $("featured-providers").hidden = false;
-            }
+            // Featured (sponsored) vendors no longer get a dedicated strip —
+            // they get top-of-category placement + badge in the listings, and
+            // the roster lives on /sponsors/.
 
             // Every canonical category gets a card — an empty one still
             // offers the web search and the recommend link. "Other" only

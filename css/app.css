@@ -360,6 +360,13 @@ img, svg { max-width: 100%; }
 .cat-card .cat-name { font-weight: 700; }
 .cat-card .cat-count { color: var(--color-muted); font-size: .88em; }
 .cat-back-line { margin-bottom: var(--space-3); }
+.hint { color: var(--color-muted); font-size: .9em; }
+.button-primary {
+  display: inline-block; padding: .7rem 1.4rem; font-weight: 600;
+  background: var(--color-primary); color: #fff !important;
+  border-radius: var(--radius); text-decoration: none;
+}
+.button-primary:hover, .button-primary:focus-visible { opacity: .92; }
 .section-block[id] { scroll-margin-top: var(--space-4); }  /* deep-linked anchors */
 .nearby-offer {
   border-top: 1px dashed var(--color-line);

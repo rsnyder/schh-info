@@ -65,6 +65,10 @@ nav:
       short: "Map"
       url: "/map/"
       icon: "map-marker"
+    - text: "Sponsors"
+      short: "Sponsors"
+      url: "/sponsors/"
+      icon: "heart"
     # Lives on chat.schh.info, outside the PWA scope, so it is marked
     # external — the templates open those in a browser tab rather than
     # replacing the installed app's window, which has no back button.
