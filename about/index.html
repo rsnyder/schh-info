@@ -13,7 +13,7 @@ title: About
     </div>
 
     {% for section in site.data.about.sections %}
-    <section class="section-block">
+    <section class="section-block"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
         <h2 class="section-heading">
             <span class="icon-badge">{% include icon.html name=section.icon %}</span>
             <span>{{ section.heading }}</span>

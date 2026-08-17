@@ -358,6 +358,7 @@ img, svg { max-width: 100%; }
 .cat-card .cat-name { font-weight: 700; }
 .cat-card .cat-count { color: var(--color-muted); font-size: .88em; }
 .cat-back-line { margin-bottom: var(--space-3); }
+.section-block[id] { scroll-margin-top: var(--space-4); }  /* deep-linked anchors */
 .nearby-offer {
   border-top: 1px dashed var(--color-line);
   margin-top: var(--space-5); padding-top: var(--space-4);
