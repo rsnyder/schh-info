@@ -92,3 +92,12 @@
   questions:
     - "Where is the fitness center located?"
     - "How do I contact the Association office?"
+
+- icon: heart
+  heading: "About the Guide"
+  description: >-
+    The guide itself — who built it, how it's funded, and where to send
+    feedback or corrections.
+  questions:
+    - "How is the Community Guide funded?"
+    - "Is the Community Guide an official Association website?"
