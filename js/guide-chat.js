@@ -26,7 +26,9 @@
       <input type="email" id="ga-email" autocomplete="email" required>
       <button class="ga-btn" data-ga="sendCode">Send code</button>
       <p class="ga-note">You will not need to create or remember a password.</p>
-      <p class="ga-note">Not receiving a code?
+      <p class="ga-note">Already have a sign-in code?
+        <button class="ga-linkish" data-ga="haveCode">Enter it</button>
+        &nbsp;&middot;&nbsp; Not receiving one?
         <button class="ga-linkish" data-ga="showAccessFromLogin">Request access</button></p>
       <p class="ga-error" data-ga="loginError" role="alert"></p>
     </section>
@@ -138,6 +140,39 @@
   function disarmNudge() {
     clearTimeout(nudgeTimer);
     el.stuckNudge.classList.add("ga-hidden");
+  }
+
+  // A code request survives leaving the page (checking email closes or
+  // reloads the tab constantly, especially on tablets) — remembered for
+  // 30 minutes so the widget reopens on the code screen, not square one.
+  function savePending(email) {
+    try { localStorage.setItem("ga_pending", JSON.stringify({ e: email, t: Date.now() })); } catch (e) {}
+  }
+  function loadPending() {
+    try {
+      var d = JSON.parse(localStorage.getItem("ga_pending"));
+      if (d && d.e && Date.now() - d.t < 30 * 60 * 1000) return d.e;
+    } catch (e) {}
+    return null;
+  }
+  function clearPending() {
+    try { localStorage.removeItem("ga_pending"); } catch (e) {}
+  }
+
+  // Enter the code screen for an email WITHOUT requesting a new code —
+  // used when restoring after a reload and by "Already have a code?".
+  // Resend is enabled immediately: no fresh request was just made.
+  function resumeOtp(email) {
+    pendingEmail = email;
+    el.maskedEmail.textContent = email.replace(/^(.).*(@.*)$/, "$1***$2");
+    codeInput.value = "";
+    resendCount = 0;
+    show("otp");
+    clearInterval(timer);
+    el.resend.textContent = "Resend code";
+    el.resend.disabled = false;
+    armNudge();
+    codeInput.focus();
   }
 
   function greet() {
@@ -383,6 +418,7 @@
     try {
       await api("/api/auth/request-otp", { method: "POST", body: JSON.stringify({ email }) });
       pendingEmail = email;
+      savePending(email);
       el.maskedEmail.textContent = email.replace(/^(.).*(@.*)$/, "$1***$2");
       codeInput.value = "";
       resendCount = 0;
@@ -410,6 +446,7 @@
   el.resend.addEventListener("click", async () => {
     await api("/api/auth/request-otp",
       { method: "POST", body: JSON.stringify({ email: pendingEmail }) });
+    savePending(pendingEmail);
     el.resend.innerHTML = 'Resend code (<span data-ga="countdown">60</span>s)';
     el.countdown = el.resend.querySelector("[data-ga=countdown]");
     startCountdown();
@@ -420,7 +457,17 @@
     }
   });
 
-  el.changeEmail.addEventListener("click", () => { disarmNudge(); show("login"); });
+  el.changeEmail.addEventListener("click", () => { disarmNudge(); clearPending(); show("login"); });
+
+  el.haveCode.addEventListener("click", () => {
+    const email = emailInput.value.trim() || loadPending();
+    el.loginError.textContent = "";
+    if (!email) {
+      el.loginError.textContent = "Enter your email address first, then tap “Enter it.”";
+      return;
+    }
+    resumeOtp(email);
+  });
 
   // ---------------------------------------------------- request access
   const accEmail = root.querySelector("#ga-acc-email");
@@ -505,6 +552,7 @@
       const body = await response.json().catch(() => ({}));
       firstName = (body.user && body.user.firstName) || "";
       disarmNudge();
+      clearPending();
       enterChat();
     } else {
       const body = await response.json().catch(() => ({}));
@@ -621,7 +669,12 @@
     .then(r => r.json())
     .then(s => {
       firstName = (s.user && s.user.firstName) || "";
-      if (s.authenticated) enterChat(); else show("login");
+      if (s.authenticated) { enterChat(); return; }
+      // A code was requested within the last 30 minutes and never redeemed
+      // — reopen on the code screen so leaving the page to read email
+      // doesn't send the resident back to square one.
+      const saved = loadPending();
+      if (saved) resumeOtp(saved); else show("login");
     })
     .catch(() => show("login"));
 })();
