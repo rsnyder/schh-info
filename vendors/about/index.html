@@ -1,0 +1,173 @@
+---
+layout: app
+slug: vendors-about
+title: "Vendors — Background & Vision"
+description: "How the Community Guide's vendor feature works, the decisions behind it, and an invitation to collaborate."
+---
+<div class="container prose">
+    <header class="page-header">
+        <h1>The Vendors Feature: Background &amp; Vision</h1>
+        <p class="subheading">How it works, why it works that way, and an
+           invitation to the people running similar efforts.</p>
+    </header>
+
+    <p>This page is for residents who take a deeper interest in how the
+       <a href="/vendors/">vendor listings</a> work — especially those who run,
+       or help run, other vendor-recommendation efforts in Sun City. It
+       explains what has been built, the reasoning behind the design choices,
+       and where this could go with your help.</p>
+
+    <section class="section-block" id="problem">
+        <h2 class="section-heading"><span>The problem being solved</span></h2>
+        <p>Vendor recommendations are among the most requested and most valuable
+           information residents share — and among the worst-preserved. Today
+           they live in scrolling feeds and group chats: a great recommendation
+           posted in a Facebook group or a TeamReach thread helps the people who
+           happen to see it that week, then sinks. Six months later someone asks
+           the same question and the answer is re-typed from memory, or lost.
+           Search in these tools is weak, membership is closed, and nothing
+           accumulates: the tenth recommendation for the same plumber carries no
+           more weight than the first.</p>
+        <p>The guide's vendor feature is an attempt to give those same
+           community recommendations a <strong>durable, structured,
+           searchable home</strong> — without losing what makes them
+           trustworthy, which is that they come from neighbors.</p>
+    </section>
+
+    <section class="section-block" id="how-it-works">
+        <h2 class="section-heading"><span>How it works today</span></h2>
+        <p>The heart of it is a simple pipeline:
+           <strong>recommend &rarr; review &rarr; publish</strong>.</p>
+        <ul>
+            <li><strong>Recommending.</strong> Any verified resident can
+                <a href="https://chat.schh.info/recommend-vendor.html">submit a
+                vendor</a> they have personally used — name, category, contact
+                details, and what the vendor did for them. Takes about a
+                minute.</li>
+            <li><strong>Review.</strong> Every submission is reviewed by an
+                administrator before it appears: names and categories are
+                normalized, and anything inappropriate is filtered. Nothing
+                publishes automatically.</li>
+            <li><strong>One listing per vendor.</strong> When several residents
+                recommend the same vendor, the submissions merge into a single
+                listing: recommendation counts add up (&ldquo;Recommended by 3
+                residents&rdquo;), contact details fill in from whichever
+                submission had them, and comments combine. Repeat
+                recommendations make a listing stronger, not noisier.</li>
+            <li><strong>Browsing.</strong> The <a href="/vendors/">public
+                vendors page</a> shows every service category — plumbing to
+                pet care to patios — with listings grouped, counted, and
+                deep-linkable (e.g. <code>/vendors/#plumbing</code>). Featured
+                placements at the top are sponsored listings drawn from the
+                same resident-recommended pool, and labeled as such.</li>
+            <li><strong>Wider search.</strong> Inside any category, a resident
+                can also run a web search of nearby providers (Google-powered).
+                Those results are clearly labeled as <em>not</em>
+                resident-recommended — useful where our own list is still
+                thin, and every web-found vendor who works out is a candidate
+                for a real recommendation.</li>
+            <li><strong>Ask the Guide.</strong> Signed-in residents can simply
+                ask the community chat (&ldquo;can anyone recommend a
+                plumber?&rdquo;) and get resident recommendations alongside
+                nearby options, with the same labeling.</li>
+            <li><strong>Problems.</strong> Residents can
+                <a href="https://chat.schh.info/report-vendor.html">report a bad
+                experience privately</a>. Reports go only to the administrators
+                — nothing negative is ever published — and repeated concerns
+                about a vendor over a period may result in administrative
+                removal from the list.</li>
+        </ul>
+    </section>
+
+    <section class="section-block" id="decisions">
+        <h2 class="section-heading"><span>Design decisions, and why</span></h2>
+        <p>Several choices here are deliberate, and worth explaining to anyone
+           who has wrestled with the same trade-offs:</p>
+        <ul>
+            <li><strong>Curated, not open-posting.</strong> Open forums
+                self-moderate through volume; a directory can't. Review-before-
+                publish keeps quality high, keeps spam and self-promotion out,
+                and means every listing is accountable to a named (but
+                unpublished) recommender.</li>
+            <li><strong>Positive-or-absent — no published negatives.</strong>
+                Publishing complaints about named local businesses invites
+                disputes and legal exposure that a resident-run effort should
+                not carry, and one-sided accounts presented as fact don't serve
+                residents either. Instead, concerns are collected privately,
+                patterns are watched, and the consequence is quiet removal.
+                On a curated list, <em>absence is the signal</em>.</li>
+            <li><strong>Verified residents, private identities.</strong>
+                Recommending and reporting require resident sign-in — so every
+                input is accountable — but recommender and reporter names are
+                never published or shared. Listings show only counts.</li>
+            <li><strong>Structured records, not threads.</strong> A
+                recommendation captured as data (category, contacts, count) can
+                be browsed, searched, merged, counted, and cited by the chat
+                assistant. A recommendation captured as a chat message can only
+                be scrolled past.</li>
+            <li><strong>The web search knows its place.</strong> The wider
+                Google search is bounded to our service categories (which keeps
+                its costs controlled and predictable) and its results are always
+                labeled as not resident-recommended. It supplements the
+                community's knowledge; it never impersonates it.</li>
+            <li><strong>No platform lock-in.</strong> The entire vendor
+                database lives in a spreadsheet an administrator can read, edit,
+                and export. If this effort ever ends or changes hands, the
+                community's accumulated recommendations are a file, not a
+                hostage.</li>
+        </ul>
+    </section>
+
+    <section class="section-block" id="today">
+        <h2 class="section-heading"><span>Where it stands</span></h2>
+        <p>As of mid-2026 the list holds 50+ vendors across 30+ service
+           categories, seeded from resident-shared lists and growing through
+           the recommendation form. The vendors page, the categories, the
+           recommendation and reporting forms, the web-search augmentation,
+           and the chat integration described above are all live.</p>
+    </section>
+
+    <section class="section-block" id="vision">
+        <h2 class="section-heading"><span>The vision — and an invitation</span></h2>
+        <p>Sun City already has residents doing this work — notably the
+           vendor-recommendation Facebook group and the TeamReach group. Those
+           communities have something this system doesn't: active conversation,
+           trust built over years, and a large accumulated body of
+           recommendations. This system has what the feeds lack: permanence,
+           structure, search, and a home that any resident can reach without
+           joining anything.</p>
+        <p>Those are complementary strengths, not competing ones. The groups
+           are where recommendations <em>happen</em>; this can be where they
+           <em>last</em>. Some concrete forms collaboration could take, in
+           increasing order of ambition:</p>
+        <ul>
+            <li><strong>Cross-linking.</strong> The groups point members at the
+                vendors page as the durable reference; the guide points
+                residents who want discussion toward the groups.</li>
+            <li><strong>Importing the archive.</strong> With the
+                administrators' blessing, the recommendations already
+                accumulated in a group could be reviewed and folded into the
+                structured list — preserving years of community knowledge that
+                is currently un-searchable.</li>
+            <li><strong>Shared stewardship.</strong> Group administrators are
+                exactly the right people to help review submissions, watch
+                categories they know well, or shape policy — this doesn't need
+                to be a one-person operation.</li>
+            <li><strong>Consolidation, if and when it earns it.</strong> If
+                this system proves itself the better home, groups could retire
+                their parallel record-keeping in its favor — on their timeline,
+                by their choice.</li>
+        </ul>
+        <p>If you help run one of these efforts and any of this interests you
+           — or you think parts of it are wrong — please reach out through the
+           <a href="/contact/">contact form</a>. Skeptical feedback is as
+           welcome as enthusiasm; you know failure modes of this work that
+           I haven't hit yet.</p>
+    </section>
+
+    <p class="callout">The guide is an independent, resident-created project —
+       not an official Community Association service. Vendor listings are a
+       convenience, not an endorsement; residents should use their own
+       judgment when hiring. See <a href="/about/">the about page</a> for the
+       full picture.</p>
+</div>

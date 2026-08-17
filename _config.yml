@@ -30,7 +30,7 @@ analytics:
 # top-bar links on larger screens. Icons map to _includes/icon.html.
 # -----------------------------------------------
 nav:
-  brand: "SCHH Guide"
+  brand: "SCHH Community Guide"
   # Primary tab bar (phones) — hard limit of 5 slots. The desktop top
   # bar shows these plus everything under `more`.
   links:
