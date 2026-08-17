@@ -99,6 +99,20 @@ description: "A curated list of local vendors and services, including resident-o
     var slugOf = function (name) {
         return String(name).toLowerCase().replace(/&amp;|&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
     };
+    var CATEGORY_ICONS = {
+        "plumbing": "🚰", "electrical": "⚡", "hvac": "❄️", "roofing": "🏠",
+        "painting": "🎨", "landscaping-and-lawn-care": "🌿", "tree-service": "🌳",
+        "pressure-washing": "💦", "house-cleaning": "🧹", "pest-control": "🐜",
+        "handyman": "🔧", "appliance-repair": "🔌", "garage-doors": "🚪",
+        "windows-and-doors": "🪟", "flooring": "🪵", "concrete-and-masonry": "🧱",
+        "patios-lanais-and-hardscaping": "⛱️", "gutters": "🌧️", "irrigation": "💧",
+        "golf-cart-service": "⛳", "computer-and-tv-help": "💻", "home-watch": "🏡",
+        "home-inspection": "🔍", "sewing-and-upholstery": "🧵", "pet-care": "🐾",
+        "moving-and-hauling": "🚚", "travel-and-transportation": "✈️",
+        "auto-service": "🚗", "insurance": "🛡️", "legal": "⚖️",
+        "financial": "💰", "health-and-wellness": "🩺", "other": "📦"
+    };
+    var iconFor = function (slug) { return CATEGORY_ICONS[slug] || "🛠️"; };
     var groups = {};   // slug -> {name, vendors: []}
     var order = [];    // slugs, alphabetical with Other last
 
@@ -166,10 +180,13 @@ description: "A curated list of local vendors and services, including resident-o
         var group = groups[slug];
         if (!group) { renderGrid(); return; }
         $("cat-grid").hidden = true;
-        $("cat-title").textContent = group.name + " (" + group.vendors.length + ")";
-        $("cat-cards").innerHTML = group.vendors.map(function (v) {
-            return vendorCard(v, false);
-        }).join("");
+        $("cat-title").textContent = iconFor(slug) + " " + group.name
+            + (group.vendors.length ? " (" + group.vendors.length + ")" : "");
+        $("cat-cards").innerHTML = group.vendors.length
+            ? group.vendors.map(function (v) { return vendorCard(v, false); }).join("")
+            : '<p>No resident-recommended vendors here yet &mdash; you could be the '
+              + 'reason there is one. Used someone good? '
+              + '<a href="https://chat.schh.info/recommend-vendor.html">Recommend them</a>.</p>';
         renderNearby(slug);
         $("cat-view").hidden = false;
         $("browse-heading").scrollIntoView({block: "nearest"});
@@ -194,6 +211,13 @@ description: "A curated list of local vendors and services, including resident-o
                 $("featured-providers").hidden = false;
             }
 
+            // Every canonical category gets a card — an empty one still
+            // offers the web search and the recommend link. "Other" only
+            // appears when it actually holds vendors.
+            ((data && data.categories) || []).forEach(function (name) {
+                var slug = slugOf(name);
+                if (!groups[slug]) { groups[slug] = {name: name, vendors: []}; order.push(slug); }
+            });
             vendors.forEach(function (v) {
                 var name = v.service_category || "Other";
                 var slug = slugOf(name);
@@ -208,10 +232,13 @@ description: "A curated list of local vendors and services, including resident-o
 
             $("cat-grid").innerHTML = order.map(function (slug) {
                 var g = groups[slug];
+                var count = g.vendors.length
+                    ? g.vendors.length + (g.vendors.length === 1 ? " vendor" : " vendors")
+                    : "none yet — recommend one";
                 return '<a class="cat-card" href="#' + esc(slug) + '">'
+                    + '<span class="cat-icon" aria-hidden="true">' + iconFor(slug) + "</span>"
                     + '<span class="cat-name">' + esc(g.name) + "</span>"
-                    + '<span class="cat-count">' + g.vendors.length
-                    + (g.vendors.length === 1 ? " vendor" : " vendors") + "</span></a>";
+                    + '<span class="cat-count">' + count + "</span></a>";
             }).join("");
 
             $("cat-back").addEventListener("click", function (e) {

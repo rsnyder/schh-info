@@ -355,6 +355,7 @@ img, svg { max-width: 100%; }
   text-decoration: none; color: inherit;
 }
 .cat-card:hover, .cat-card:focus-visible { border-color: var(--color-primary); }
+.cat-card .cat-icon { font-size: 1.5rem; line-height: 1; }
 .cat-card .cat-name { font-weight: 700; }
 .cat-card .cat-count { color: var(--color-muted); font-size: .88em; }
 .cat-back-line { margin-bottom: var(--space-3); }
