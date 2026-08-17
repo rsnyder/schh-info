@@ -369,7 +369,13 @@ img, svg { max-width: 100%; }
 .button-primary:hover, .button-primary:focus-visible { opacity: .92; }
 .section-block[id] { scroll-margin-top: var(--space-4); }  /* deep-linked anchors */
 .link-group[id] { scroll-margin-top: var(--space-4); }
-.link-index { margin-bottom: var(--space-5); }
+.link-index { margin-bottom: var(--space-5); scroll-margin-top: var(--space-4); }
+.back-to-index {
+  margin-left: auto; display: inline-flex; align-items: center;
+  color: var(--color-muted); padding: .35rem;  /* keeps the tap target ~44px */
+}
+.back-to-index svg { width: 1.1rem; height: 1.1rem; }
+.back-to-index:hover, .back-to-index:focus-visible { color: var(--color-primary); }
 .link-index .cat-icon svg { width: 1.4rem; height: 1.4rem; color: var(--color-primary); }
 .nearby-offer {
   border-top: 1px dashed var(--color-line);

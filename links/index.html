@@ -10,7 +10,7 @@ description: "Important community links — phone numbers, websites, and contact
         <p class="subheading">Important community links &mdash; one tap away.</p>
     </header>
 
-    <nav class="cat-grid link-index" aria-label="Link categories">
+    <nav class="cat-grid link-index" id="categories" aria-label="Link categories">
         {% for group in site.data.quicklinks %}
         <a class="cat-card" href="#{{ group.category | slugify }}">
             <span class="cat-icon">{% include icon.html name=group.icon %}</span>
@@ -25,6 +25,9 @@ description: "Important community links — phone numbers, websites, and contact
             <h3>
                 <span class="icon-badge">{% include icon.html name=group.icon %}</span>
                 <span>{{ group.category }}</span>
+                <a class="back-to-index" href="#categories"
+                   aria-label="Back to the category list"
+                   title="Back to the category list">{% include icon.html name="arrow-up" %}</a>
             </h3>
             <ul class="link-list">
                 {% for link in group.links %}
