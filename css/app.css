@@ -340,6 +340,7 @@ img, svg { max-width: 100%; }
   border-radius: 999px;
   font-size: 13px; font-weight: 600; white-space: nowrap;
 }
+.vendor-badge-featured { background: #b8860b; }  /* sponsored placement */
 .cat-grid {
   display: grid; gap: var(--space-3);
   grid-template-columns: repeat(2, minmax(0, 1fr));
