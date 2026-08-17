@@ -46,7 +46,7 @@ description: "Important community links — phone numbers, websites, and contact
                         <span class="link-contact">
                             {% if link.phone %}<a href="tel:{{ link.phone | remove: '(' | remove: ')' | remove: ' ' | remove: '-' }}">{{ link.phone }}</a>{% endif %}
                             {% if link.email %}{% if link.phone %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="mailto:{{ link.email }}">{{ link.email }}</a>{% endif %}
-                            {% if link.url %}{% if link.phone or link.email %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="{{ link.url }}" target="_blank" rel="noopener">Visit website</a>{% endif %}
+                            {% if link.url %}{% if link.phone or link.email %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.link_text | default: "Visit website" }}</a>{% endif %}
                             {%- comment -%} page = same-site path (e.g. /map/): stays in this tab / the installed app {%- endcomment -%}
                             {% if link.page %}{% if link.phone or link.email or link.url %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="{{ link.page }}">Open</a>{% endif %}
                         </span>
