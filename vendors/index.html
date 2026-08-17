@@ -131,7 +131,13 @@ description: "A curated list of local vendors and services, including resident-o
 
     function webCard(v) {
         var meta = [];
-        if (v.rating) meta.push("&#9733; " + esc(v.rating) + (v.review_count ? " (" + v.review_count + " reviews)" : ""));
+        if (v.rating) {
+            var stars = "&#9733; " + esc(v.rating)
+                + (v.review_count ? " (" + v.review_count + " reviews)" : "");
+            meta.push(v.maps_url
+                ? '<a href="' + esc(v.maps_url) + '" target="_blank" rel="noopener">' + stars + "</a>"
+                : stars);
+        }
         if (v.address) meta.push(esc(v.address));
         var links = [];
         if (v.phone) links.push('<a href="tel:' + esc(String(v.phone).replace(/\D/g, "")) + '">' + esc(prettyPhone(v.phone)) + "</a>");
