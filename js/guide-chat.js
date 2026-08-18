@@ -500,6 +500,34 @@
     resumeOtp(email);
   });
 
+  el.verify.addEventListener("click", async () => {
+    el.otpError.textContent = "";
+    const token = codeInput.value.trim();
+    if (!/^[0-9]{6}$/.test(token)) {
+      el.otpError.textContent = "Enter the six-digit code."; return;
+    }
+    el.verify.disabled = true;
+    const response = await api("/api/auth/verify-otp",
+      { method: "POST", body: JSON.stringify({ email: pendingEmail, token }) });
+    el.verify.disabled = false;
+    if (response.ok) {
+      const body = await response.json().catch(() => ({}));
+      firstName = (body.user && body.user.firstName) || "";
+      disarmNudge();
+      clearPending();
+      enterChat();
+    } else {
+      const body = await response.json().catch(() => ({}));
+      el.otpError.textContent = (body.error && body.error.message)
+        || "The code is invalid or has expired.";
+    }
+  });
+  codeInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); el.verify.click(); }
+  });
+
+  el.newConvo.addEventListener("click", clearConversation);
+
   // ---------------------------------------------------------- invitations
   const invEmail = root.querySelector("#ga-inv-email");
   const invName = root.querySelector("#ga-inv-name");
