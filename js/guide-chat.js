@@ -42,21 +42,23 @@
       <div data-ga="accessForm">
         <label for="ga-acc-email">Email address</label>
         <input type="email" id="ga-acc-email" autocomplete="email" required>
-        <label for="ga-acc-name">Your name</label>
-        <input type="text" id="ga-acc-name" autocomplete="name" maxlength="100" required>
-        <label for="ga-acc-note">Street address (optional &mdash; helps confirm residency)</label>
-        <input type="text" id="ga-acc-note" autocomplete="street-address" maxlength="300">
         <div class="ga-challenge ga-hidden" data-ga="challengeWrap">
-          <p><strong>Skip the wait (optional):</strong> open
+          <p><strong>Fastest &mdash; get in right now:</strong> open
              <a data-ga="challengeLink" href="#" target="_blank" rel="noopener">the community
-             website&rsquo;s Forms page</a> (sign in if asked) and find the form named
+             website&rsquo;s Forms page</a> (sign in there if asked) and find the form named
              &ldquo;<strong data-ga="challengeAnchor"></strong>&rdquo;.
              What is the name of the <strong>next</strong> form after it in the list?
-             Enter it here and you&rsquo;ll be verified instantly.</p>
+             Enter it and you&rsquo;re verified instantly &mdash; no waiting.</p>
           <label for="ga-acc-challenge">Name of the next form</label>
           <input type="text" id="ga-acc-challenge" autocomplete="off" maxlength="150">
         </div>
-        <button class="ga-btn" data-ga="sendAccess">Send request</button>
+        <p class="ga-note" data-ga="manualLabel"><strong>Or request manual review</strong>
+           &mdash; a community volunteer approves these, usually within a day:</p>
+        <label for="ga-acc-name">Your name</label>
+        <input type="text" id="ga-acc-name" autocomplete="name" maxlength="100">
+        <label for="ga-acc-note">Street address (optional &mdash; helps confirm residency)</label>
+        <input type="text" id="ga-acc-note" autocomplete="street-address" maxlength="300">
+        <button class="ga-btn" data-ga="sendAccess">Continue</button>
       </div>
       <p class="ga-note"><button class="ga-linkish" data-ga="accessBack">Back to sign-in</button></p>
       <p class="ga-error" data-ga="accessError" role="alert"></p>
@@ -410,22 +412,46 @@
   }
 
   // ------------------------------------------------------------- login
-  el.sendCode.addEventListener("click", async () => {
-    const email = emailInput.value.trim();
+  function enterOtpScreen(email) {
+    pendingEmail = email;
+    savePending(email);
+    el.maskedEmail.textContent = email.replace(/^(.).*(@.*)$/, "$1***$2");
+    codeInput.value = "";
+    resendCount = 0;
+    show("otp"); codeInput.focus(); startCountdown(); armNudge();
+  }
+
+  async function requestCode(email) {
     el.loginError.textContent = "";
     if (!email) { el.loginError.textContent = "Enter your email address."; return; }
     el.sendCode.disabled = true;
     try {
-      await api("/api/auth/request-otp", { method: "POST", body: JSON.stringify({ email }) });
-      pendingEmail = email;
-      savePending(email);
-      el.maskedEmail.textContent = email.replace(/^(.).*(@.*)$/, "$1***$2");
-      codeInput.value = "";
-      resendCount = 0;
-      show("otp"); codeInput.focus(); startCountdown(); armNudge();
+      const response = await api("/api/auth/request-otp",
+        { method: "POST", body: JSON.stringify({ email }) });
+      const body = await response.json().catch(() => ({}));
+      if (response.status === 429) {
+        el.loginError.textContent = (body.error && body.error.message)
+          || "Too many attempts — wait a few minutes and try again.";
+      } else if (body.codeSent) {
+        enterOtpScreen(email);
+      } else if (body.reason === "NOT_IN_DIRECTORY") {
+        // honest fork: no fake code screen — straight to the other doors
+        openAccess(email, true);
+      } else if (body.reason === "DELIVERY_FAILED") {
+        el.loginError.textContent = "We couldn't send the code just now — "
+          + "please try again in a few minutes.";
+      } else if (body.reason === "VERIFY_UNAVAILABLE") {
+        el.loginError.textContent = "We can't reach the Resident Directory right now — "
+          + "please try again shortly.";
+      } else {
+        el.loginError.textContent = (body.error && body.error.message)
+          || "Something went wrong. Try again.";
+      }
     } catch { el.loginError.textContent = "Something went wrong. Try again."; }
     el.sendCode.disabled = false;
-  });
+  }
+
+  el.sendCode.addEventListener("click", () => requestCode(emailInput.value.trim()));
 
   function startCountdown() {
     let seconds = 60;
@@ -493,7 +519,17 @@
     } catch { /* challenge stays hidden; manual path still works */ }
   }
 
-  function openAccess(prefill) {
+  var ACCESS_INTRO_DEFAULT = null;  // captured on first open
+
+  function openAccess(prefill, fromNotFound) {
+    if (ACCESS_INTRO_DEFAULT === null) ACCESS_INTRO_DEFAULT = el.accessIntro.innerHTML;
+    el.accessIntro.innerHTML = fromNotFound
+      ? "<strong>This email isn&rsquo;t listed in the Resident Directory.</strong> "
+        + "That&rsquo;s common &mdash; many residents keep their directory entry "
+        + "private &mdash; and it doesn&rsquo;t affect your access. Two ways to "
+        + "get verified:"
+      : ACCESS_INTRO_DEFAULT;
+    el.accessForm.classList.remove("ga-hidden");
     el.accessError.textContent = "";
     if (prefill && !accEmail.value) accEmail.value = prefill;
     show("access");
@@ -509,8 +545,13 @@
     el.accessError.textContent = "";
     const email = accEmail.value.trim();
     const name = accName.value.trim();
+    const answer = challengeId ? accChallenge.value.trim() : "";
     if (!email) { el.accessError.textContent = "Enter your email address."; return; }
-    if (!name) { el.accessError.textContent = "Enter your name."; return; }
+    if (!name && !answer) {
+      el.accessError.textContent = "Answer the form question above for instant access, "
+        + "or enter your name for manual review.";
+      return;
+    }
     el.sendAccess.disabled = true;
     try {
       const payload = { email, name, note: accNote.value.trim() };
@@ -665,11 +706,31 @@
   });
 
   // ----------------------------------------------------------- startup
+  // ?signin=email — the approval email's one-tap link: request the code
+  // automatically and land directly on the code screen. Param is stripped
+  // so reloads/bookmarks don't re-request.
+  var signinParam = null;
+  try {
+    var params = new URLSearchParams(location.search);
+    signinParam = (params.get("signin") || "").trim() || null;
+    if (signinParam) {
+      params.delete("signin");
+      var qs = params.toString();
+      history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "") + location.hash);
+    }
+  } catch (e) { /* old browser — the manual flow still works */ }
+
   api("/api/auth/session", { method: "GET" })
     .then(r => r.json())
     .then(s => {
       firstName = (s.user && s.user.firstName) || "";
       if (s.authenticated) { enterChat(); return; }
+      if (signinParam) {
+        emailInput.value = signinParam;
+        show("login");
+        requestCode(signinParam);
+        return;
+      }
       // A code was requested within the last 30 minutes and never redeemed
       // — reopen on the code screen so leaving the page to read email
       // doesn't send the resident back to square one.
