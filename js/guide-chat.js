@@ -43,13 +43,14 @@
         <label for="ga-acc-email">Email address</label>
         <input type="email" id="ga-acc-email" autocomplete="email" required>
         <div class="ga-challenge ga-hidden" data-ga="challengeWrap">
-          <p><strong>Fastest &mdash; get in right now:</strong> open
-             <a data-ga="challengeLink" href="#" target="_blank" rel="noopener">the community
-             website&rsquo;s Forms page</a> (sign in there if asked) and find the form named
-             &ldquo;<strong data-ga="challengeAnchor"></strong>&rdquo;.
-             What is the name of the <strong>next</strong> form after it in the list?
-             Enter it and you&rsquo;re verified instantly &mdash; no waiting.</p>
-          <label for="ga-acc-challenge">Name of the next form</label>
+          <p><strong>Fastest &mdash; get in right now:</strong> tap
+             <a data-ga="challengeLink" href="#" target="_blank" rel="noopener">Sun City
+             Resident Central</a>, which opens in a separate tab (sign in there with
+             your community website account if asked). On the page you land on, find
+             the &ldquo;<strong data-ga="challengeAnchor"></strong>&rdquo; section and
+             note the <strong>first item</strong> listed under it &mdash; just a word
+             or two. Then switch back to this tab and type it here:</p>
+          <label for="ga-acc-challenge">First item under &ldquo;<span data-ga="challengeAnchor2"></span>&rdquo;</label>
           <input type="text" id="ga-acc-challenge" autocomplete="off" maxlength="150">
         </div>
         <p class="ga-note" data-ga="manualLabel"><strong>Or request manual review</strong>
@@ -514,6 +515,7 @@
       if (!d.available) return;
       challengeId = d.challengeId;
       el.challengeAnchor.textContent = d.anchor;
+      el.challengeAnchor2.textContent = d.anchor;
       el.challengeLink.href = d.url;
       el.challengeWrap.classList.remove("ga-hidden");
     } catch { /* challenge stays hidden; manual path still works */ }
