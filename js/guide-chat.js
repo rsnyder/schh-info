@@ -32,6 +32,8 @@
         <input type="text" id="ga-login-name" autocomplete="name" maxlength="100">
         <label for="ga-login-neighborhood">Your Sun City neighborhood</label>
         <input type="text" id="ga-login-neighborhood" autocomplete="off" maxlength="120">
+        <label for="ga-login-address">Your street address</label>
+        <input type="text" id="ga-login-address" autocomplete="street-address" maxlength="200">
       </div>
       <div class="ga-hidden" data-ga="reviewMsg">
         <p><strong>Thanks &mdash; one more step on our side.</strong> We couldn&rsquo;t
@@ -106,6 +108,7 @@
   const codeInput = root.querySelector("#ga-code");
   const loginName = root.querySelector("#ga-login-name");
   const loginNeighborhood = root.querySelector("#ga-login-neighborhood");
+  const loginAddress = root.querySelector("#ga-login-address");
 
   let conversationId = null;
   let pendingEmail = "";
@@ -417,8 +420,9 @@
       if (!el.moreInfoWrap.classList.contains("ga-hidden")) {
         payload.name = loginName.value.trim();
         payload.neighborhood = loginNeighborhood.value.trim();
-        if (!payload.neighborhood) {
-          el.loginError.textContent = "Enter your neighborhood name.";
+        payload.address = loginAddress.value.trim();
+        if (!payload.neighborhood || !payload.address) {
+          el.loginError.textContent = "Enter your neighborhood and street address.";
           el.sendCode.disabled = false;
           return;
         }
