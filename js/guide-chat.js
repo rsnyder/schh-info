@@ -24,46 +24,28 @@
          We&rsquo;ll send you a six-digit sign-in code.</p>
       <label for="ga-email">Email address</label>
       <input type="email" id="ga-email" autocomplete="email" required>
+      <div class="ga-hidden" data-ga="moreInfoWrap">
+        <p class="ga-note" data-ga="moreInfoMsg">This email isn&rsquo;t listed in the
+           Resident Directory &mdash; that&rsquo;s common (many residents keep their
+           entry private) and doesn&rsquo;t affect your access. Just tell us:</p>
+        <label for="ga-login-name">Your name</label>
+        <input type="text" id="ga-login-name" autocomplete="name" maxlength="100">
+        <label for="ga-login-neighborhood">Your Sun City neighborhood</label>
+        <input type="text" id="ga-login-neighborhood" autocomplete="off" maxlength="120">
+      </div>
+      <div class="ga-hidden" data-ga="reviewMsg">
+        <p><strong>Thanks &mdash; one more step on our side.</strong> We couldn&rsquo;t
+           verify this automatically, so a community volunteer will review your
+           request (usually within a day). You&rsquo;ll get an email with a sign-in
+           link as soon as you&rsquo;re approved.</p>
+      </div>
       <button class="ga-btn" data-ga="sendCode">Send code</button>
       <p class="ga-note">You will not need to create or remember a password.</p>
       <p class="ga-note">Already have a sign-in code?
-        <button class="ga-linkish" data-ga="haveCode">Enter it</button>
-        &nbsp;&middot;&nbsp; Not receiving one?
-        <button class="ga-linkish" data-ga="showAccessFromLogin">Request access</button></p>
+        <button class="ga-linkish" data-ga="haveCode">Enter it</button></p>
       <p class="ga-error" data-ga="loginError" role="alert"></p>
     </section>
 
-    <section class="ga-card ga-hidden" data-ga="access">
-      <h2>Request access</h2>
-      <p data-ga="accessIntro">If your entry in the resident directory is set to private
-         (or uses a different email), we can&rsquo;t verify you automatically.
-         Send a request and a community volunteer will review it &mdash;
-         you&rsquo;ll be able to sign in once it&rsquo;s approved.</p>
-      <div data-ga="accessForm">
-        <label for="ga-acc-email">Email address</label>
-        <input type="email" id="ga-acc-email" autocomplete="email" required>
-        <div class="ga-challenge ga-hidden" data-ga="challengeWrap">
-          <p><strong>Fastest &mdash; get in right now:</strong> tap
-             <a data-ga="challengeLink" href="#" target="_blank" rel="noopener">Sun City
-             Resident Central</a>, which opens in a separate tab (sign in there with
-             your community website account if asked). On the page you land on, find
-             the &ldquo;<strong data-ga="challengeAnchor"></strong>&rdquo; section and
-             note the <strong>first item</strong> listed under it &mdash; just a word
-             or two. Then switch back to this tab and type it here:</p>
-          <label for="ga-acc-challenge">First item under &ldquo;<span data-ga="challengeAnchor2"></span>&rdquo;</label>
-          <input type="text" id="ga-acc-challenge" autocomplete="off" maxlength="150">
-        </div>
-        <p class="ga-note" data-ga="manualLabel"><strong>Or request manual review</strong>
-           &mdash; a community volunteer approves these, usually within a day:</p>
-        <label for="ga-acc-name">Your name</label>
-        <input type="text" id="ga-acc-name" autocomplete="name" maxlength="100">
-        <label for="ga-acc-note">Street address (optional &mdash; helps confirm residency)</label>
-        <input type="text" id="ga-acc-note" autocomplete="street-address" maxlength="300">
-        <button class="ga-btn" data-ga="sendAccess">Continue</button>
-      </div>
-      <p class="ga-note"><button class="ga-linkish" data-ga="accessBack">Back to sign-in</button></p>
-      <p class="ga-error" data-ga="accessError" role="alert"></p>
-    </section>
 
     <section class="ga-card ga-hidden" data-ga="otp">
       <h2>Check your email</h2>
@@ -78,13 +60,12 @@
         &nbsp;&middot;&nbsp;
         <button class="ga-linkish" data-ga="changeEmail">Use a different email</button>
       </p>
-      <p class="ga-note">No code after a few minutes? Check your spam folder, or
-        <button class="ga-linkish" data-ga="showAccessFromOtp">request access</button>.</p>
+      <p class="ga-note">No code after a few minutes? Check your spam folder.</p>
       <div class="ga-nudge ga-hidden" data-ga="stuckNudge" role="alert">
-        <p><strong>Still no code?</strong> If your entry in the resident directory
-           is set to private, a code can&rsquo;t be sent to you. You can get
-           verified another way &mdash; it takes about a minute.</p>
-        <button class="ga-btn" data-ga="nudgeAccess">Get verified another way</button>
+        <p><strong>Still no code?</strong> Check your spam or junk folder for a
+           message from schh.info, then tap Resend code. If it keeps failing,
+           please <a href="https://schh.info/contact/" target="_blank" rel="noopener">let us
+           know</a> so we can help.</p>
       </div>
       <p class="ga-error" data-ga="otpError" role="alert"></p>
     </section>
@@ -123,6 +104,8 @@
   root.querySelectorAll("[data-ga]").forEach(node => { el[node.dataset.ga] = node; });
   const emailInput = root.querySelector("#ga-email");
   const codeInput = root.querySelector("#ga-code");
+  const loginName = root.querySelector("#ga-login-name");
+  const loginNeighborhood = root.querySelector("#ga-login-neighborhood");
 
   let conversationId = null;
   let pendingEmail = "";
@@ -131,10 +114,9 @@
   let nudgeTimer = null;
   let resendCount = 0;
 
-  // The "still no code?" nudge is a CLIENT-SIDE timer shown to everyone on
-  // the code screen after 75s — verified residents have long since entered
-  // their code, so in practice only stuck (directory-invisible) users see
-  // it, without the server ever revealing eligibility (spec §25.5).
+  // The "still no code?" nudge: a client-side timer for delivery problems
+  // (spam folder, mail delays) — eligibility questions are handled honestly
+  // before the code screen is ever shown.
   function armNudge() {
     clearTimeout(nudgeTimer);
     el.stuckNudge.classList.add("ga-hidden");
@@ -185,9 +167,13 @@
   }
 
   function show(screen) {
+    if (screen === "login") {
+      el.reviewMsg.classList.add("ga-hidden");
+      el.sendCode.classList.remove("ga-hidden");
+      el.sendCode.textContent = "Send code";
+    }
     el.login.classList.toggle("ga-hidden", screen !== "login");
     el.otp.classList.toggle("ga-hidden", screen !== "otp");
-    el.access.classList.toggle("ga-hidden", screen !== "access");
     el.chatWrap.classList.toggle("ga-hidden", screen !== "chat");
     // history is loaded separately (enterChat); only greet here when we
     // arrive at an empty panel through a path that doesn't load history
@@ -427,23 +413,37 @@
     if (!email) { el.loginError.textContent = "Enter your email address."; return; }
     el.sendCode.disabled = true;
     try {
+      const payload = { email };
+      if (!el.moreInfoWrap.classList.contains("ga-hidden")) {
+        payload.name = loginName.value.trim();
+        payload.neighborhood = loginNeighborhood.value.trim();
+        if (!payload.neighborhood) {
+          el.loginError.textContent = "Enter your neighborhood name.";
+          el.sendCode.disabled = false;
+          return;
+        }
+      }
       const response = await api("/api/auth/request-otp",
-        { method: "POST", body: JSON.stringify({ email }) });
+        { method: "POST", body: JSON.stringify(payload) });
       const body = await response.json().catch(() => ({}));
       if (response.status === 429) {
         el.loginError.textContent = (body.error && body.error.message)
           || "Too many attempts — wait a few minutes and try again.";
       } else if (body.codeSent) {
+        el.moreInfoWrap.classList.add("ga-hidden");
         enterOtpScreen(email);
-      } else if (body.reason === "NOT_IN_DIRECTORY") {
-        // honest fork: no fake code screen — straight to the other doors
-        openAccess(email, true);
+      } else if (body.reason === "NEED_MORE_INFO") {
+        // honest fork: reveal name + neighborhood right here, same card
+        el.moreInfoWrap.classList.remove("ga-hidden");
+        el.sendCode.textContent = "Continue";
+        loginName.focus();
+      } else if (body.reason === "UNDER_REVIEW") {
+        el.moreInfoWrap.classList.add("ga-hidden");
+        el.reviewMsg.classList.remove("ga-hidden");
+        el.sendCode.classList.add("ga-hidden");
       } else if (body.reason === "DELIVERY_FAILED") {
         el.loginError.textContent = "We couldn't send the code just now — "
           + "please try again in a few minutes.";
-      } else if (body.reason === "VERIFY_UNAVAILABLE") {
-        el.loginError.textContent = "We can't reach the Resident Directory right now — "
-          + "please try again shortly.";
       } else {
         el.loginError.textContent = (body.error && body.error.message)
           || "Something went wrong. Try again.";
@@ -495,119 +495,6 @@
     }
     resumeOtp(email);
   });
-
-  // ---------------------------------------------------- request access
-  const accEmail = root.querySelector("#ga-acc-email");
-  const accName = root.querySelector("#ga-acc-name");
-  const accNote = root.querySelector("#ga-acc-note");
-
-  const accChallenge = root.querySelector("#ga-acc-challenge");
-  let challengeId = null;
-
-  async function loadChallenge() {
-    challengeId = null;
-    accChallenge.value = "";
-    el.challengeWrap.classList.add("ga-hidden");
-    try {
-      const r = await api("/api/auth/challenge", { method: "GET" });
-      if (!r.ok) return;
-      const d = await r.json();
-      if (!d.available) return;
-      challengeId = d.challengeId;
-      el.challengeAnchor.textContent = d.anchor;
-      el.challengeAnchor2.textContent = d.anchor;
-      el.challengeLink.href = d.url;
-      el.challengeWrap.classList.remove("ga-hidden");
-    } catch { /* challenge stays hidden; manual path still works */ }
-  }
-
-  var ACCESS_INTRO_DEFAULT = null;  // captured on first open
-
-  function openAccess(prefill, fromNotFound) {
-    if (ACCESS_INTRO_DEFAULT === null) ACCESS_INTRO_DEFAULT = el.accessIntro.innerHTML;
-    el.accessIntro.innerHTML = fromNotFound
-      ? "<strong>This email isn&rsquo;t listed in the Resident Directory.</strong> "
-        + "That&rsquo;s common &mdash; many residents keep their directory entry "
-        + "private &mdash; and it doesn&rsquo;t affect your access. Two ways to "
-        + "get verified:"
-      : ACCESS_INTRO_DEFAULT;
-    el.accessForm.classList.remove("ga-hidden");
-    el.accessError.textContent = "";
-    if (prefill && !accEmail.value) accEmail.value = prefill;
-    show("access");
-    (accEmail.value ? accName : accEmail).focus();
-    loadChallenge();
-  }
-  el.showAccessFromLogin.addEventListener("click", () => openAccess(emailInput.value.trim()));
-  el.showAccessFromOtp.addEventListener("click", () => { disarmNudge(); openAccess(pendingEmail); });
-  el.nudgeAccess.addEventListener("click", () => { disarmNudge(); openAccess(pendingEmail); });
-  el.accessBack.addEventListener("click", () => show("login"));
-
-  el.sendAccess.addEventListener("click", async () => {
-    el.accessError.textContent = "";
-    const email = accEmail.value.trim();
-    const name = accName.value.trim();
-    const answer = challengeId ? accChallenge.value.trim() : "";
-    if (!email) { el.accessError.textContent = "Enter your email address."; return; }
-    if (!name && !answer) {
-      el.accessError.textContent = "Answer the form question above for instant access, "
-        + "or enter your name for manual review.";
-      return;
-    }
-    el.sendAccess.disabled = true;
-    try {
-      const payload = { email, name, note: accNote.value.trim() };
-      if (challengeId && accChallenge.value.trim()) {
-        payload.challengeId = challengeId;
-        payload.challengeAnswer = accChallenge.value.trim();
-      }
-      const response = await api("/api/auth/request-access",
-        { method: "POST", body: JSON.stringify(payload) });
-      if (response.ok) {
-        const body = await response.json().catch(() => ({}));
-        el.accessIntro.textContent = body.verified
-          ? "You're verified! Go back to sign-in and enter your email address "
-            + "— a sign-in code will be emailed to you."
-          : (body.message || "Request received! It will be reviewed shortly "
-            + "— you’ll get an email when your access is approved. "
-            + "Then come back here and sign in with your email address.");
-        el.accessForm.classList.add("ga-hidden");
-      } else {
-        const body = await response.json().catch(() => ({}));
-        el.accessError.textContent = (body.error && body.error.message)
-          || "Something went wrong. Try again.";
-      }
-    } catch { el.accessError.textContent = "Something went wrong. Try again."; }
-    el.sendAccess.disabled = false;
-  });
-
-  el.verify.addEventListener("click", async () => {
-    el.otpError.textContent = "";
-    const token = codeInput.value.trim();
-    if (!/^[0-9]{6}$/.test(token)) {
-      el.otpError.textContent = "Enter the six-digit code."; return;
-    }
-    el.verify.disabled = true;
-    const response = await api("/api/auth/verify-otp",
-      { method: "POST", body: JSON.stringify({ email: pendingEmail, token }) });
-    el.verify.disabled = false;
-    if (response.ok) {
-      const body = await response.json().catch(() => ({}));
-      firstName = (body.user && body.user.firstName) || "";
-      disarmNudge();
-      clearPending();
-      enterChat();
-    } else {
-      const body = await response.json().catch(() => ({}));
-      el.otpError.textContent = (body.error && body.error.message)
-        || "The code is invalid or has expired.";
-    }
-  });
-  codeInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") { e.preventDefault(); el.verify.click(); }
-  });
-
-  el.newConvo.addEventListener("click", clearConversation);
 
   // ---------------------------------------------------------- invitations
   const invEmail = root.querySelector("#ga-inv-email");
