@@ -507,9 +507,18 @@
       el.otpError.textContent = "Enter the six-digit code."; return;
     }
     el.verify.disabled = true;
-    const response = await api("/api/auth/verify-otp",
-      { method: "POST", body: JSON.stringify({ email: pendingEmail, token }) });
-    el.verify.disabled = false;
+    let response;
+    try {
+      response = await api("/api/auth/verify-otp",
+        { method: "POST", body: JSON.stringify({ email: pendingEmail, token }) });
+    } catch (e) {
+      // a rejected fetch must never strand the button disabled (the iOS
+      // code-autofill hang, 2026-08-18)
+      el.otpError.textContent = "Connection hiccup — please tap Verify again.";
+      return;
+    } finally {
+      el.verify.disabled = false;
+    }
     if (response.ok) {
       const body = await response.json().catch(() => ({}));
       firstName = (body.user && body.user.firstName) || "";
@@ -524,6 +533,18 @@
   });
   codeInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") { e.preventDefault(); el.verify.click(); }
+  });
+  // Auto-verify when a full code lands in the field — phones' code
+  // autofill fills all six digits at once, and typing the sixth digit
+  // shouldn't need an extra tap either. Once per code value, so a wrong
+  // code doesn't retry in a loop while being corrected.
+  let lastAutoTried = "";
+  codeInput.addEventListener("input", () => {
+    const v = codeInput.value.trim();
+    if (/^[0-9]{6}$/.test(v) && v !== lastAutoTried && !el.verify.disabled) {
+      lastAutoTried = v;
+      el.verify.click();
+    }
   });
 
   el.newConvo.addEventListener("click", clearConversation);
