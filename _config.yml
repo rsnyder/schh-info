@@ -94,6 +94,8 @@ contact:
   heading:      "Contact Us"
   subheading:   "Found an error? Want to suggest content? We'd love to hear from you."
   endpoint: "https://schh-contact.netlify.app/.netlify/functions/contact"
+  # Fallback shown on the contact-error page when the form endpoint is down
+  email: "contact@schh.info"
 
 # -----------------------------------------------
 # Footer
