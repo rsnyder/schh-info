@@ -9,6 +9,16 @@
 # Rebuilt from a scan of /schh-knowledge-base — each card maps to real
 # source folders so the grid reflects what's actually indexed.
 
+- icon: calendar
+  heading: "Current News & Upcoming Events"
+  description: >-
+    See what's happening around the community — upcoming events and
+    activities, plus the latest Association news, refreshed daily.
+  questions:
+    - "What community events are coming up this week?"
+    - "What's happening this weekend?"
+    - "What's the latest community news?"
+
 - icon: gavel
   heading: "Governing Documents & Rules"
   description: >-
@@ -45,7 +55,6 @@
   questions:
     - "What are the indoor pool hours?"
     - "How do I join a chartered club?"
-    - "What community events are coming up this week?"
 
 - icon: home
   heading: "Villas & Managed Neighborhoods"
