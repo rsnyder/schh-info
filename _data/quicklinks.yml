@@ -93,7 +93,8 @@
   icon: lock
   links:
     - title: "Online Request Form"
-      website: https://suncityhiltonhead.org/DwellingLive/46134~9514732
+      url: https://suncityhiltonhead.org/DwellingLive/46134~9514732
+      description: "Submit a guest pass or gate access request online. Sign in with your Sun City account."
     - title: "Main Gate"
       phone: "(843) 705-4035"
       address: "1 Sun City Blvd, Okatie, SC 29909"
