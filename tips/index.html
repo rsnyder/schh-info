@@ -1,0 +1,25 @@
+---
+layout: app
+slug: tips
+title: Tips & Tricks
+description: "Quirks, shortcuts, and workarounds for getting the most out of the SCHH Community Guide."
+---
+<div class="container prose">
+    <header class="page-header">
+        <h1>Tips &amp; Tricks</h1>
+    </header>
+
+    <div class="about-intro">
+        {{ site.data.tips.intro | markdownify }}
+    </div>
+
+    {% for tip in site.data.tips.tips %}
+    <section class="section-block"{% if tip.anchor %} id="{{ tip.anchor }}"{% endif %}>
+        <h2 class="section-heading">
+            <span class="icon-badge">{% include icon.html name=tip.icon %}</span>
+            <span>{{ tip.heading }}</span>
+        </h2>
+        {{ tip.body | markdownify }}
+    </section>
+    {% endfor %}
+</div>

@@ -20,6 +20,7 @@ const PRECACHE = [
   "/vendors/",
   "/more/",
   "/install/",
+  "/tips/",
   "/offline/",
   "/css/app.css?v=" + VERSION,
   "/css/guide-chat.css?v=" + VERSION,

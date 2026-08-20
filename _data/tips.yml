@@ -1,0 +1,77 @@
+# Tips & Tricks page content (/tips/).
+# `intro` renders as plain paragraphs above the tip list.
+# Each `tips` item renders as an icon-badged section, same pattern as
+# the About page.
+#
+# icon: name from _includes/icon.html
+
+intro: |-
+  Small quirks and shortcuts worth knowing — how the guide's links, map,
+  and chat behave, and a few workarounds for things that can otherwise be
+  confusing.
+
+tips:
+  - icon: lock
+    heading: "Links That Ask You to Log In"
+    anchor: protected-links
+    body: |-
+      Some links — the gate pass request form, for example, and other
+      Resident Central materials — point to protected pages on the
+      Association website that require you to sign in.
+
+      Here's the quirk: after you log in, the Association website drops
+      you on its main Resident Central page instead of the page you were
+      headed to. That's how their login works — it isn't an error, and
+      you didn't do anything wrong.
+
+      **The workaround:** go back and tap the link a second time. Now
+      that you're signed in, it will take you straight to the right
+      page. You stay signed in for a while afterward, so protected links
+      keep working without another login.
+
+  - icon: map-marker
+    heading: "Addresses Open in Google Maps"
+    anchor: address-links
+    body: |-
+      Wherever an address appears in the guide — on the
+      [Links page](/links/) or in a map pin — tapping it opens that
+      location in Google Maps in a new tab. From there, one more tap on
+      **Directions** starts turn-by-turn navigation from wherever you
+      are.
+
+  - icon: map
+    heading: "Getting the Most from the Community Map"
+    anchor: community-map
+    body: |-
+      The [Community Map](/map/) shows amenities across Sun City on one
+      map. Tap any pin to expand its details — name, description, a
+      tap-to-call phone number, and an address link that opens the spot
+      in Google Maps for directions.
+
+      Use the category legend to show just the pins you care about
+      (pools, pickleball, dog parks, and so on), and the location button
+      in the map's corner to show where you are on the map.
+
+  - icon: comments
+    heading: "Getting Better Answers from the Chat"
+    anchor: chat-tips
+    body: |-
+      You can [ask follow-up questions](/) — the chat remembers the
+      conversation, so "what about the outdoor pools?" works after a
+      question about pool hours.
+
+      For happenings, ask things like "what's going on this week?" or
+      "when is the next farmers market?" — the guide's news and event
+      information is refreshed daily.
+
+      Every answer lists the official sources it drew from. For anything
+      important, tap through and confirm with the original document.
+
+  - icon: smartphone
+    heading: "Put the Guide on Your Home Screen"
+    anchor: install
+    body: |-
+      The guide can be added to your phone's home screen, where it opens
+      full-screen like a regular app — no app store needed. The
+      [installation page](/install/) walks through the steps for iPhone
+      and Android.
