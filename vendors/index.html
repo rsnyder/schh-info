@@ -73,6 +73,12 @@ description: "A curated list of local vendors and services, including resident-o
             var url = /^https?:/.test(v.website) ? v.website : "https://" + v.website;
             parts.push('<a href="' + esc(url) + '" target="_blank" rel="noopener">Website</a>');
         }
+        if (v.address) {
+            // Same tap-for-directions convention as Quick Links and the map pins.
+            var q = encodeURIComponent(v.name + ", " + v.address);
+            parts.push('<a href="https://www.google.com/maps/search/?api=1&query=' + q
+                + '" target="_blank" rel="noopener">' + esc(v.address) + "</a>");
+        }
         return parts.join('<span class="vendor-sep">&middot;</span>');
     }
     function vendorCard(v, showCategory) {
