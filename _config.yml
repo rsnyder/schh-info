@@ -39,6 +39,11 @@ analytics:
 # pipeline (src/ingest_deepdives.py fetches this folder via the GitHub
 # API), so committing here is the ONLY publish step.
 # -----------------------------------------------
+# future: true because an article's front-matter date is editorial (the
+# publication date shown on the page), not a scheduling instruction —
+# without this, Jekyll silently skips generating any future-dated
+# article's page while the index still links it (live 404, 2026-08-21).
+future: true
 collections:
   deepdives:
     output: true
