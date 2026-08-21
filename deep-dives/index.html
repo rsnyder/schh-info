@@ -10,7 +10,8 @@ description: "Deeply-researched articles of interest to the Sun City Hilton Head
         <p class="subheading">Deeply-researched articles about the community
            and the place we live — a new one each week. Every article also
            feeds the <a href="/">Guide's chat</a>, so you can ask follow-up
-           questions about anything you read here.</p>
+           questions about anything you read here. AI does the heavy lifting
+           — <a href="#how">here's exactly how</a>.</p>
     </header>
 
     {% assign articles = site.deepdives | sort: "date" | reverse %}
@@ -25,4 +26,33 @@ description: "Deeply-researched articles of interest to the Sun City Hilton Head
         <p><a href="{{ article.url }}">Read the article &rarr;</a></p>
     </article>
     {% endfor %}
+
+    <section class="section-block" id="how">
+        <h2 class="section-heading">How Deep Dives are made</h2>
+        <p>We're upfront about it: AI does the research and writing here,
+           through a four-phase process built for accuracy rather than speed.</p>
+        <ol>
+            <li><strong>Independent research.</strong> Three leading AI models
+                — currently Anthropic's Claude Fable&nbsp;5, OpenAI's
+                GPT&#8209;5.6 Sol, and Google's Gemini&nbsp;3.1 — each perform
+                deep research on the same topic, independently, from an
+                identical prompt. None sees the others' work.</li>
+            <li><strong>Synthesis and verification.</strong> The three reports
+                are compared side by side: points of agreement are identified,
+                discrepancies are resolved or flagged, and important claims
+                are verified against the sources they cite. The result is a
+                consolidated research package.</li>
+            <li><strong>Writing.</strong> A separate model turns that package
+                into an accurate, engaging narrative for a general community
+                audience — without introducing any fact that isn't supported
+                by the package.</li>
+            <li><strong>Fact-check.</strong> Another model then checks the
+                finished article against the research package and the cited
+                sources, correcting errors, overstatements, and qualifications
+                that got lost in the writing.</li>
+        </ol>
+        <p>Even so, no process is perfect — if you spot something wrong,
+           <a href="/contact/">tell us</a> and we'll fix it and note the
+           correction.</p>
+    </section>
 </div>

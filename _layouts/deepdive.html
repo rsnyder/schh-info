@@ -5,7 +5,9 @@ layout: app
     <header class="page-header">
         <p class="dd-back"><a href="/deep-dives/">&larr; All Deep Dives</a></p>
         <h1>{{ page.title }}</h1>
-        <p class="subheading">{{ page.date | date: "%B %-d, %Y" }}</p>
+        <p class="subheading">{{ page.date | date: "%B %-d, %Y" }} &middot;
+           Researched and written with AI, then cross-checked —
+           <a href="/deep-dives/#how">how Deep Dives are made</a></p>
     </header>
     {{ content }}
     <p class="callout">Have a correction, a source, or an idea for a future
