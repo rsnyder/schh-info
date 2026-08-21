@@ -26,6 +26,31 @@ analytics:
   website_id: "9a30006d-503a-4ab5-8c01-0f0705350c03"
 
 # -----------------------------------------------
+# Deep Dives — deeply-researched articles, one Markdown file per article
+# in _deepdives/. Filename becomes the URL (two-counties.md ->
+# /deep-dives/two-counties/), so name files with a plain slug and put the
+# date in front matter:
+#   ---
+#   title: "One Community, Two Counties"
+#   date: 2026-08-22
+#   summary: "How SCHH spans Beaufort and Jasper counties..."
+#   ---
+# Articles are also ingested into the chat knowledge base by the guide
+# pipeline (src/ingest_deepdives.py fetches this folder via the GitHub
+# API), so committing here is the ONLY publish step.
+# -----------------------------------------------
+collections:
+  deepdives:
+    output: true
+    permalink: /deep-dives/:name/
+defaults:
+  - scope:
+      type: deepdives
+    values:
+      layout: deepdive
+      slug: deep-dives
+
+# -----------------------------------------------
 # Navigation — rendered as the bottom tab bar on phones and the
 # top-bar links on larger screens. Icons map to _includes/icon.html.
 # -----------------------------------------------
@@ -68,6 +93,10 @@ nav:
       short: "Map"
       url: "/map/"
       icon: "map-marker"
+    - text: "Deep Dives"
+      short: "Deep Dives"
+      url: "/deep-dives/"
+      icon: "book"
     - text: "Tips & Tricks"
       short: "Tips"
       url: "/tips/"

@@ -1,0 +1,28 @@
+---
+layout: app
+slug: deep-dives
+title: Deep Dives
+description: "Deeply-researched articles of interest to the Sun City Hilton Head community — a new one each week."
+---
+<div class="container prose">
+    <header class="page-header">
+        <h1>Deep Dives</h1>
+        <p class="subheading">Deeply-researched articles about the community
+           and the place we live — a new one each week. Every article also
+           feeds the <a href="/">Guide's chat</a>, so you can ask follow-up
+           questions about anything you read here.</p>
+    </header>
+
+    {% assign articles = site.deepdives | sort: "date" | reverse %}
+    {% if articles.size == 0 %}
+    <p class="callout">The first Deep Dive is in the works — check back soon.</p>
+    {% endif %}
+    {% for article in articles %}
+    <article class="card" style="margin-top:1rem">
+        <h2 style="margin:.2rem 0 .4rem"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+        <p class="hint" style="margin:.1rem 0 .5rem">{{ article.date | date: "%B %-d, %Y" }}</p>
+        {% if article.summary %}<p>{{ article.summary }}</p>{% endif %}
+        <p><a href="{{ article.url }}">Read the article &rarr;</a></p>
+    </article>
+    {% endfor %}
+</div>
