@@ -195,7 +195,7 @@
       const data = response.ok ? await response.json() : {};
       conversationId = data.conversationId || null;
       if (data.messages && data.messages.length) {
-        for (const m of data.messages) addBubble(m.role, m.text);
+        for (const m of data.messages) addBubble(m.role, m.text, m);
       } else {
         greet();
       }
@@ -389,16 +389,53 @@
     }
   }
 
-  function addBubble(who, text) {
+  function addBubble(who, text, meta) {
     const wrap = document.createElement("div");
     wrap.className = `ga-msg ga-${who}`;
     const bubble = document.createElement("div");
     bubble.className = "ga-bubble";
     if (who === "you") bubble.textContent = text; else { bubble.innerHTML = render(text); linkifyLocations(bubble); }
     wrap.appendChild(bubble);
+    if (who === "bot" && meta && meta.id) wrap.appendChild(buildFeedback(meta.id, meta.rating));
     el.messages.appendChild(wrap);
     el.messages.scrollTop = el.messages.scrollHeight;
     return bubble;
+  }
+
+  // ---- answer feedback (thumbs) ---------------------------------------
+  // Ratings are forwarded to Dify's message-feedback API via the BFF, so
+  // they land attached to the exact message — visible in the Dify console
+  // logs and harvested by the weekly chat-quality report. Tapping the
+  // active thumb again retracts the rating.
+  const _THUMB = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 10h4v11H2V10zm20 1c0-1.1-.9-2-2-2h-5.3l.9-4.4c.1-.5-.1-1-.4-1.3L14 2 8.6 8.6c-.4.4-.6.9-.6 1.4v9c0 1.1.9 2 2 2h7c.8 0 1.5-.5 1.8-1.2l2.9-6.8c.2-.2.3-.5.3-.8V11z"/></svg>';
+  function buildFeedback(messageId, rating) {
+    const bar = document.createElement("div");
+    bar.className = "ga-feedback";
+    if (rating) bar.dataset.rating = rating;
+    const make = (kind, label) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "ga-thumb ga-thumb-" + kind;
+      button.setAttribute("aria-label", label);
+      button.title = label;
+      button.innerHTML = _THUMB;
+      button.addEventListener("click", async () => {
+        const previous = bar.dataset.rating || "";
+        const next = previous === kind ? null : kind;
+        bar.dataset.rating = next || "";
+        try {
+          const response = await api("/api/chat/feedback", {
+            method: "POST",
+            body: JSON.stringify({ messageId, rating: next }),
+          });
+          if (!response.ok) bar.dataset.rating = previous;
+        } catch { bar.dataset.rating = previous; }
+      });
+      return button;
+    };
+    bar.appendChild(make("like", "Good answer"));
+    bar.appendChild(make("dislike", "Poor answer"));
+    return bar;
   }
 
   // ------------------------------------------------------------- login
@@ -621,7 +658,7 @@
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
-    let buffer = "", answer = "";
+    let buffer = "", answer = "", messageId = null;
     for (;;) {
       const { done, value } = await reader.read();
       if (done) break;
@@ -634,6 +671,7 @@
         let payload;
         try { payload = JSON.parse(line.slice(6)); } catch { continue; }
         if (payload.conversation_id) conversationId = payload.conversation_id;
+        if (payload.message_id) messageId = payload.message_id;
         if (payload.event === "message" && payload.answer) {
           answer += payload.answer;
           bubble.innerHTML = render(answer); linkifyLocations(bubble);
@@ -645,6 +683,7 @@
       }
     }
     if (!answer) bubble.textContent = "No answer was returned. Please try again.";
+    else if (messageId) bubble.parentElement.appendChild(buildFeedback(messageId, null));
   });
 
   // ----------------------------------------------------------- startup
