@@ -80,6 +80,7 @@ description: "A curated list of local vendors and services, including resident-o
             + "<h3>" + esc(v.name)
             + (v.featured ? '<span class="vendor-badge vendor-badge-featured">Featured</span>' : "")
             + (v.resident ? '<span class="vendor-badge">Resident-owned</span>' : "")
+            + (v.listed ? '<span class="vendor-badge vendor-badge-listed">Not yet resident-recommended</span>' : "")
             + "</h3>"
             + (showCategory && v.service_category
                 ? "<p><strong>" + esc(v.service_category) + "</strong>"
@@ -231,7 +232,9 @@ description: "A curated list of local vendors and services, including resident-o
             // Within a category: sponsored placements first, then
             // resident-owned businesses, then everyone else — alphabetical
             // within each tier (the API delivers name order already).
-            var tier = function (v) { return v.featured ? 0 : (v.resident ? 1 : 2); };
+            // ...with directory-seeded ("listed") entries always below the
+            // resident-recommended tiers.
+            var tier = function (v) { return v.listed ? 3 : (v.featured ? 0 : (v.resident ? 1 : 2)); };
             order.forEach(function (slug) {
                 groups[slug].vendors.sort(function (a, b) { return tier(a) - tier(b); });
             });

@@ -341,6 +341,7 @@ img, svg { max-width: 100%; }
   font-size: 13px; font-weight: 600; white-space: nowrap;
 }
 .vendor-badge-featured { background: #b8860b; }  /* sponsored placement */
+.vendor-badge-listed { background: #8a8578; }    /* directory-seeded, muted */
 .cat-grid {
   display: grid; gap: var(--space-3);
   grid-template-columns: repeat(2, minmax(0, 1fr));
