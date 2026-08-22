@@ -82,12 +82,24 @@ description: "A curated list of local vendors and services, including resident-o
         return parts.join('<span class="vendor-sep">&middot;</span>');
     }
 
-    // Research-confidence tier: stored as "strong" / "additional" /
-    // "verification_required" (bff/vendor_repository.py TIERS) — title-case
-    // it for display rather than hand-maintaining a label map.
-    function tierLabel(tier) {
-        if (!tier) return null;
-        return String(tier).replace(/_/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+    // Research tier: stored as "strong" / "additional" /
+    // "verification_required" (bff/vendor_repository.py TIERS). Rendered as
+    // an evidence-completeness indicator (owner decision 2026-08-22): filled
+    // dots give the at-a-glance ordering cue, and the words describe how
+    // much documentation the research found — never an endorsement.
+    var TIER_BADGES = {
+        strong: { dots: "●●●", label: "Well documented" },
+        additional: { dots: "●●○", label: "Partially documented" },
+        verification_required: { dots: "●○○", label: "Limited info" }
+    };
+
+    // Residents reporting use of a vendor: `used_count` when present, the
+    // legacy `recommendations` aggregate otherwise (addendum A3).
+    function usedCount(v) {
+        var used = (v.used_count === undefined || v.used_count === null)
+            ? v.recommendations : v.used_count;
+        used = parseInt(used, 10);
+        return used >= 0 ? used : 0;
     }
 
     // Collapsed-card badges (spec §14.2/§14.3): Featured, Resident-owned,
@@ -102,11 +114,14 @@ description: "A curated list of local vendors and services, including resident-o
         if (v.resident_owned || v.resident) {
             out += '<span class="vendor-badge">Resident-owned</span>';
         }
-        var label = tierLabel(v.tier);
-        if (label) {
+        // Research badge only while no resident has reported using the
+        // vendor — once residents vouch, that strictly stronger signal
+        // stands alone (owner decision 2026-08-22).
+        var t = TIER_BADGES[String(v.tier || "").toLowerCase()];
+        if (t && usedCount(v) === 0) {
             out += '<a class="vendor-badge vendor-badge-tier vendor-badge-tier-'
                 + esc(String(v.tier).toLowerCase()) + '" href="/vendors/about/#research-confidence">'
-                + "Research confidence: " + esc(label) + "</a>";
+                + '<span aria-hidden="true">' + t.dots + "</span> " + esc(t.label) + "</a>";
         }
         return out;
     }
@@ -118,10 +133,7 @@ description: "A curated list of local vendors and services, including resident-o
     // report, not a badge: "X residents report using this vendor", with the
     // highly-recommend clause appended only when Y > 0.
     function usageLine(v) {
-        var used = (v.used_count === undefined || v.used_count === null)
-            ? v.recommendations : v.used_count;
-        used = parseInt(used, 10);
-        if (!(used >= 0)) used = 0;
+        var used = usedCount(v);
         var highly = parseInt(v.highly_count, 10);
         if (!(highly >= 0)) highly = 0;
         var line = used + (used === 1
