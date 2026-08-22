@@ -81,27 +81,101 @@ description: "A curated list of local vendors and services, including resident-o
         }
         return parts.join('<span class="vendor-sep">&middot;</span>');
     }
-    function vendorCard(v, showCategory) {
+
+    // Research-confidence tier: stored as "strong" / "additional" /
+    // "verification_required" (bff/vendor_repository.py TIERS) — title-case
+    // it for display rather than hand-maintaining a label map.
+    function tierLabel(tier) {
+        if (!tier) return null;
+        return String(tier).replace(/_/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+    }
+
+    // Collapsed-card badges (spec §14.2/§14.3): Featured, Resident-owned,
+    // and — when public — Research confidence, linked to the plain-language
+    // explanation on the About page. Never hover-dependent; all text.
+    function badgesHtml(v) {
+        var out = "";
+        if (v.featured) {
+            out += '<span class="vendor-badge vendor-badge-featured">'
+                + esc(v.featured_disclosure || "Featured — paid sponsor") + "</span>";
+        }
+        if (v.resident_owned || v.resident) {
+            out += '<span class="vendor-badge">Resident-owned</span>';
+        }
+        var label = tierLabel(v.tier);
+        if (label) {
+            out += '<a class="vendor-badge vendor-badge-tier vendor-badge-tier-'
+                + esc(String(v.tier).toLowerCase()) + '" href="/vendors/about/#research-confidence">'
+                + "Research confidence: " + esc(label) + "</a>";
+        }
+        return out;
+    }
+
+    // Always show the numeric count, including 0 (spec §14.2/§23.4) — the
+    // canonical field when present, the legacy aggregate otherwise.
+    function recCount(v) {
+        var n = (v.recommendation_count === undefined || v.recommendation_count === null)
+            ? v.recommendations : v.recommendation_count;
+        n = parseInt(n, 10);
+        return n >= 0 ? n : 0;
+    }
+
+    // Sign-in happens on the recommend-vendor page itself; the link is
+    // visible to everyone. vendor_id may be absent on a legacy-only record
+    // — omit the deep-link param rather than send a broken one.
+    function recommendUrl(v) {
+        var url = "https://chat.schh.info/recommend-vendor.html";
+        return v.vendor_id ? url + "?vendor_id=" + encodeURIComponent(v.vendor_id) : url;
+    }
+
+    function detailsSection(summary, bodyHtml) {
+        return bodyHtml
+            ? '<details class="vendor-details"><summary>' + summary + "</summary>" + bodyHtml + "</details>"
+            : "";
+    }
+
+    // "Description and service area" (spec §14.3) — long content lives in a
+    // native <details>, never a fixed-height clipped box.
+    function descriptionDetails(v) {
+        var desc = v.brief_description || v.notes || "";
+        var coverage = v.coverage_area || v.area || "";
+        var body = "";
+        if (desc) body += "<p>" + esc(desc) + "</p>";
+        if (coverage) body += "<p><strong>Service area:</strong> " + esc(coverage) + "</p>";
+        return detailsSection("Description and service area", body);
+    }
+
+    // "What residents mention" (spec §14.5) — only when an approved
+    // AI-generated aggregate summary exists.
+    function summaryDetails(v) {
+        var s = v.recommendation_summary;
+        if (!s || !s.text) return "";
+        var count = parseInt(s.source_note_count, 10);
+        if (!(count >= 0)) count = 0;
+        var body = "<p>" + esc(s.text) + "</p>"
+            + '<p class="hint">' + esc(s.label || "AI-generated summary of resident notes")
+            + " &mdash; based on " + count + " resident notes.</p>";
+        return detailsSection("What residents mention", body);
+    }
+
+    function vendorCard(v) {
         return '<article class="card vendor-card">'
-            + "<h3>" + esc(v.name)
-            + (v.featured ? '<span class="vendor-badge vendor-badge-featured">Featured</span>' : "")
-            + (v.resident ? '<span class="vendor-badge">Resident-owned</span>' : "")
-            + (v.listed ? '<span class="vendor-badge vendor-badge-listed">Not yet resident-recommended</span>' : "")
-            + "</h3>"
-            + (showCategory && v.service_category
-                ? "<p><strong>" + esc(v.service_category) + "</strong>"
-                  + (v.area ? " &mdash; " + esc(v.area) : "") + "</p>"
-                : (v.area ? "<p>" + esc(v.area) + "</p>" : ""))
-            + (v.notes ? "<p>" + esc(v.notes) + "</p>" : "")
-            + (v.recommendations >= 2
-                ? '<p class="vendor-recs">Recommended by ' + v.recommendations + " residents</p>" : "")
+            + "<h3>" + esc(v.name) + badgesHtml(v) + "</h3>"
+            + '<p class="vendor-recs">Recommended by ' + recCount(v) + " residents</p>"
             + '<p class="vendor-contact">' + contact(v) + "</p>"
+            + descriptionDetails(v)
+            + summaryDetails(v)
+            + '<p class="vendor-recommend"><a href="' + esc(recommendUrl(v)) + '">Recommend this vendor</a></p>'
             + "</article>";
     }
 
     var slugOf = function (name) {
         return String(name).toLowerCase().replace(/&amp;|&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
     };
+    // Fallback icon set — used only when /api/vendor-categories is
+    // unavailable and a category has to be built from /api/vendors alone.
+    // Keep in sync with bff/vendors.py's _CATEGORY_ICONS, the source of
+    // truth once the categories endpoint is up.
     var CATEGORY_ICONS = {
         "plumbing": "🚰", "electrical": "⚡", "hvac": "❄️", "roofing": "🏠",
         "painting": "🎨", "landscaping-and-lawn-care": "🌿", "tree-service": "🌳",
@@ -115,9 +189,56 @@ description: "A curated list of local vendors and services, including resident-o
         "auto-service": "🚗", "insurance": "🛡️", "legal": "⚖️",
         "financial": "💰", "health-and-wellness": "🩺", "other": "📦"
     };
-    var iconFor = function (slug) { return CATEGORY_ICONS[slug] || "🛠️"; };
-    var groups = {};   // slug -> {name, vendors: []}
-    var order = [];    // slugs, alphabetical with Other last
+    var groups = {};   // slug -> {name, icon, count, vendors: []}
+    var order = [];    // slugs, in display order
+
+    var iconFor = function (slug) {
+        var g = groups[slug];
+        if (g && g.icon) return g.icon;
+        return CATEGORY_ICONS[slug] || "🛠️";
+    };
+
+    function ensureGroup(slug, name, icon) {
+        if (!groups[slug]) {
+            groups[slug] = {name: name, icon: icon || null, vendors: []};
+            order.push(slug);
+        }
+        return groups[slug];
+    }
+
+    // Primary path: build the grid straight from /api/vendor-categories —
+    // already active-only, display_order sorted, and carries the true
+    // approved-vendor count (including 0) per spec §14.1.
+    function buildFromCategoriesApi(categories) {
+        categories.forEach(function (c) {
+            var g = ensureGroup(c.slug, c.name, c.icon_key);
+            g.count = c.vendor_count;
+        });
+    }
+
+    // Fallback: current behavior, derived from /api/vendors when the
+    // categories endpoint errors. Alphabetical with "Other" pinned last;
+    // counts come from however many vendors actually land in each group.
+    function buildFallbackGrid(names) {
+        names.forEach(function (name) { ensureGroup(slugOf(name), name); });
+        order.sort(function (a, b) {
+            if (a === "other") return 1;
+            if (b === "other") return -1;
+            return groups[a].name.localeCompare(groups[b].name);
+        });
+    }
+
+    // A vendor may belong to multiple categories (canonical `categories`
+    // array); legacy-only records carry just a single `service_category`.
+    // Either way, every vendor lands in every category it belongs to.
+    function assignVendors(vendorList) {
+        vendorList.forEach(function (v) {
+            var names = (v.categories && v.categories.length) ? v.categories : [v.service_category || "Other"];
+            names.forEach(function (name) {
+                ensureGroup(slugOf(name), name).vendors.push(v);
+            });
+        });
+    }
 
     function renderGrid() {
         $("cat-view").hidden = true;
@@ -185,6 +306,9 @@ description: "A curated list of local vendors and services, including resident-o
         });
     }
 
+    // Category view renders vendors in server order — the API already
+    // applies the spec §14.4 ordering (Featured, then resident-recommended,
+    // then tier, then count, then name), so there is no client-side sort.
     function renderCategory(slug) {
         var group = groups[slug];
         if (!group) { renderGrid(); return; }
@@ -192,8 +316,8 @@ description: "A curated list of local vendors and services, including resident-o
         $("cat-title").textContent = iconFor(slug) + " " + group.name
             + (group.vendors.length ? " (" + group.vendors.length + ")" : "");
         $("cat-cards").innerHTML = group.vendors.length
-            ? group.vendors.map(function (v) { return vendorCard(v, false); }).join("")
-            : '<p>No resident-recommended vendors here yet &mdash; you could be the '
+            ? group.vendors.map(vendorCard).join("")
+            : '<p>No vendors listed here yet &mdash; you could be the '
               + 'reason there is one. Used someone good? '
               + '<a href="https://chat.schh.info/recommend-vendor.html">Recommend them</a>.</p>';
         renderNearby(slug);
@@ -205,68 +329,49 @@ description: "A curated list of local vendors and services, including resident-o
         if (slug && groups[slug]) renderCategory(slug); else renderGrid();
     }
 
-    fetch("https://chat.schh.info/api/vendors")
-        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-        .then(function (data) {
-            var vendors = (data && data.vendors) || [];
-            $("vendors-loading").hidden = true;
-            if (!vendors.length) { $("vendors-error").hidden = false; return; }
+    var categoriesPromise = fetch("https://chat.schh.info/api/vendor-categories")
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .catch(function () { return null; });
 
-            // Featured (sponsored) vendors no longer get a dedicated strip —
-            // they get top-of-category placement + badge in the listings, and
-            // the roster lives on /sponsors/.
+    var vendorsPromise = fetch("https://chat.schh.info/api/vendors")
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
 
-            // Every canonical category gets a card — an empty one still
-            // offers the web search and the recommend link. "Other" only
-            // appears when it actually holds vendors.
-            ((data && data.categories) || []).forEach(function (name) {
-                var slug = slugOf(name);
-                if (!groups[slug]) { groups[slug] = {name: name, vendors: []}; order.push(slug); }
-            });
-            vendors.forEach(function (v) {
-                var name = v.service_category || "Other";
-                var slug = slugOf(name);
-                if (!groups[slug]) { groups[slug] = {name: name, vendors: []}; order.push(slug); }
-                groups[slug].vendors.push(v);
-            });
-            order.sort(function (a, b) {
-                if (a === "other") return 1;
-                if (b === "other") return -1;
-                return groups[a].name.localeCompare(groups[b].name);
-            });
+    Promise.all([categoriesPromise, vendorsPromise]).then(function (results) {
+        var catsData = results[0];
+        var data = results[1];
+        var vendors = (data && data.vendors) || [];
+        $("vendors-loading").hidden = true;
+        if (!vendors.length) { $("vendors-error").hidden = false; return; }
 
-            // Within a category: sponsored placements first, then
-            // resident-owned businesses, then everyone else — alphabetical
-            // within each tier (the API delivers name order already).
-            // ...with directory-seeded ("listed") entries always below the
-            // resident-recommended tiers.
-            var tier = function (v) { return v.listed ? 3 : (v.featured ? 0 : (v.resident ? 1 : 2)); };
-            order.forEach(function (slug) {
-                groups[slug].vendors.sort(function (a, b) { return tier(a) - tier(b); });
-            });
+        // Every canonical category gets a card — an empty (0) one still
+        // offers the web search and the recommend link.
+        if (catsData && Array.isArray(catsData.categories) && catsData.categories.length) {
+            buildFromCategoriesApi(catsData.categories);
+        } else {
+            buildFallbackGrid((data && data.categories) || []);
+        }
+        assignVendors(vendors);
 
-            $("cat-grid").innerHTML = order.map(function (slug) {
-                var g = groups[slug];
-                var count = g.vendors.length
-                    ? g.vendors.length + (g.vendors.length === 1 ? " vendor" : " vendors")
-                    : "none yet — recommend one";
-                return '<a class="cat-card" href="#' + esc(slug) + '">'
-                    + '<span class="cat-icon" aria-hidden="true">' + iconFor(slug) + "</span>"
-                    + '<span class="cat-name">' + esc(g.name) + "</span>"
-                    + '<span class="cat-count">' + count + "</span></a>";
-            }).join("");
+        $("cat-grid").innerHTML = order.map(function (slug) {
+            var g = groups[slug];
+            var count = (typeof g.count === "number") ? g.count : g.vendors.length;
+            return '<a class="cat-card" href="#' + esc(slug) + '">'
+                + '<span class="cat-icon" aria-hidden="true">' + iconFor(slug) + "</span>"
+                + '<span class="cat-name">' + esc(g.name) + "</span>"
+                + '<span class="cat-count">' + count + (count === 1 ? " vendor" : " vendors") + "</span></a>";
+        }).join("");
 
-            $("cat-back").addEventListener("click", function (e) {
-                e.preventDefault();
-                history.pushState(null, "", location.pathname);
-                renderGrid();
-            });
-            window.addEventListener("hashchange", route);
-            route();
-        })
-        .catch(function () {
-            $("vendors-loading").hidden = true;
-            $("vendors-error").hidden = false;
+        $("cat-back").addEventListener("click", function (e) {
+            e.preventDefault();
+            history.pushState(null, "", location.pathname);
+            renderGrid();
         });
+        window.addEventListener("hashchange", route);
+        route();
+    })
+    .catch(function () {
+        $("vendors-loading").hidden = true;
+        $("vendors-error").hidden = false;
+    });
 })();
 </script>

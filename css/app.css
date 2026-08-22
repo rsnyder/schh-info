@@ -399,6 +399,40 @@ img, svg { max-width: 100%; }
 .vendor-contact a { display: inline-block; }
 .vendor-sep { color: var(--color-muted); margin-inline: var(--space-1); }
 
+/* Research-confidence badge is a link (to the About page's plain-language
+   explanation), so it needs its own text/hover treatment on top of the
+   shared .vendor-badge pill. Colors reuse already-AA-checked tokens rather
+   than new unvetted hex values. */
+a.vendor-badge { text-decoration: none; cursor: pointer; }
+a.vendor-badge:hover, a.vendor-badge:focus-visible { opacity: .85; }
+.vendor-badge-tier-strong { background: var(--color-success); }
+.vendor-badge-tier-additional { background: var(--color-primary); }
+.vendor-badge-tier-verification_required { background: var(--color-muted); }
+
+/* Long per-vendor content ("Description and service area", "What
+   residents mention") lives in native <details> so the collapsed card
+   stays scannable — no fixed-height clipping, reflows at 200% zoom, and
+   keyboard/AT operable for free. */
+.vendor-details {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px dashed var(--color-line);
+}
+.vendor-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+.vendor-details summary:hover, .vendor-details summary:focus-visible {
+  color: var(--color-primary-strong);
+}
+.vendor-details[open] summary { margin-bottom: var(--space-2); }
+.vendor-details p { margin: var(--space-2) 0 0; }
+.vendor-details p:first-of-type { margin-top: 0; }
+
+.vendor-recommend { margin-top: var(--space-3); }
+.vendor-recommend a { font-weight: 600; color: var(--color-link); }
+
 /* --------------------------------------------------------- install page */
 .install-section { margin-bottom: var(--space-6); }
 .install-section h2 {
