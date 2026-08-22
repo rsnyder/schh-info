@@ -161,7 +161,8 @@ description: "A curated list of local vendors and services, including resident-o
     function vendorCard(v) {
         return '<article class="card vendor-card">'
             + "<h3>" + esc(v.name) + badgesHtml(v) + "</h3>"
-            + '<p class="vendor-recs">Recommended by ' + recCount(v) + " residents</p>"
+            + '<p class="vendor-recs">Recommended by ' + recCount(v)
+            + (recCount(v) === 1 ? " resident" : " residents") + "</p>"
             + '<p class="vendor-contact">' + contact(v) + "</p>"
             + descriptionDetails(v)
             + summaryDetails(v)
