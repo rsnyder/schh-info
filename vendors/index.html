@@ -111,13 +111,27 @@ description: "A curated list of local vendors and services, including resident-o
         return out;
     }
 
-    // Always show the numeric count, including 0 (spec §14.2/§23.4) — the
-    // canonical field when present, the legacy aggregate otherwise.
-    function recCount(v) {
-        var n = (v.recommendation_count === undefined || v.recommendation_count === null)
-            ? v.recommendations : v.recommendation_count;
-        n = parseInt(n, 10);
-        return n >= 0 ? n : 0;
+    // Addendum A4 (wave U3): always show the numeric usage count, including 0
+    // (spec §14.2/§23.4, addendum A4) — `used_count` when present, the
+    // legacy `recommendations` aggregate otherwise; `highly_count` defaults
+    // to 0 for records that predate the two-level split. Counts read as a
+    // report, not a badge: "X residents report using this vendor", with the
+    // highly-recommend clause appended only when Y > 0.
+    function usageLine(v) {
+        var used = (v.used_count === undefined || v.used_count === null)
+            ? v.recommendations : v.used_count;
+        used = parseInt(used, 10);
+        if (!(used >= 0)) used = 0;
+        var highly = parseInt(v.highly_count, 10);
+        if (!(highly >= 0)) highly = 0;
+        var line = used + (used === 1
+            ? " resident reports using this vendor"
+            : " residents report using this vendor");
+        if (highly > 0) {
+            line += " &middot; " + highly
+                + (highly === 1 ? " highly recommends it" : " highly recommend it");
+        }
+        return line;
     }
 
     // Sign-in happens on the recommend-vendor page itself; the link is
@@ -161,12 +175,11 @@ description: "A curated list of local vendors and services, including resident-o
     function vendorCard(v) {
         return '<article class="card vendor-card">'
             + "<h3>" + esc(v.name) + badgesHtml(v) + "</h3>"
-            + '<p class="vendor-recs">Recommended by ' + recCount(v)
-            + (recCount(v) === 1 ? " resident" : " residents") + "</p>"
+            + '<p class="vendor-recs">' + usageLine(v) + "</p>"
             + '<p class="vendor-contact">' + contact(v) + "</p>"
             + descriptionDetails(v)
             + summaryDetails(v)
-            + '<p class="vendor-recommend"><a href="' + esc(recommendUrl(v)) + '">Recommend this vendor</a></p>'
+            + '<p class="vendor-recommend"><a href="' + esc(recommendUrl(v)) + '">I used this vendor</a></p>'
             + "</article>";
     }
 
