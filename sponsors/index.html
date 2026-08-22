@@ -103,23 +103,30 @@ description: "The sponsors who help keep the SCHH Community Guide free for every
             return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c];
         });
     }
-    fetch("https://chat.schh.info/api/vendors")
-        .then(function (r) { return r.ok ? r.json() : {vendors: []}; })
+    // T4.2: reads the canonical eligible-sponsor list directly instead of
+    // filtering /api/vendors client-side, so this page and the vendor
+    // directory can never disagree about who is currently Featured
+    // (docs/vendors_specification.md §14.7).
+    fetch("https://chat.schh.info/api/vendor-sponsors")
+        .then(function (r) { return r.ok ? r.json() : {sponsors: []}; })
         .then(function (data) {
-            var featured = ((data && data.vendors) || []).filter(function (v) { return v.featured; });
+            var sponsors = (data && data.sponsors) || [];
             var box = document.getElementById("sponsor-list");
-            if (!featured.length) {
+            if (!sponsors.length) {
                 box.innerHTML = '<p class="hint">Business sponsorships are just opening '
                     + '&mdash; charter spots are available.</p>';
                 return;
             }
-            box.innerHTML = "<ul>" + featured.map(function (v) {
-                var name = v.website
-                    ? '<a href="' + esc(/^https?:/.test(v.website) ? v.website : "https://" + v.website)
-                      + '" target="_blank" rel="noopener">' + esc(v.name) + "</a>"
-                    : esc(v.name);
-                return "<li>" + name + (v.service_category
-                    ? ' <span class="hint">&mdash; ' + esc(v.service_category) + "</span>" : "") + "</li>";
+            box.innerHTML = "<ul>" + sponsors.map(function (s) {
+                var name = s.website
+                    ? '<a href="' + esc(/^https?:/.test(s.website) ? s.website : "https://" + s.website)
+                      + '" target="_blank" rel="noopener">' + esc(s.name) + "</a>"
+                    : esc(s.name);
+                var categories = (s.categories || []).join(", ");
+                return "<li>" + name
+                    + (categories ? ' <span class="hint">&mdash; ' + esc(categories) + "</span>" : "")
+                    + (s.charter ? ' <span class="hint">&mdash; Charter Sponsor</span>' : "")
+                    + "</li>";
             }).join("") + "</ul>";
         })
         .catch(function () {
