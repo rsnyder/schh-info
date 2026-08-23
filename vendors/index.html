@@ -386,12 +386,17 @@ description: "A curated list of local vendors and services, including resident-o
     // ---- specialty tag filters -------------------------------------
     // The `specialties` attribute (spec §8.6) doubles as a within-category
     // facet: "just the dentists" out of 225 Medical & Dental listings.
-    // Selecting several tags is OR, the conventional single-facet
-    // behaviour — the tags in a category are mostly disjoint kinds of
-    // business, so OR is what "Dentist, Optometry" reads as, and it keeps
-    // each tag's count meaningful (that count never depends on what else
-    // is selected). Filters are page state, not URL state: category deep
-    // links (#slug) are load-bearing and stay exactly as they were.
+    //
+    // Selecting several tags ANDs them, and the bar only ever offers tags
+    // that still co-occur with what is already selected — counts are
+    // recomputed over the narrowed set every time. That pairing is what
+    // makes it safe: a tag that would return nothing is never offered, so
+    // you cannot click your way to an empty list. Pick "Dentist" and the
+    // bar becomes the things dentists here actually do (Dental Implants,
+    // Oral Surgery, …); "Optometry" simply is not on offer any more.
+    //
+    // Filters are page state, not URL state: category deep links (#slug)
+    // are load-bearing and stay exactly as they were.
     var activeTags = {};    // slug -> array of selected labels
     var tagsExpanded = {};  // slug -> true once "more" is clicked
     var TAG_HEAD = 12;      // tags shown before the tail collapses
@@ -422,42 +427,55 @@ description: "A curated list of local vendors and services, including resident-o
     function matchesTags(v, selected) {
         if (!selected.length) return true;
         var mine = specialtiesOf(v);
-        return selected.some(function (t) { return mine.indexOf(t) !== -1; });
+        return selected.every(function (t) { return mine.indexOf(t) !== -1; });
     }
 
-    function renderTagBar(slug, vendors) {
+    // `all` is the whole category (so the bar can decide whether to exist at
+    // all and what "All (N)" means); `shown` is what survives the current
+    // selection and is what every offered tag is counted over.
+    function renderTagBar(slug, all, shown) {
         var box = $("cat-tags");
-        var tags = tagCounts(vendors);
-        // One tag tells the reader nothing they can act on.
-        if (tags.order.length < 2) {
+        var selected = activeTags[slug] || [];
+        // One tag in the whole category tells the reader nothing they can
+        // act on. Checked against `all`, not `shown`, so the bar does not
+        // vanish underneath the selection that produced it.
+        if (tagCounts(all).order.length < 2) {
             box.hidden = true;
             box.innerHTML = "";
             return;
         }
-        var selected = activeTags[slug] || [];
+        // Counted over the narrowed set: a tag no surviving vendor carries
+        // is simply absent, which is what prunes the non-co-resident ones.
+        var tags = tagCounts(shown);
         // A long tail of one-vendor specialties (34 tags in Medical & Dental)
         // pushes the listings themselves off the screen, so only the head is
         // shown until asked. A selected tag is always shown, whatever its
         // rank, so the filter you are using can never hide itself.
-        var visible = tagsExpanded[slug] ? tags.order : tags.order.filter(function (label, i) {
+        // Selected tags lead, so the current filter always reads left to
+        // right before the refinements it allows.
+        var order = selected.concat(tags.order.filter(function (label) {
+            return selected.indexOf(label) === -1;
+        }));
+        var visible = tagsExpanded[slug] ? order : order.filter(function (label, i) {
             return i < TAG_HEAD || selected.indexOf(label) !== -1;
         });
-        var hiddenCount = tags.order.length - visible.length;
+        var hiddenCount = order.length - visible.length;
 
         var html = '<span class="tag-filter-label">Filter by specialty:</span>';
         html += '<button type="button" class="vendor-tag tag-btn'
             + (selected.length ? "" : " tag-btn-on") + '" data-tag="" aria-pressed="'
-            + (selected.length ? "false" : "true") + '">All (' + vendors.length + ")</button>";
+            + (selected.length ? "false" : "true") + '">All (' + all.length + ")</button>";
         visible.forEach(function (label) {
             var on = selected.indexOf(label) !== -1;
+            var n = tags.counts[label] || 0;
             html += '<button type="button" class="vendor-tag tag-btn' + (on ? " tag-btn-on" : "")
                 + '" data-tag="' + esc(label) + '" aria-pressed="' + (on ? "true" : "false") + '">'
-                + esc(label) + ' <span class="tag-count">' + tags.counts[label] + "</span></button>";
+                + esc(label) + ' <span class="tag-count">' + n + "</span></button>";
         });
         if (hiddenCount > 0) {
             html += '<button type="button" class="tag-more" data-more="1">+ '
                 + hiddenCount + " more</button>";
-        } else if (tagsExpanded[slug] && tags.order.length > TAG_HEAD) {
+        } else if (tagsExpanded[slug] && order.length > TAG_HEAD) {
             html += '<button type="button" class="tag-more" data-more="0">Show fewer</button>';
         }
         box.innerHTML = html;
@@ -480,7 +498,7 @@ description: "A curated list of local vendors and services, including resident-o
         Array.prototype.forEach.call(box.querySelectorAll(".tag-more"), function (btn) {
             btn.addEventListener("click", function () {
                 tagsExpanded[slug] = btn.getAttribute("data-more") === "1";
-                renderTagBar(slug, vendors);
+                renderTagBar(slug, all, shown);
             });
         });
     }
@@ -501,7 +519,7 @@ description: "A curated list of local vendors and services, including resident-o
         $("cat-title").textContent = iconFor(slug) + " " + group.name + count;
         $("cat-desc").textContent = group.description || "";
         $("cat-desc").hidden = !group.description;
-        renderTagBar(slug, group.vendors);
+        renderTagBar(slug, group.vendors, shown);
         $("cat-cards").innerHTML = shown.length
             ? shown.map(vendorCard).join("")
             : (group.vendors.length
