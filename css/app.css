@@ -406,6 +406,32 @@ img, svg { max-width: 100%; }
   font-size: 12.5px; font-weight: 600; white-space: nowrap;
 }
 .vendor-facts { font-size: .9em; margin-bottom: .25rem; }
+
+/* Specialty tag filter bar (category view). The buttons reuse .vendor-tag
+   so a filter chip and the chip on a card are visibly the same object;
+   .tag-btn adds the interactive affordances and the selected state. */
+.tag-filter {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .4rem;
+  margin-bottom: var(--space-4);
+}
+.tag-filter-label { color: var(--color-muted); font-size: .9em; margin-right: .1rem; }
+button.vendor-tag.tag-btn {
+  margin-right: 0; padding: .35rem .7rem;   /* ~44px tap target with the gap */
+  font: inherit; font-size: 12.5px; font-weight: 600;
+  cursor: pointer; background: var(--color-surface);
+}
+button.tag-btn:hover, button.tag-btn:focus-visible { border-color: var(--color-primary); }
+button.tag-btn.tag-btn-on {
+  background: var(--color-primary); border-color: var(--color-primary);
+  color: #fff;
+}
+.tag-count { opacity: .7; font-weight: 400; }
+.tag-more {
+  padding: .35rem .5rem; border: 0; background: none; cursor: pointer;
+  font: inherit; font-size: 12.5px; font-weight: 600;
+  color: var(--color-link); text-decoration: underline;
+}
+.tag-more:hover, .tag-more:focus-visible { color: var(--color-primary); }
 .vendor-contact { font-weight: 600; overflow-wrap: anywhere; }
 /* each contact wraps to a new line as a unit; only a link that is itself
    wider than the card ever breaks mid-string (overflow-wrap above) */

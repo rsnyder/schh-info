@@ -33,6 +33,7 @@ description: "A curated list of local vendors and services, including resident-o
             <p class="cat-back-line"><a href="#" id="cat-back">&larr; All categories</a></p>
             <h3 class="cat-title" id="cat-title"></h3>
             <p class="cat-desc" id="cat-desc" hidden></p>
+            <div id="cat-tags" class="tag-filter" hidden></div>
             <div class="card-grid" id="cat-cards"></div>
             <div id="nearby"></div>
         </div>
@@ -66,9 +67,20 @@ description: "A curated list of local vendors and services, including resident-o
         var d = String(p || "").replace(/\D/g, "");
         return d.length === 10 ? "(" + d.slice(0, 3) + ") " + d.slice(3, 6) + "-" + d.slice(6) : p;
     }
+    // A vendor may publish several numbers, stored semicolon-separated
+    // (spec Appendix A). Each becomes its own tel: link — rendering the raw
+    // list as one link produced "843-593-8123;843-891-2202" pointing at a
+    // 20-digit number that dials nothing.
+    function phoneLinks(phone) {
+        return String(phone || "").split(";").map(function (p) { return p.trim(); })
+            .filter(Boolean)
+            .map(function (p) {
+                return '<a href="tel:' + esc(p.replace(/\D/g, "")) + '">' + esc(prettyPhone(p)) + "</a>";
+            });
+    }
     function contact(v) {
         var parts = [];
-        if (v.phone) parts.push('<a href="tel:' + esc(String(v.phone).replace(/\D/g, "")) + '">' + esc(prettyPhone(v.phone)) + "</a>");
+        if (v.phone) parts = parts.concat(phoneLinks(v.phone));
         if (v.email) parts.push('<a href="mailto:' + esc(v.email) + '">' + esc(v.email) + "</a>");
         if (v.website) {
             var url = /^https?:/.test(v.website) ? v.website : "https://" + v.website;
@@ -323,7 +335,7 @@ description: "A curated list of local vendors and services, including resident-o
         }
         if (v.address) meta.push(esc(v.address));
         var links = [];
-        if (v.phone) links.push('<a href="tel:' + esc(String(v.phone).replace(/\D/g, "")) + '">' + esc(prettyPhone(v.phone)) + "</a>");
+        if (v.phone) links = links.concat(phoneLinks(v.phone));
         if (v.website) links.push('<a href="' + esc(v.website) + '" target="_blank" rel="noopener">Website</a>');
         if (v.maps_url) links.push('<a href="' + esc(v.maps_url) + '" target="_blank" rel="noopener">Map</a>');
         return '<article class="card vendor-card vendor-card-web">'
@@ -371,6 +383,108 @@ description: "A curated list of local vendors and services, including resident-o
         });
     }
 
+    // ---- specialty tag filters -------------------------------------
+    // The `specialties` attribute (spec §8.6) doubles as a within-category
+    // facet: "just the dentists" out of 225 Medical & Dental listings.
+    // Selecting several tags is OR, the conventional single-facet
+    // behaviour — the tags in a category are mostly disjoint kinds of
+    // business, so OR is what "Dentist, Optometry" reads as, and it keeps
+    // each tag's count meaningful (that count never depends on what else
+    // is selected). Filters are page state, not URL state: category deep
+    // links (#slug) are load-bearing and stay exactly as they were.
+    var activeTags = {};    // slug -> array of selected labels
+    var tagsExpanded = {};  // slug -> true once "more" is clicked
+    var TAG_HEAD = 12;      // tags shown before the tail collapses
+    function specialtiesOf(v) {
+        var out = [];
+        (v.attributes || []).forEach(function (a) {
+            if (a && a.key === "specialties") {
+                (a.values || []).forEach(function (label) { out.push(label); });
+            }
+        });
+        return out;
+    }
+
+    function tagCounts(vendors) {
+        var counts = {}, order = [];
+        vendors.forEach(function (v) {
+            specialtiesOf(v).forEach(function (label) {
+                if (counts[label] === undefined) { counts[label] = 0; order.push(label); }
+                counts[label] += 1;
+            });
+        });
+        order.sort(function (a, b) {
+            return counts[b] - counts[a] || a.localeCompare(b);
+        });
+        return {counts: counts, order: order};
+    }
+
+    function matchesTags(v, selected) {
+        if (!selected.length) return true;
+        var mine = specialtiesOf(v);
+        return selected.some(function (t) { return mine.indexOf(t) !== -1; });
+    }
+
+    function renderTagBar(slug, vendors) {
+        var box = $("cat-tags");
+        var tags = tagCounts(vendors);
+        // One tag tells the reader nothing they can act on.
+        if (tags.order.length < 2) {
+            box.hidden = true;
+            box.innerHTML = "";
+            return;
+        }
+        var selected = activeTags[slug] || [];
+        // A long tail of one-vendor specialties (34 tags in Medical & Dental)
+        // pushes the listings themselves off the screen, so only the head is
+        // shown until asked. A selected tag is always shown, whatever its
+        // rank, so the filter you are using can never hide itself.
+        var visible = tagsExpanded[slug] ? tags.order : tags.order.filter(function (label, i) {
+            return i < TAG_HEAD || selected.indexOf(label) !== -1;
+        });
+        var hiddenCount = tags.order.length - visible.length;
+
+        var html = '<span class="tag-filter-label">Filter by specialty:</span>';
+        html += '<button type="button" class="vendor-tag tag-btn'
+            + (selected.length ? "" : " tag-btn-on") + '" data-tag="" aria-pressed="'
+            + (selected.length ? "false" : "true") + '">All (' + vendors.length + ")</button>";
+        visible.forEach(function (label) {
+            var on = selected.indexOf(label) !== -1;
+            html += '<button type="button" class="vendor-tag tag-btn' + (on ? " tag-btn-on" : "")
+                + '" data-tag="' + esc(label) + '" aria-pressed="' + (on ? "true" : "false") + '">'
+                + esc(label) + ' <span class="tag-count">' + tags.counts[label] + "</span></button>";
+        });
+        if (hiddenCount > 0) {
+            html += '<button type="button" class="tag-more" data-more="1">+ '
+                + hiddenCount + " more</button>";
+        } else if (tagsExpanded[slug] && tags.order.length > TAG_HEAD) {
+            html += '<button type="button" class="tag-more" data-more="0">Show fewer</button>';
+        }
+        box.innerHTML = html;
+        box.hidden = false;
+        Array.prototype.forEach.call(box.querySelectorAll(".tag-btn"), function (btn) {
+            btn.addEventListener("click", function () {
+                var label = btn.getAttribute("data-tag");
+                var current = activeTags[slug] || [];
+                if (!label) {
+                    activeTags[slug] = [];
+                } else if (current.indexOf(label) !== -1) {
+                    activeTags[slug] = current.filter(function (t) { return t !== label; });
+                } else {
+                    activeTags[slug] = current.concat([label]);
+                }
+                renderCategory(slug);
+                box.scrollIntoView({block: "nearest"});
+            });
+        });
+        Array.prototype.forEach.call(box.querySelectorAll(".tag-more"), function (btn) {
+            btn.addEventListener("click", function () {
+                tagsExpanded[slug] = btn.getAttribute("data-more") === "1";
+                renderTagBar(slug, vendors);
+            });
+        });
+    }
+
     // Category view renders vendors in server order — the API already
     // applies the spec §14.4 ordering (Featured, then resident-recommended,
     // then tier, then count, then name), so there is no client-side sort.
@@ -378,15 +492,23 @@ description: "A curated list of local vendors and services, including resident-o
         var group = groups[slug];
         if (!group) { renderGrid(); return; }
         $("cat-grid").hidden = true;
-        $("cat-title").textContent = iconFor(slug) + " " + group.name
-            + (group.vendors.length ? " (" + group.vendors.length + ")" : "");
+        var selected = activeTags[slug] || [];
+        var shown = group.vendors.filter(function (v) { return matchesTags(v, selected); });
+        var count = group.vendors.length
+            ? (selected.length ? " (" + shown.length + " of " + group.vendors.length + ")"
+                               : " (" + group.vendors.length + ")")
+            : "";
+        $("cat-title").textContent = iconFor(slug) + " " + group.name + count;
         $("cat-desc").textContent = group.description || "";
         $("cat-desc").hidden = !group.description;
-        $("cat-cards").innerHTML = group.vendors.length
-            ? group.vendors.map(vendorCard).join("")
-            : '<p>No vendors listed here yet &mdash; you could be the '
-              + 'reason there is one. Used someone good? '
-              + '<a href="https://chat.schh.info/recommend-vendor.html">Recommend them</a>.</p>';
+        renderTagBar(slug, group.vendors);
+        $("cat-cards").innerHTML = shown.length
+            ? shown.map(vendorCard).join("")
+            : (group.vendors.length
+                ? '<p>No vendors match that filter.</p>'
+                : '<p>No vendors listed here yet &mdash; you could be the '
+                  + 'reason there is one. Used someone good? '
+                  + '<a href="https://chat.schh.info/recommend-vendor.html">Recommend them</a>.</p>');
         renderNearby(slug);
         $("cat-view").hidden = false;
         $("browse-heading").scrollIntoView({block: "nearest"});
@@ -432,6 +554,8 @@ description: "A curated list of local vendors and services, including resident-o
 
         $("cat-back").addEventListener("click", function (e) {
             e.preventDefault();
+            activeTags = {};   // a fresh visit to a category shows all of it
+            tagsExpanded = {};
             history.pushState(null, "", location.pathname);
             renderGrid();
         });
