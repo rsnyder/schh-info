@@ -32,6 +32,7 @@ description: "A curated list of local vendors and services, including resident-o
         <div id="cat-view" hidden>
             <p class="cat-back-line"><a href="#" id="cat-back">&larr; All categories</a></p>
             <h3 class="cat-title" id="cat-title"></h3>
+            <p class="cat-desc" id="cat-desc" hidden></p>
             <div class="card-grid" id="cat-cards"></div>
             <div id="nearby"></div>
         </div>
@@ -184,9 +185,46 @@ description: "A curated list of local vendors and services, including resident-o
         return detailsSection("What residents mention", body);
     }
 
+    // Spec §8.6 public attributes (`attributes`: [{key, label, values,
+    // display, as_of}]). Specialty labels render as quiet descriptive tags
+    // under the name — sub-category badges, deliberately unlike the trust
+    // badges in the heading. Every other attribute renders as a fact line
+    // with its as-of date, because "accepting new patients" and "accepts
+    // Medicare" are snapshots that go stale.
+    function monthYear(iso) {
+        var m = /^(\d{4})-(\d{2})/.exec(iso || "");
+        if (!m) return "";
+        var names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        return names[parseInt(m[2], 10) - 1] + " " + m[1];
+    }
+    function attributesHtml(v) {
+        var list = Array.isArray(v.attributes) ? v.attributes : [];
+        var tags = "", facts = [], asOf = "";
+        list.forEach(function (a) {
+            if (!a || !a.label) return;
+            if (a.key === "specialties") {
+                (a.values || []).forEach(function (label) {
+                    tags += '<span class="vendor-tag">' + esc(label) + "</span>";
+                });
+            } else if (a.display) {
+                facts.push("<strong>" + esc(a.label) + ":</strong> " + esc(a.display));
+                if (a.as_of && a.as_of > asOf) asOf = a.as_of;
+            }
+        });
+        var out = "";
+        if (tags) out += '<p class="vendor-tags">' + tags + "</p>";
+        if (facts.length) {
+            out += '<p class="vendor-facts">' + facts.join('<span class="vendor-sep">&middot;</span>')
+                + (asOf ? ' <span class="hint">(as of ' + esc(monthYear(asOf)) + ")</span>" : "")
+                + "</p>";
+        }
+        return out;
+    }
+
     function vendorCard(v) {
         return '<article class="card vendor-card">'
             + "<h3>" + esc(v.name) + badgesHtml(v) + "</h3>"
+            + attributesHtml(v)
             + '<p class="vendor-recs">' + usageLine(v) + "</p>"
             + '<p class="vendor-contact">' + contact(v) + "</p>"
             + descriptionDetails(v)
@@ -213,7 +251,8 @@ description: "A curated list of local vendors and services, including resident-o
         "home-inspection": "🔍", "sewing-and-upholstery": "🧵", "pet-care": "🐾",
         "moving-and-hauling": "🚚", "travel-and-transportation": "✈️",
         "auto-service": "🚗", "insurance": "🛡️", "legal": "⚖️",
-        "financial": "💰", "health-and-wellness": "🩺", "other": "📦"
+        "financial": "💰", "health-and-wellness": "🩺", "medical-and-dental": "🏥",
+        "other": "📦"
     };
     var groups = {};   // slug -> {name, icon, count, vendors: []}
     var order = [];    // slugs, in display order
@@ -224,9 +263,9 @@ description: "A curated list of local vendors and services, including resident-o
         return CATEGORY_ICONS[slug] || "🛠️";
     };
 
-    function ensureGroup(slug, name, icon) {
+    function ensureGroup(slug, name, icon, description) {
         if (!groups[slug]) {
-            groups[slug] = {name: name, icon: icon || null, vendors: []};
+            groups[slug] = {name: name, icon: icon || null, description: description || "", vendors: []};
             order.push(slug);
         }
         return groups[slug];
@@ -237,7 +276,7 @@ description: "A curated list of local vendors and services, including resident-o
     // approved-vendor count (including 0) per spec §14.1.
     function buildFromCategoriesApi(categories) {
         categories.forEach(function (c) {
-            var g = ensureGroup(c.slug, c.name, c.icon_key);
+            var g = ensureGroup(c.slug, c.name, c.icon_key, c.description);
             g.count = c.vendor_count;
         });
     }
@@ -341,6 +380,8 @@ description: "A curated list of local vendors and services, including resident-o
         $("cat-grid").hidden = true;
         $("cat-title").textContent = iconFor(slug) + " " + group.name
             + (group.vendors.length ? " (" + group.vendors.length + ")" : "");
+        $("cat-desc").textContent = group.description || "";
+        $("cat-desc").hidden = !group.description;
         $("cat-cards").innerHTML = group.vendors.length
             ? group.vendors.map(vendorCard).join("")
             : '<p>No vendors listed here yet &mdash; you could be the '
@@ -384,7 +425,9 @@ description: "A curated list of local vendors and services, including resident-o
             return '<a class="cat-card" href="#' + esc(slug) + '">'
                 + '<span class="cat-icon" aria-hidden="true">' + iconFor(slug) + "</span>"
                 + '<span class="cat-name">' + esc(g.name) + "</span>"
-                + '<span class="cat-count">' + count + (count === 1 ? " vendor" : " vendors") + "</span></a>";
+                + '<span class="cat-count">' + count + (count === 1 ? " vendor" : " vendors") + "</span>"
+                + (g.description ? '<span class="cat-blurb">' + esc(g.description) + "</span>" : "")
+                + "</a>";
         }).join("");
 
         $("cat-back").addEventListener("click", function (e) {
