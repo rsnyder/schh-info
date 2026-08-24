@@ -436,6 +436,19 @@ button.tag-btn.tag-btn-on {
 /* each contact wraps to a new line as a unit; only a link that is itself
    wider than the card ever breaks mid-string (overflow-wrap above) */
 .vendor-contact a { display: inline-block; }
+
+/* Labeled vertical contact list on directory vendor cards ("Phone: …",
+   one row per field, no bullets). The nearby-web cards keep the inline
+   .vendor-contact row above. */
+.vendor-contact-list {
+  list-style: none; margin: 0 0 var(--space-3); padding: 0;
+  overflow-wrap: anywhere;
+}
+/* breathing room under the description (details or plain-text form) when
+   the contact list follows it */
+.vendor-details + .vendor-contact-list,
+.vendor-desc-short + .vendor-contact-list { margin-top: var(--space-2); }
+.vendor-contact-label { color: var(--color-muted); font-weight: 600; }
 .vendor-sep { color: var(--color-muted); margin-inline: var(--space-1); }
 
 /* Research-confidence badge is a link (to the About page's plain-language
@@ -469,8 +482,39 @@ a.vendor-badge:hover, a.vendor-badge:focus-visible { opacity: .85; }
 .vendor-details p { margin: var(--space-2) 0 0; }
 .vendor-details p:first-of-type { margin-top: 0; }
 
+/* Description variant: the collapsed summary is a brief preview of the
+   description itself (body text, no disclosure triangle) with a
+   More / Show less toggle styled as the interactive part. Opening hides
+   the preview so the full text doesn't repeat its own first line. */
+.vendor-desc summary { color: var(--color-ink); font-weight: 400; list-style: none; }
+.vendor-desc summary::-webkit-details-marker { display: none; }
+.vendor-desc summary:hover, .vendor-desc summary:focus-visible { color: var(--color-ink); }
+.desc-toggle { color: var(--color-link); font-weight: 600; white-space: nowrap; }
+.desc-toggle::after { content: "More"; }
+.vendor-desc[open] .desc-preview { display: none; }
+.vendor-desc[open] .desc-toggle::after { content: "Show less"; }
+.vendor-desc summary:hover .desc-toggle,
+.vendor-desc summary:focus-visible .desc-toggle { color: var(--color-primary-strong); }
+.vendor-desc-short { margin-bottom: 0; }
+
 .vendor-recommend { margin-top: var(--space-3); }
 .vendor-recommend a { font-weight: 600; color: var(--color-link); }
+
+/* Resident-sourced block at the bottom of each card — usage count, "What
+   residents mention", and the "I used this vendor" action. Visibly but
+   subtly set apart from the researched data above it: the page's warm-sand
+   wash inside the white card. */
+.vendor-resident {
+  margin-top: var(--space-3);
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+}
+.vendor-resident .vendor-recs { margin-bottom: 0; }
+.vendor-resident .vendor-details {
+  margin-top: var(--space-2); padding-top: var(--space-2);
+}
+.vendor-resident .vendor-recommend { margin-top: var(--space-2); }
 
 /* --------------------------------------------------------- install page */
 .install-section { margin-bottom: var(--space-6); }
