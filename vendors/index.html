@@ -215,7 +215,7 @@ description: "A curated list of local vendors and services, including resident-o
         var q = "?vendor_id=" + encodeURIComponent(v.vendor_id || "")
             + "&name=" + encodeURIComponent(v.name || "");
         return '<p class="vendor-brief"><a href="/vendors/commission/' + esc(q)
-            + '">Commission a Research Brief</a></p>';
+            + '">Commission a Research Brief</a> <span class="hint">(coming soon)</span></p>';
     }
 
     function detailsSection(summary, bodyHtml) {

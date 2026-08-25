@@ -1,0 +1,41 @@
+---
+layout: app
+---
+<div class="container prose">
+    <header class="page-header">
+        <p class="dd-back"><a href="/vendors/">&larr; All vendors</a></p>
+        <h1>{{ page.title }}</h1>
+        <p class="subheading">Research Brief &middot; {{ page.category }} &middot;
+           researched {{ page.research_date | date: "%B %-d, %Y" }}</p>
+    </header>
+    <p class="callout brief-prototype-note">Research Briefs are independent,
+       AI-assisted research on a directory listing, checked against official
+       records. This is one of the first; commissioning your own is coming soon
+       &mdash; <a href="/vendors/commission/">how it will work</a>.</p>
+    {{ content }}
+    <p class="callout">See something out of date or incorrect in this brief?
+       <a href="/contact/">Let us know</a> &mdash; corrections never cost a credit.</p>
+</div>
+<script>
+(function () {
+    // Markdown can't wrap a table, so give each one a horizontal-scroll
+    // container here (see .table-scroll in app.css).
+    document.querySelectorAll(".prose table").forEach(function (t) {
+        if (t.parentElement.classList.contains("table-scroll")) return;
+        var wrap = document.createElement("div");
+        wrap.className = "table-scroll";
+        t.parentNode.insertBefore(wrap, t);
+        wrap.appendChild(t);
+        // Column labels for the stacked phone layout (see the phone rules
+        // under .table-scroll in app.css).
+        var heads = Array.prototype.map.call(t.querySelectorAll("thead th"), function (th) {
+            return th.textContent.trim();
+        });
+        t.querySelectorAll("tbody tr").forEach(function (row) {
+            Array.prototype.forEach.call(row.children, function (cell, i) {
+                if (i > 0 && heads[i]) cell.setAttribute("data-label", heads[i]);
+            });
+        });
+    });
+})();
+</script>

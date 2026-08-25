@@ -44,9 +44,10 @@ analytics:
 # without this, Jekyll silently skips generating any future-dated
 # article's page while the index still links it (live 404, 2026-08-21).
 future: true
-# Research Briefs prototype (cards' commission link + /vendors/commission/):
-# off until the feature is approved for the public site.
-research_briefs: false
+# Research Briefs: the finished sample briefs are live and every other card
+# links to the coming-soon explainer at /vendors/commission/. Set false to
+# hide the link (briefs that exist still show).
+research_briefs: true
 
 collections:
   deepdives:
