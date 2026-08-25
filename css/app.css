@@ -529,7 +529,13 @@ a.vendor-badge:hover, a.vendor-badge:focus-visible { opacity: .85; }
 .vendor-brief-link:focus-visible .vendor-brief-label {
   background: var(--color-primary); color: #fff;
 }
-.brief-prototype-note { font-size: var(--text-sm); }
+/* ?vendor_id= deep link (e.g. the brief page's "back to listing" link): a
+   temporary highlight so the resident can find the specific card in a long
+   category list, not a permanent style. */
+.vendor-card-highlight {
+  outline: 3px solid var(--color-primary); outline-offset: 2px;
+  transition: outline-color 2.5s ease;
+}
 .form-check label { display: flex; gap: var(--space-2); align-items: flex-start; font-weight: 400; }
 .form-check input { width: auto; height: auto; margin: 5px 0 0; flex: none; }
 

@@ -44,34 +44,22 @@ analytics:
 # without this, Jekyll silently skips generating any future-dated
 # article's page while the index still links it (live 404, 2026-08-21).
 future: true
-# Research Briefs: the finished sample briefs are live and every other card
-# links to the coming-soon explainer at /vendors/commission/. Set false to
-# hide the link (briefs that exist still show).
-research_briefs: true
+# Research Briefs (plan B3, 2026-08-25): the three hand-built sample briefs
+# migrated from the static `_briefs` collection below into the vendors
+# database and are now served at chat.schh.info/brief.html?vendor_id=<id>
+# (resident-gated, task B1/B2). The vendors page reads each card's `brief`
+# state straight from /api/vendors — no build-time flag needed any more.
 
 collections:
   deepdives:
     output: true
     permalink: /deep-dives/:name/
-  # Vendor Research Briefs (prototype, docs/research_briefs_vision.md in the
-  # guide repo). A file's vendor_id front matter is what wires the brief to
-  # its directory card. Deliberately NOT under _deepdives, which the daily
-  # pipeline ingests into the knowledge base.
-  briefs:
-    output: true
-    permalink: /vendors/briefs/:name/
 defaults:
   - scope:
       type: deepdives
     values:
       layout: deepdive
       slug: deep-dives
-  - scope:
-      type: briefs
-    values:
-      layout: brief
-      slug: vendors
-      noindex: true
 
 # -----------------------------------------------
 # Navigation — rendered as the bottom tab bar on phones and the

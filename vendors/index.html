@@ -188,34 +188,66 @@ description: "A curated list of local vendors and services, including resident-o
         return v.vendor_id ? url + "?vendor_id=" + encodeURIComponent(v.vendor_id) : url;
     }
 
-    // Research Briefs (prototype): the _briefs collection's front matter is
-    // the only registry — a brief exists for a card when its vendor_id is
-    // here. Liquid renders this map at build time.
-    var BRIEFS = {
-        {% for b in site.briefs %}"{{ b.vendor_id }}": {url: "{{ b.url }}", date: "{{ b.research_date | date: '%b %-d, %Y' }}"}{% unless forloop.last %},{% endunless %}
-        {% endfor %}
+    // Research Briefs (plan B3): card state now comes straight from each
+    // vendor's `brief` field on /api/vendors — {status, research_date,
+    // version, in_progress} or null — rather than a build-time Liquid map.
+    // The brief itself lives at chat.schh.info/brief.html?vendor_id=<id>
+    // (webapp/brief.html + brief.js, task B2); this page only ever links
+    // to it.
+    //
+    // Which categories a brief can even be commissioned for — keep in sync
+    // with src/brief_prompts.py SUPPORTED_CATEGORIES (LICENSED_TRADES_
+    // CATEGORIES + MEDICAL_DENTAL_CATEGORIES) in the guide repo.
+    var BRIEF_SUPPORTED_CATEGORIES = {
+        "Plumbing": 1, "Electrical": 1, "HVAC": 1, "Roofing": 1, "Painting": 1,
+        "Landscaping & Lawn Care": 1, "Tree Service": 1, "Pressure Washing": 1,
+        "House Cleaning": 1, "Pest Control": 1, "Handyman": 1,
+        "Appliance Repair": 1, "Garage Doors": 1, "Windows & Doors": 1,
+        "Flooring": 1, "Concrete & Masonry": 1, "Patios, Lanais & Hardscaping": 1,
+        "Gutters": 1, "Irrigation": 1, "Golf Cart Service": 1, "Auto Service": 1,
+        "Medical & Dental": 1
     };
-    // Research Briefs are an unpublished prototype: with the site flag off,
-    // cards show a brief only if one exists and never the commission link
-    // (whose page is not deployed).
-    var BRIEFS_ENABLED = {{ site.research_briefs | default: false }};
+    function briefCategorySupported(v) {
+        return (v.categories || []).some(function (name) {
+            return BRIEF_SUPPORTED_CATEGORIES.hasOwnProperty(name);
+        });
+    }
+    // A brief older than a year still reads fine, but a refresh is offered
+    // (vision §10/§15, "visible aging after 12 months").
+    var BRIEF_AGING_DAYS = 365;
+    function briefIsAging(researchDate) {
+        var d = new Date(researchDate + "T00:00:00Z");
+        if (isNaN(d.getTime())) return false;
+        return (Date.now() - d.getTime()) / 86400000 > BRIEF_AGING_DAYS;
+    }
     function briefHtml(v) {
-        var b = v.vendor_id && BRIEFS[v.vendor_id];
-        if (!b && !BRIEFS_ENABLED) return "";
-        if (b) {
+        var b = v.brief;
+        if (b && b.in_progress) {
+            // Community-funded research already under way — never a link,
+            // and never a second commission button next to it.
+            return '<p class="vendor-brief vendor-brief-current">'
+                + '<span class="vendor-brief-label">Research Brief</span> '
+                + "in progress</p>";
+        }
+        if (b && b.status) {
             // Date and link only: the job outcome ("Published with
             // limitations") describes the research, not the business, and
             // reads as a knock on the vendor — the brief's own limitations
             // section does that explaining (owner call 2026-08-24).
+            var url = "https://chat.schh.info/brief.html?vendor_id="
+                + encodeURIComponent(v.vendor_id || "");
+            var aging = briefIsAging(b.research_date)
+                ? ' <span class="hint">(refresh available)</span>' : "";
             return '<p class="vendor-brief vendor-brief-current">'
-                + '<a class="vendor-brief-link" href="' + esc(b.url) + '">'
+                + '<a class="vendor-brief-link" href="' + esc(url) + '">'
                 + '<span class="vendor-brief-label">Research Brief</span> '
-                + esc(b.date) + "</a></p>";
+                + esc(monthYear(b.research_date)) + "</a>" + aging + "</p>";
         }
-        var q = "?vendor_id=" + encodeURIComponent(v.vendor_id || "")
-            + "&name=" + encodeURIComponent(v.name || "");
-        return '<p class="vendor-brief"><a href="/vendors/commission/' + esc(q)
-            + '">Commission a Research Brief</a> <span class="hint">(coming soon)</span></p>';
+        if (!v.vendor_id || !briefCategorySupported(v)) return "";
+        var commissionUrl = "https://chat.schh.info/commission-brief.html?vendor_id="
+            + encodeURIComponent(v.vendor_id);
+        return '<p class="vendor-brief"><a href="' + esc(commissionUrl)
+            + '">Commission a Research Brief</a></p>';
     }
 
     function detailsSection(summary, bodyHtml) {
@@ -319,7 +351,9 @@ description: "A curated list of local vendors and services, including resident-o
     // distinct block: usage count, "What residents mention", and the
     // "I used this vendor" action.
     function vendorCard(v) {
-        return '<article class="card vendor-card">'
+        // data-vendor-id lets the ?vendor= deep link (from the brief page's
+        // "back to listing" link) find and highlight this specific card.
+        return '<article class="card vendor-card" data-vendor-id="' + esc(v.vendor_id || "") + '">'
             + "<h3>" + esc(v.name) + badgesHtml(v) + "</h3>"
             + attributesHtml(v)
             + descriptionDetails(v)
@@ -624,6 +658,35 @@ description: "A curated list of local vendors and services, including resident-o
         if (slug && groups[slug]) renderCategory(slug); else renderGrid();
     }
 
+    // ?vendor_id=<id> deep link (the brief page's "back to listing" link is
+    // https://schh.info/vendors/?vendor_id=<id> — the same param name
+    // recommend-vendor.html and report-vendor.html already use,
+    // docs/vendor_brief_commissioning_plan.md B3): open the vendor's
+    // category and scroll/highlight its card if it isn't already showing.
+    function deepLinkToVendor() {
+        var vendorId = new URLSearchParams(location.search).get("vendor_id");
+        if (!vendorId) return false;
+        var targetSlug = null;
+        for (var i = 0; i < order.length && !targetSlug; i++) {
+            var group = groups[order[i]];
+            for (var j = 0; j < group.vendors.length; j++) {
+                if (group.vendors[j].vendor_id === vendorId) { targetSlug = order[i]; break; }
+            }
+        }
+        if (!targetSlug) return false;
+        if (location.hash.replace(/^#/, "") !== targetSlug) {
+            history.replaceState(null, "", location.pathname + location.search + "#" + targetSlug);
+        }
+        renderCategory(targetSlug);
+        var card = $("cat-cards").querySelector('[data-vendor-id="' + vendorId.replace(/"/g, "") + '"]');
+        if (card) {
+            card.scrollIntoView({block: "center"});
+            card.classList.add("vendor-card-highlight");
+            setTimeout(function () { card.classList.remove("vendor-card-highlight"); }, 3000);
+        }
+        return true;
+    }
+
     var categoriesPromise = fetch("https://chat.schh.info/api/vendor-categories")
         .then(function (r) { return r.ok ? r.json() : null; })
         .catch(function () { return null; });
@@ -667,7 +730,7 @@ description: "A curated list of local vendors and services, including resident-o
             renderGrid();
         });
         window.addEventListener("hashchange", route);
-        route();
+        if (!deepLinkToVendor()) route();
     })
     .catch(function () {
         $("vendors-loading").hidden = true;
