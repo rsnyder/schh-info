@@ -78,6 +78,14 @@ description: "A curated list of local vendors and services, including resident-o
                 return '<a href="tel:' + esc(p.replace(/\D/g, "")) + '">' + esc(prettyPhone(p)) + "</a>";
             });
     }
+    // Same Lucide map-marker glyph the Quick Links page renders via
+    // icon.html — keep the two in sync if the icon set ever changes.
+    var MAP_ICON = '<svg class="icon vendor-address-icon" width="24" height="24"'
+        + ' viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"'
+        + ' stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'
+        + '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>'
+        + '<circle cx="12" cy="10" r="3"/></svg>';
+
     // Contact info as a labeled vertical list under the name (owner call
     // 2026-08-24): one row per field, "Label: value", no bullets. Phone,
     // email, and address keep their tel:/mailto:/directions links.
@@ -90,7 +98,8 @@ description: "A curated list of local vendors and services, including resident-o
         if (v.address) {
             // Same tap-for-directions convention as Quick Links and the map pins.
             var q = encodeURIComponent(v.name + ", " + v.address);
-            rows.push(["Address", '<a href="https://www.google.com/maps/search/?api=1&query=' + q
+            rows.push(["Address", MAP_ICON
+                + '<a href="https://www.google.com/maps/search/?api=1&query=' + q
                 + '" target="_blank" rel="noopener">' + esc(v.address) + "</a>"]);
         }
         if (v.website) {
@@ -177,6 +186,36 @@ description: "A curated list of local vendors and services, including resident-o
     function recommendUrl(v) {
         var url = "https://chat.schh.info/recommend-vendor.html";
         return v.vendor_id ? url + "?vendor_id=" + encodeURIComponent(v.vendor_id) : url;
+    }
+
+    // Research Briefs (prototype): the _briefs collection's front matter is
+    // the only registry — a brief exists for a card when its vendor_id is
+    // here. Liquid renders this map at build time.
+    var BRIEFS = {
+        {% for b in site.briefs %}"{{ b.vendor_id }}": {url: "{{ b.url }}", date: "{{ b.research_date | date: '%b %-d, %Y' }}"}{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+    };
+    // Research Briefs are an unpublished prototype: with the site flag off,
+    // cards show a brief only if one exists and never the commission link
+    // (whose page is not deployed).
+    var BRIEFS_ENABLED = {{ site.research_briefs | default: false }};
+    function briefHtml(v) {
+        var b = v.vendor_id && BRIEFS[v.vendor_id];
+        if (!b && !BRIEFS_ENABLED) return "";
+        if (b) {
+            // Date and link only: the job outcome ("Published with
+            // limitations") describes the research, not the business, and
+            // reads as a knock on the vendor — the brief's own limitations
+            // section does that explaining (owner call 2026-08-24).
+            return '<p class="vendor-brief vendor-brief-current">'
+                + '<a class="vendor-brief-link" href="' + esc(b.url) + '">'
+                + '<span class="vendor-brief-label">Research Brief</span> '
+                + esc(b.date) + "</a></p>";
+        }
+        var q = "?vendor_id=" + encodeURIComponent(v.vendor_id || "")
+            + "&name=" + encodeURIComponent(v.name || "");
+        return '<p class="vendor-brief"><a href="/vendors/commission/' + esc(q)
+            + '">Commission a Research Brief</a></p>';
     }
 
     function detailsSection(summary, bodyHtml) {
@@ -285,6 +324,7 @@ description: "A curated list of local vendors and services, including resident-o
             + attributesHtml(v)
             + descriptionDetails(v)
             + contactList(v)
+            + briefHtml(v)
             + '<div class="vendor-resident">'
             + '<p class="vendor-recs">' + usageLine(v) + "</p>"
             + summaryDetails(v)
@@ -611,8 +651,9 @@ description: "A curated list of local vendors and services, including resident-o
             var g = groups[slug];
             var count = (typeof g.count === "number") ? g.count : g.vendors.length;
             return '<a class="cat-card" href="#' + esc(slug) + '">'
+                + '<span class="cat-head">'
                 + '<span class="cat-icon" aria-hidden="true">' + iconFor(slug) + "</span>"
-                + '<span class="cat-name">' + esc(g.name) + "</span>"
+                + '<span class="cat-name">' + esc(g.name) + "</span></span>"
                 + '<span class="cat-count">' + count + (count === 1 ? " vendor" : " vendors") + "</span>"
                 + (g.description ? '<span class="cat-blurb">' + esc(g.description) + "</span>" : "")
                 + "</a>";

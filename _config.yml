@@ -44,16 +44,33 @@ analytics:
 # without this, Jekyll silently skips generating any future-dated
 # article's page while the index still links it (live 404, 2026-08-21).
 future: true
+# Research Briefs prototype (cards' commission link + /vendors/commission/):
+# off until the feature is approved for the public site.
+research_briefs: false
+
 collections:
   deepdives:
     output: true
     permalink: /deep-dives/:name/
+  # Vendor Research Briefs (prototype, docs/research_briefs_vision.md in the
+  # guide repo). A file's vendor_id front matter is what wires the brief to
+  # its directory card. Deliberately NOT under _deepdives, which the daily
+  # pipeline ingests into the knowledge base.
+  briefs:
+    output: true
+    permalink: /vendors/briefs/:name/
 defaults:
   - scope:
       type: deepdives
     values:
       layout: deepdive
       slug: deep-dives
+  - scope:
+      type: briefs
+    values:
+      layout: brief
+      slug: vendors
+      noindex: true
 
 # -----------------------------------------------
 # Navigation — rendered as the bottom tab bar on phones and the

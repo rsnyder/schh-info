@@ -4,8 +4,6 @@ date: 2026-08-22
 summary: "How Sun City Hilton Head spans Beaufort and Jasper counties — and what that means for residents."
 ---
 
-# One Community, Two Counties
-
 ## A resident's guide to the line you can't see, and what it means for your taxes, roads, and services
 
 *Facts current as of August 21, 2026. Tax rates, budgets, and project schedules change; dates are noted where it matters.*
@@ -164,7 +162,7 @@ The most accurate answer to "which side is better?" is a set of better questions
 
 The county line will not become more visible any time soon. But residents who know which record answers which question can navigate both sides of it with confidence.
 
-# What to Watch
+## What to Watch
 
 1. **The Argent/Sundance signal.** Design procurement began in April 2026; the milestones that will pin down a real date are a design award, state plan and permit approval, a construction contract, and equipment delivery. Until those land, the first half of 2027 is an estimate, not a schedule.
 2. **November 3, 2026:** Beaufort County's $780 million transportation referendum, including the separate US 278 signal project at Sun City.

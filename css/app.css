@@ -357,8 +357,10 @@ img, svg { max-width: 100%; }
   text-decoration: none; color: inherit;
 }
 .cat-card:hover, .cat-card:focus-visible { border-color: var(--color-primary); }
-.cat-card .cat-icon { font-size: 1.5rem; line-height: 1; }
-.cat-card .cat-name { font-weight: 700; }
+/* icon and category name share one line */
+.cat-card .cat-head { display: flex; align-items: flex-start; gap: .5rem; min-width: 0; }
+.cat-card .cat-icon { font-size: 1.5rem; line-height: 1; flex: none; }
+.cat-card .cat-name { font-weight: 700; line-height: 1.25; }
 .cat-card .cat-count { color: var(--color-muted); font-size: .88em; }
 .cat-card .cat-blurb { color: var(--color-muted); font-size: .82em; line-height: 1.35; margin-top: .15rem; }
 .cat-desc { color: var(--color-muted); margin-top: calc(-1 * var(--space-2)); margin-bottom: var(--space-3); }
@@ -449,6 +451,11 @@ button.tag-btn.tag-btn-on {
 .vendor-details + .vendor-contact-list,
 .vendor-desc-short + .vendor-contact-list { margin-top: var(--space-2); }
 .vendor-contact-label { color: var(--color-muted); font-weight: 600; }
+/* tap-for-directions cue on the address row, matching the Quick Links page */
+.vendor-address-icon {
+  width: 16px; height: 16px; vertical-align: -2px;
+  margin-right: 2px; color: var(--color-muted);
+}
 .vendor-sep { color: var(--color-muted); margin-inline: var(--space-1); }
 
 /* Research-confidence badge is a link (to the About page's plain-language
@@ -499,6 +506,32 @@ a.vendor-badge:hover, a.vendor-badge:focus-visible { opacity: .85; }
 
 .vendor-recommend { margin-top: var(--space-3); }
 .vendor-recommend a { font-weight: 600; color: var(--color-link); }
+
+/* Research Brief row (prototype): closes the researched section of the
+   card. A current brief reads as a dated fact line with its own label;
+   the no-brief state is just the commission link. */
+.vendor-brief { font-size: .9em; margin-bottom: 0; }
+.vendor-brief-current { color: var(--color-muted); }
+.vendor-brief-label {
+  display: inline-block; padding: 2px 10px; margin-right: 2px;
+  background: var(--color-primary-tint); border: 1px solid var(--color-primary);
+  border-radius: 999px;
+  color: var(--color-primary); font-size: 12.5px; font-weight: 600;
+  white-space: nowrap;
+}
+.vendor-brief a { font-weight: 600; }
+/* current-brief state: the pill and date are one link, so the date reads as
+   a plain-text detail (no underline) and only the pill signals the action */
+.vendor-brief a.vendor-brief-link {
+  text-decoration: none; color: var(--color-muted); font-weight: 400;
+}
+.vendor-brief-link:hover .vendor-brief-label,
+.vendor-brief-link:focus-visible .vendor-brief-label {
+  background: var(--color-primary); color: #fff;
+}
+.brief-prototype-note { font-size: var(--text-sm); }
+.form-check label { display: flex; gap: var(--space-2); align-items: flex-start; font-weight: 400; }
+.form-check input { width: auto; height: auto; margin: 5px 0 0; flex: none; }
 
 /* Resident-sourced block at the bottom of each card — usage count, "What
    residents mention", and the "I used this vendor" action. Visibly but
@@ -720,3 +753,51 @@ a.vendor-badge:hover, a.vendor-badge:focus-visible { opacity: .85; }
     transition-duration: .01ms !important;
   }
 }
+
+/* ---------------------------------------------------- prose tables */
+/* Markdown tables in Deep Dives and Research Briefs (the health-systems
+   comparison is 28 rows × 5 columns of cited prose). Wrapped in
+   .table-scroll by the layout script so they scroll sideways inside the
+   prose column instead of blowing it out; the header row and the field
+   column stay pinned so a cell always reads with its labels. */
+.table-scroll {
+  overflow-x: auto;
+  /* break out of the 42em prose column when the screen has room: as wide
+     as the viewport minus page padding, up to the container width, and
+     centered under the prose. On phones that is simply the screen. */
+  width: min(calc(100vw - 2 * var(--space-4)), 900px);
+  max-width: none;
+  margin: var(--space-4) 0 var(--space-5) 50%;
+  transform: translateX(-50%);
+  border: 1px solid var(--color-line); border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  -webkit-overflow-scrolling: touch;
+}
+.prose table {
+  border-collapse: separate; border-spacing: 0;
+  font-size: 0.82rem; line-height: 1.4;
+  min-width: 100%;
+}
+.prose th, .prose td {
+  padding: .45rem .6rem; vertical-align: top; text-align: left;
+  border-bottom: 1px solid var(--color-line);
+  min-width: 12em; max-width: 24em;
+}
+.prose th:first-child, .prose td:first-child {
+  min-width: 11em; max-width: 13em; font-weight: 600;
+  position: sticky; left: 0; z-index: 1;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-line);
+}
+.prose thead th {
+  position: sticky; top: 0; z-index: 2;
+  background: var(--color-primary-tint); color: var(--color-primary);
+  font-weight: 700; border-bottom: 2px solid var(--color-primary);
+}
+.prose thead th:first-child { z-index: 3; }
+.prose tbody tr:nth-child(even) td { background: var(--color-bg); }
+.prose tbody tr:last-child td { border-bottom: 0; }
+/* citations are the noisiest part of a cell: keep them, quiet them */
+.prose td a { color: var(--color-muted); font-size: .92em; }
+.prose td a:hover, .prose td a:focus-visible { color: var(--color-link); }
+.table-scroll + .hint { margin-top: calc(-1 * var(--space-4)); }

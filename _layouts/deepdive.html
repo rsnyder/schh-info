@@ -13,3 +13,16 @@ layout: app
     <p class="callout">Have a correction, a source, or an idea for a future
        Deep Dive? <a href="/contact/">Let us know</a>.</p>
 </div>
+<script>
+(function () {
+    // Markdown can't wrap a table, so give each one a horizontal-scroll
+    // container here (see .table-scroll in app.css).
+    document.querySelectorAll(".prose table").forEach(function (t) {
+        if (t.parentElement.classList.contains("table-scroll")) return;
+        var wrap = document.createElement("div");
+        wrap.className = "table-scroll";
+        t.parentNode.insertBefore(wrap, t);
+        wrap.appendChild(t);
+    });
+})();
+</script>
