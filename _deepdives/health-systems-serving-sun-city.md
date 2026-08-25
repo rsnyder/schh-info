@@ -116,6 +116,66 @@ St. Joseph's/Candler Health System, Inc., 5353 Reynolds St, Savannah, Georgia, i
 
 ---
 
+## Official measures, hospital by hospital
+
+Everything in this section comes from four public datasets that the Centers for Medicare & Medicaid Services publishes through Care Compare, fetched directly from CMS's data API for this guide on August 25, 2026: **Hospital General Information** (`xubh-q36u`), **Patient Survey (HCAHPS) – Hospital** (`dgck-syfz`), **Unplanned Hospital Visits – Hospital** (`632h-zaca`), and **Timely and Effective Care – Hospital** (`yv7e-xc69`). All four were released August 13, 2026 and carry a CMS last-modified date of **July 22, 2026** ([CMS Hospital General Information](https://data.cms.gov/provider-data/dataset/xubh-q36u); [CMS Patient Survey (HCAHPS)](https://data.cms.gov/provider-data/dataset/dgck-syfz); [CMS Unplanned Hospital Visits](https://data.cms.gov/provider-data/dataset/632h-zaca); [CMS Timely and Effective Care](https://data.cms.gov/provider-data/dataset/yv7e-xc69)).
+
+Each value is reported **as published by CMS for the period shown**. Nothing here is ranked, scored, averaged or combined, and the six hospitals are not measured on identical sets of patients. Where CMS marks a measure unavailable, this guide writes "not published" and gives CMS's footnote number — a statement about the record, not about the hospital.
+
+### CMS overall star rating and the patient survey
+
+| Hospital (system, Medicare CCN) | CMS overall star | Surveys completed / response rate | Survey summary star | "Would definitely recommend" | Rated the hospital 9 or 10 | Nurse communication star | Doctor communication star |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Novant Health Hilton Head Medical Center (Novant, 420080) | 2 | 524 / 29% | 2 | 55% | 56% | 2 | 2 |
+| Novant Health Coastal Carolina Medical Center (Novant, 420101) | 4 | 469 / 18% | 3 | 61% | 62% | 3 | 3 |
+| Beaufort Memorial Hospital (Beaufort Memorial, 420067) | 4 | 825 / 19% | 3 | 62% | 61% | 3 | 3 |
+| Memorial Health University Medical Center (HCA, 110036) | 1 | 643 / 16% | 2 | 64% | 61% | 2 | 2 |
+| Candler Hospital (St. Joseph's/Candler, 110024) | 2 | 1,545 / 19% | 3 | 69% | 65% | 2 | 3 |
+| St. Joseph's Hospital – Savannah (St. Joseph's/Candler, 110043) | 2 | 553 / 24% | 3 | 75% | 70% | 3 | 3 |
+
+Survey results cover **October 1, 2024 through September 30, 2025**. HCAHPS is CMS's standardized patient-experience survey, sent to a sample of discharged patients; the star columns are CMS's own conversions of those survey answers, not this guide's. The samples are small and the response rates modest — 469 to 1,545 completed surveys per hospital, response rates of 16% to 29% — which is worth remembering before reading much into a few percentage points. CMS's own caveat applies to the overall star rating: it summarizes a selected set of measures, and hospitals are not measured on identical sets. Source: CMS Hospital General Information and Patient Survey (HCAHPS) – Hospital, released August 13, 2026, last modified July 22, 2026 ([CMS](https://data.cms.gov/provider-data/dataset/xubh-q36u); [CMS](https://data.cms.gov/provider-data/dataset/dgck-syfz)).
+
+### 30-day readmission, condition by condition
+
+| Hospital | Heart attack | Bypass surgery (CABG) | COPD | Heart failure | Hip/knee replacement | Pneumonia |
+|---|---:|---:|---:|---:|---:|---:|
+| Hilton Head Medical Center | 14.9 | 11.4 | 20.4 | 22.9 | 5.7 | 19.2 |
+| Coastal Carolina Medical Center | Not published — number of cases too small (footnote 1) | Not published (footnote 5) | 19.8 | 21.1 | Not published — number of cases too small (footnote 1) | 17.6 |
+| Beaufort Memorial Hospital | 14.7 | Not published (footnote 5) | 19.7 | 21.1 | 5.2 | 16.5 |
+| Memorial Health University Medical Center | 14.8 | 12.9 | 18.9 | 22.2 | 6.7 | 19.5 |
+| Candler Hospital | Not published — number of cases too small (footnote 1) | Not published (footnote 5) | 20.1 | 18.9 | Not published (footnote 5) | 18.5 |
+| St. Joseph's Hospital – Savannah | 13.3 | 10.4 | 19.9 | 20.1 | 6.3 | 17.0 |
+
+These are CMS's risk-adjusted 30-day readmission rates, as percentages, for **July 1, 2023 through June 30, 2025**. Every rate published above sits in CMS's comparison category **"No Different Than the National Rate"** — CMS's own label, reproduced here without interpretation; the dataset shows no other comparison category for any of these six hospitals on any of these six conditions. The separate hospital-wide hybrid readmission measure, for **July 1, 2024 through June 30, 2025**, is marked "Not Available" with **CMS footnote 4** for all six hospitals. Blank cells above are not blanks: each is a measure CMS did not publish for that hospital, with CMS's footnote number given. Source: CMS Unplanned Hospital Visits – Hospital, released August 13, 2026, last modified July 22, 2026 ([CMS](https://data.cms.gov/provider-data/dataset/632h-zaca)).
+
+### Emergency department volume, time and sepsis care
+
+| Hospital | ED volume (2024) | Median minutes in the ED before leaving (Oct. 2024–Sep. 2025) | Left before being seen (2024) | Sepsis care bundle, SEP-1 (Oct. 2024–Sep. 2025) |
+|---|---|---:|---:|---:|
+| Hilton Head Medical Center | Medium | 166 (n=467) | 0% (of 22,804) | 48% (n=116) |
+| Coastal Carolina Medical Center | Medium | 130 (n=482) | 0% (of 39,228) | 67% (n=123) |
+| Beaufort Memorial Hospital | High | 221 (n=472) | 3% (of 45,971) | 83% (n=205) |
+| Memorial Health University Medical Center | Very high | 162 (n=466) | 0% (of 130,977) | 72% (n=100) |
+| Candler Hospital | High | 196 (n=364) | 6% (of 52,089) | 52% (n=408) |
+| St. Joseph's Hospital – Savannah | High | 203 (n=369) | 6% (of 47,618) | 52% (n=459) |
+
+**The minutes column is CMS measure OP-18b: the median time patients spent in the emergency department before leaving from the visit, excluding patients transferred to another facility and psychiatric or mental-health patients.** It is not the wait before a clinician is seen, and a lower number is better in CMS's description of the measure. "ED volume" is CMS's own category for the hospital's annual emergency visits, not a count. "Left before being seen" is the percentage of emergency patients who left without being evaluated, out of the visit count shown. SEP-1 is the percentage of eligible patients who received the complete severe-sepsis and septic-shock care bundle. Every SEP-1 percentage above except Beaufort Memorial's carries **CMS footnote 2**; the dataset as supplied does not include text that would let this guide translate that footnote into a more specific explanation, so it is reported as a footnote and nothing more. A hospital-acquired-infection summary was not retrieved for this guide and is therefore not published here. Source: CMS Timely and Effective Care – Hospital, released August 13, 2026, last modified July 22, 2026 ([CMS](https://data.cms.gov/provider-data/dataset/yv7e-xc69)).
+
+### Leapfrog safety grades and accreditation
+
+These two rows come from bodies other than CMS, and neither is a CMS measure.
+
+| Hospital | Leapfrog Hospital Safety Grade, Spring 2026 | Accreditation, as stated by the organization |
+|---|---|---|
+| Hilton Head Medical Center | C ([Leapfrog](https://www.hospitalsafetygrade.org/h/novant-health-hilton-head-medical-center)) | Novant states the hospital is Joint Commission accredited ([Novant](https://www.novanthealth.org/newsroom/facility-information)); not verified with the Joint Commission |
+| Coastal Carolina Medical Center | B ([Leapfrog](https://www.hospitalsafetygrade.org/h/novant-health-coastal-carolina-medical-center)) | Novant states the hospital is Joint Commission accredited ([Novant](https://www.novanthealth.org/newsroom/facility-information)); not verified with the Joint Commission |
+| Beaufort Memorial Hospital | C ([Leapfrog](https://www.hospitalsafetygrade.org/h/beaufort-memorial-hospital)) | States it is fully Joint Commission accredited ([BMH](https://www.bmhsc.org/about-us)); not verified with the Joint Commission |
+| Memorial Health University Medical Center | B ([Leapfrog](https://www.hospitalsafetygrade.org/h/memorial-health-university-medical-center)) | About Us page states Joint Commission accreditation with stroke and joint-replacement certifications ([Memorial](https://www.memorialhealth.com/locations/memorial-health-university-medical-center/about-us)); not verified with the Joint Commission |
+| Candler Hospital | Grade Not Available — no letter grade published for the cycle ([Leapfrog](https://www.hospitalsafetygrade.org/table-details/candler-hospital)) | Awards page states Joint Commission accreditation ([SJC](https://www.sjchs.org/about-us/awards-accreditations)); not independently verified |
+| St. Joseph's Hospital – Savannah | Not retrieved — the grade page could not be fetched in this research ([Leapfrog ratings site](https://ratings.leapfroggroup.org/facility/details/11-0043/st-joseph-s-hospital-savannah-ga)) | Awards page states Joint Commission accreditation ([SJC](https://www.sjchs.org/about-us/awards-accreditations)); not independently verified |
+
+Leapfrog is a private nonprofit that issues letter grades twice a year, in spring and fall cycles, from a voluntary hospital survey plus public data; grades from different cycles are not interchangeable, so a hospital's spring grade should not be read against another hospital's fall grade. **"Grade Not Available" is not a letter grade and is not a failing grade.** Leapfrog's spring 2026 release states that it assigned no grade to 450 hospitals that did not participate in its 2024 or 2025 survey ([Leapfrog](https://www.leapfroggroup.org/news-events/new-leapfrog-hospital-safety-grades-show-significant-improvement-patient-safety)). "Not retrieved" in the table above is an access failure in this research, not a result. And accreditation is not independently verified anywhere in this guide: the Joint Commission's public lookup could not be retrieved, so every accreditation statement here is the organization's own.
+
 ## Side by side
 
 **This table reports what each source publishes; it does not rank the systems.** Scope rule: an acute-care hospital or hospital-based emergency department within roughly 45 minutes' drive of Sun City (Okatie, SC 29909), or an approved Certificate of Need for one. All values retrieved August 24, 2026 except where a later retrieval date is given in the cell. Drive times are estimates computed without traffic. "Not published" is a statement about the record, not about the hospital.
