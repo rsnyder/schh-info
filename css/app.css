@@ -801,3 +801,44 @@ a.vendor-badge:hover, a.vendor-badge:focus-visible { opacity: .85; }
 .prose td a { color: var(--color-muted); font-size: .92em; }
 .prose td a:hover, .prose td a:focus-visible { color: var(--color-link); }
 .table-scroll + .hint { margin-top: calc(-1 * var(--space-4)); }
+/* Wide screens: the wrapper is the table's own scroll pane, bounded in
+   height, so the sticky header row and field column actually pin while
+   the rows scroll (sticky only works against the nearest scroll box). */
+@media (min-width: 768px) {
+  .table-scroll { max-height: 82vh; overflow: auto; }
+}
+/* Phones: no grid at all. Each row becomes a card — the field name as its
+   heading, then one "System: value" line per column, labeled from the
+   header row by the layout script (data-label). Nothing to scroll
+   sideways, no header to lose. */
+@media (max-width: 767px) {
+  .table-scroll {
+    overflow: visible; width: auto; max-width: none; margin-left: 0;
+    transform: none; border: 0; background: none;
+  }
+  .prose table, .prose thead, .prose tbody, .prose tr, .prose th, .prose td { display: block; }
+  .prose table { font-size: 0.9rem; min-width: 0; }
+  .prose thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .prose tbody tr {
+    margin: 0 0 var(--space-3); border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm); background: var(--color-surface); overflow: hidden;
+  }
+  .prose th, .prose td {
+    min-width: 0; max-width: none; position: static; border: 0;
+    padding: .5rem .75rem;
+  }
+  .prose th:first-child, .prose td:first-child {
+    min-width: 0; max-width: none; width: auto;
+    background: var(--color-primary-tint); color: var(--color-primary);
+    font-weight: 700; border-bottom: 1px solid var(--color-line);
+  }
+  .prose td:not(:first-child) { border-bottom: 1px solid var(--color-line); }
+  .prose td:not(:first-child)::before {
+    content: attr(data-label); display: block;
+    font-size: .8rem; font-weight: 600; color: var(--color-muted);
+    margin-bottom: .15rem;
+  }
+  .prose tbody tr td:last-child { border-bottom: 0; }
+  .prose tbody tr:nth-child(even) td { background: var(--color-surface); }
+  .prose tbody tr:nth-child(even) td:first-child { background: var(--color-primary-tint); }
+}

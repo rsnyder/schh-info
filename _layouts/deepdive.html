@@ -23,6 +23,16 @@ layout: app
         wrap.className = "table-scroll";
         t.parentNode.insertBefore(wrap, t);
         wrap.appendChild(t);
+        // Column labels for the stacked phone layout (see the phone rules
+        // under .table-scroll in app.css).
+        var heads = Array.prototype.map.call(t.querySelectorAll("thead th"), function (th) {
+            return th.textContent.trim();
+        });
+        t.querySelectorAll("tbody tr").forEach(function (row) {
+            Array.prototype.forEach.call(row.children, function (cell, i) {
+                if (i > 0 && heads[i]) cell.setAttribute("data-label", heads[i]);
+            });
+        });
     });
 })();
 </script>
