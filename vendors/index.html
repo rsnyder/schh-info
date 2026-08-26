@@ -115,15 +115,31 @@ description: "A curated list of local vendors and services, including resident-o
     }
 
     // Research tier: stored as "strong" / "additional" /
-    // "verification_required" (bff/vendor_repository.py TIERS). Rendered as
-    // an evidence-completeness indicator (owner decision 2026-08-22): filled
-    // dots give the at-a-glance ordering cue, and the words describe how
-    // much documentation the research found — never an endorsement.
-    var TIER_BADGES = {
-        strong: { dots: "●●●", label: "Well documented" },
-        additional: { dots: "●●○", label: "Partially documented" },
-        verification_required: { dots: "●○○", label: "Limited info" }
+    // "verification_required" (bff/vendor_repository.py TIERS). Rendered
+    // (owner decision 2026-08-26) as "Online verification:" + a neutral
+    // three-segment meter + Extensive / Partial / Limited — a plain line
+    // under the contact details, no colour scale, never a chip. It says how
+    // much of the listing could be corroborated from public sources when it
+    // was researched — not a rating or an endorsement — and shows only while
+    // no resident has reported using the vendor (a resident report is the
+    // stronger signal and stands alone).
+    var METER = {
+        strong: { seg: 3, label: "Extensive" },
+        additional: { seg: 2, label: "Partial" },
+        verification_required: { seg: 1, label: "Limited" }
     };
+    function verificationHtml(v) {
+        var m = METER[String(v.tier || "").toLowerCase()];
+        if (!m || usedCount(v) > 0) return "";
+        var segs = "";
+        for (var i = 1; i <= 3; i++) {
+            segs += '<i class="' + (i <= m.seg ? "on" : "") + '"></i>';
+        }
+        return '<p class="vendor-verification"><a href="/vendors/about/#research-confidence">'
+            + '<span class="meter-label">Online verification:</span> '
+            + '<span class="meter" aria-hidden="true">' + segs + "</span> "
+            + esc(m.label) + "</a></p>";
+    }
 
     // Residents reporting use of a vendor: `used_count` when present, the
     // legacy `recommendations` aggregate otherwise (addendum A3).
@@ -145,15 +161,6 @@ description: "A curated list of local vendors and services, including resident-o
         }
         if (v.resident_owned || v.resident) {
             out += '<span class="vendor-badge">Resident-owned</span>';
-        }
-        // Research badge only while no resident has reported using the
-        // vendor — once residents vouch, that strictly stronger signal
-        // stands alone (owner decision 2026-08-22).
-        var t = TIER_BADGES[String(v.tier || "").toLowerCase()];
-        if (t && usedCount(v) === 0) {
-            out += '<a class="vendor-badge vendor-badge-tier vendor-badge-tier-'
-                + esc(String(v.tier).toLowerCase()) + '" href="/vendors/about/#research-confidence">'
-                + '<span aria-hidden="true">' + t.dots + "</span> " + esc(t.label) + "</a>";
         }
         return out;
     }
@@ -358,6 +365,7 @@ description: "A curated list of local vendors and services, including resident-o
             + attributesHtml(v)
             + descriptionDetails(v)
             + contactList(v)
+            + verificationHtml(v)
             + briefHtml(v)
             + '<div class="vendor-resident">'
             + '<p class="vendor-recs">' + usageLine(v) + "</p>"

@@ -464,9 +464,15 @@ button.tag-btn.tag-btn-on {
    than new unvetted hex values. */
 a.vendor-badge { text-decoration: none; cursor: pointer; }
 a.vendor-badge:hover, a.vendor-badge:focus-visible { opacity: .85; }
-.vendor-badge-tier-strong { background: var(--color-success); }
-.vendor-badge-tier-additional { background: var(--color-primary); }
-.vendor-badge-tier-verification_required { background: var(--color-muted); }
+/* "Online verification" line (research tier): plain muted text with a
+   neutral three-segment meter — never a colour scale or a chip. */
+.vendor-verification { margin: var(--space-1) 0 var(--space-3); font-size: 13px; color: var(--color-muted); }
+.vendor-verification a { color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor; }
+.vendor-verification a:hover, .vendor-verification a:focus-visible { color: var(--color-text); }
+.vendor-verification .meter { display: inline-flex; gap: 3px; margin: 0 2px; vertical-align: middle; }
+.vendor-verification .meter i { display: inline-block; width: 12px; height: 7px; border-radius: 4px;
+  background: var(--color-border, #d8d4cc); }
+.vendor-verification .meter i.on { background: var(--color-muted, #6b675f); }
 
 /* Long per-vendor content ("Description and service area", "What
    residents mention") lives in native <details> so the collapsed card
