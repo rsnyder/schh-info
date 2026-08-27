@@ -71,18 +71,23 @@ description: "Important community links — phone numbers, websites, and contact
 </div>
 
 <script>
-// Live "current edition" link: the nightly ingest records this month's
-// SunSations gallery URL; swap it in so the page never needs a deploy when
-// the edition changes. The YAML url is the fallback if the fetch fails.
+// Live links: the nightly ingests record this month's SunSations gallery
+// URL and the Association's current calendar PDFs (their file names change
+// every one or two months); swap them in so this page never needs a deploy
+// when they change. The YAML url is the fallback if the fetch fails.
 (function () {
-    var a = document.querySelector('a[data-live="sunsations"]');
-    if (!a) return;
-    fetch("https://chat.schh.info/api/sunsations/current")
+    var anchors = document.querySelectorAll("a[data-live]");
+    if (!anchors.length) return;
+    fetch("https://chat.schh.info/api/live-links")
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (d) {
-            if (!d || !d.url) return;
-            a.href = d.url;
-            if (d.title) a.textContent = "Read " + d.title.replace(/\s*SunSations\s*$/i, "");
+            if (!d) return;
+            anchors.forEach(function (a) {
+                var item = d[a.getAttribute("data-live")];
+                if (!item || !item.url) return;
+                a.href = item.url;
+                if (item.label) a.textContent = item.label;
+            });
         })
         .catch(function () {});
 })();

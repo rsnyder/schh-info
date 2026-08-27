@@ -66,10 +66,20 @@
       link_text: "Read the current edition"
       live: sunsations
       description: "The Association's monthly magazine, online (no login needed)."
-    - title: "Association Calendar"
-      url: "https://suncityhiltonhead.org/calendar"
-      link_text: "Open calendar"
-      description: "Community events, meetings, and activities on the Association website."
+    # `live: event_calendar` / `live: seminars_calendar` — the nightly
+    # Resident Central ingest records the current PDF links (they change
+    # every two months); links/index.html swaps them in from
+    # chat.schh.info/api/live-links. The urls below are the fallback.
+    - title: "Event Calendar (eHappenings)"
+      url: "https://www.suncityhiltonhead.org/HOA/assn46134/images/eHappenings_Sep26_Oct26.pdf"
+      link_text: "Open calendar (PDF)"
+      live: event_calendar
+      description: "The Association's two-month calendar of events, meetings, and activities."
+    - title: "Seminars Calendar"
+      url: "https://www.suncityhiltonhead.org/HOA/assn46134/images/Seminars_Sep26_Oct26.pdf"
+      link_text: "Open calendar (PDF)"
+      live: seminars_calendar
+      description: "Upcoming seminars and presentations, two months at a time."
     - title: "Vehicle & golf-cart registration (RFID)"
       phone: "(843) 705-4000"
       email: "RFID@schhca.com"
