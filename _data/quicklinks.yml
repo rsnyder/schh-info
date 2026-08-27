@@ -58,6 +58,18 @@
       phone: "(843) 705-4113"
       email: "communications@schhca.com"
       description: "SunSations magazine and website content."
+    # `live: sunsations` — links/index.html swaps the href and link text for
+    # this month's edition from chat.schh.info/api/sunsations/current
+    # (written by the nightly ingest); the url below is the fallback.
+    - title: "SunSations Magazine — current edition"
+      url: "https://view.publitas.com/d9718a7d-1ef1-4cf0-afe8-ec4e78d0bea0/august-2026-sunsations/"
+      link_text: "Read the current edition"
+      live: sunsations
+      description: "The Association's monthly magazine, online (no login needed)."
+    - title: "Association Calendar"
+      url: "https://suncityhiltonhead.org/calendar"
+      link_text: "Open calendar"
+      description: "Community events, meetings, and activities on the Association website."
     - title: "Vehicle & golf-cart registration (RFID)"
       phone: "(843) 705-4000"
       email: "RFID@schhca.com"

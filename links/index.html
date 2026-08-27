@@ -46,7 +46,7 @@ description: "Important community links — phone numbers, websites, and contact
                         <span class="link-contact">
                             {% if link.phone %}<a href="tel:{{ link.phone | remove: '(' | remove: ')' | remove: ' ' | remove: '-' }}">{{ link.phone }}</a>{% endif %}
                             {% if link.email %}{% if link.phone %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="mailto:{{ link.email }}">{{ link.email }}</a>{% endif %}
-                            {% if link.url %}{% if link.phone or link.email %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.link_text | default: "Visit website" }}</a>{% endif %}
+                            {% if link.url %}{% if link.phone or link.email %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="{{ link.url }}" target="_blank" rel="noopener"{% if link.live %} data-live="{{ link.live }}"{% endif %}>{{ link.link_text | default: "Visit website" }}</a>{% endif %}
                             {%- comment -%} page = same-site path (e.g. /map/): stays in this tab / the installed app {%- endcomment -%}
                             {% if link.page %}{% if link.phone or link.email or link.url %}<span class="vendor-sep">&middot;</span>{% endif %}<a href="{{ link.page }}">Open</a>{% endif %}
                         </span>
@@ -69,3 +69,21 @@ description: "Important community links — phone numbers, websites, and contact
        <a href="/faq/">FAQs</a> &mdash; tap any question there and the Guide
        answers it.</p>
 </div>
+
+<script>
+// Live "current edition" link: the nightly ingest records this month's
+// SunSations gallery URL; swap it in so the page never needs a deploy when
+// the edition changes. The YAML url is the fallback if the fetch fails.
+(function () {
+    var a = document.querySelector('a[data-live="sunsations"]');
+    if (!a) return;
+    fetch("https://chat.schh.info/api/sunsations/current")
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+            if (!d || !d.url) return;
+            a.href = d.url;
+            if (d.title) a.textContent = "Read " + d.title.replace(/\s*SunSations\s*$/i, "");
+        })
+        .catch(function () {});
+})();
+</script>
