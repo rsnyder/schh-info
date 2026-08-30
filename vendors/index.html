@@ -500,14 +500,19 @@ description: "A curated list of local vendors and services, including resident-o
     function searchVendors(query) {
         var words = normalize(query).split(" ").filter(Boolean);
         if (!words.length) return [];
+        // A word matches at the start of a word ("plumb" finds Plumbing),
+        // not anywhere inside one ("ron" must not find envi-ron-ment). The
+        // vendor name alone is also matched as a bare substring so a
+        // half-remembered fragment of a name still finds it.
+        function wordHit(blob, w) { return (" " + blob).indexOf(" " + w) !== -1; }
         var hits = [];
         searchIndex.forEach(function (ix, i) {
             var inName = words.every(function (w) { return ix.name.indexOf(w) !== -1; });
             var inService = !inName && words.every(function (w) {
-                return (ix.name + " " + ix.service).indexOf(w) !== -1;
+                return wordHit(ix.name + " " + ix.service, w);
             });
             var inAny = inName || inService || words.every(function (w) {
-                return (ix.name + " " + ix.service + " " + ix.rest).indexOf(w) !== -1;
+                return wordHit(ix.name + " " + ix.service + " " + ix.rest, w);
             });
             if (!inAny) return;
             hits.push({v: allVendors[i], rank: inName ? 0 : (inService ? 1 : 2), i: i});
