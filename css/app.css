@@ -409,6 +409,21 @@ img, svg { max-width: 100%; }
 }
 .vendor-facts { font-size: .9em; margin-bottom: .25rem; }
 
+/* Vendor search (vendors page). One wide box above the category grid;
+   the search view reuses .cat-title / .card-grid so results look exactly
+   like a category listing. */
+.vendor-search { margin-bottom: var(--space-4); }
+.vendor-search input[type=search] {
+  width: 100%; box-sizing: border-box; padding: .7rem .9rem;
+  font: inherit; font-size: 1.05rem; color: var(--color-ink);
+  background: var(--color-surface); border: 1px solid var(--color-line);
+  border-radius: 10px; -webkit-appearance: none; appearance: none;
+}
+.vendor-search input[type=search]:focus {
+  outline: none; border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-tint);
+}
+.vendor-search-hint { color: var(--color-muted); font-size: .9em; margin: .4rem 0 0; }
 /* Specialty tag filter bar (category view). The buttons reuse .vendor-tag
    so a filter chip and the chip on a card are visibly the same object;
    .tag-btn adds the interactive affordances and the selected state. */

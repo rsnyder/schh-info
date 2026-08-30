@@ -27,7 +27,22 @@ description: "A curated list of local vendors and services, including resident-o
            loaded right now &mdash; please try again in a few minutes, or
            <a href="/contact/">let us know</a> if it keeps happening.</p>
 
+        <form id="vendor-search" class="vendor-search" role="search" hidden>
+            <label for="vendor-search-input" class="visually-hidden">Search vendors</label>
+            <input type="search" id="vendor-search-input" autocomplete="off"
+                   placeholder="Search vendors by name, service, or specialty&hellip;">
+            <p class="vendor-search-hint">Or browse by category below. For a question
+               (&ldquo;who fixes screened porches?&rdquo;), <a href="/">ask the guide</a>.</p>
+        </form>
+
         <div id="cat-grid" class="cat-grid" hidden></div>
+
+        <div id="search-view" hidden>
+            <p class="cat-back-line"><a href="#" id="search-back">&larr; All categories</a></p>
+            <h3 class="cat-title" id="search-title"></h3>
+            <p class="cat-desc" id="search-note" hidden></p>
+            <div class="card-grid" id="search-cards"></div>
+        </div>
 
         <div id="cat-view" hidden>
             <p class="cat-back-line"><a href="#" id="cat-back">&larr; All categories</a></p>
@@ -449,8 +464,118 @@ description: "A curated list of local vendors and services, including resident-o
 
     function renderGrid() {
         $("cat-view").hidden = true;
+        $("search-view").hidden = true;
         $("cat-grid").hidden = false;
         $("browse-heading").scrollIntoView({block: "nearest"});
+    }
+
+    // ---- name / service search --------------------------------------
+    // The page already holds every approved vendor, so search is a plain
+    // client-side filter: every word of the query must occur somewhere in
+    // the vendor's name, categories, specialty tags, coverage area, or
+    // description (case-insensitive substring — no fuzzy matching, on
+    // purpose: predictable beats clever for a list this size). Results
+    // rank by where the whole query matched — name, then category or
+    // specialty, then description — and within a rank keep the API's
+    // spec §14.4 order (Featured, recommended, tier, count, name), so a
+    // Featured plumber still leads the plumbers. Capped so a two-letter
+    // query cannot render 1,500 cards.
+    var SEARCH_MAX = 50;
+    var allVendors = [];
+    var searchIndex = [];   // parallel to allVendors: {name, service, rest}
+    function normalize(s) {
+        return String(s || "").toLowerCase().replace(/[\u2019']/g, "").replace(/[^a-z0-9&+]+/g, " ").trim();
+    }
+    function buildSearchIndex(vendorList) {
+        allVendors = vendorList;
+        searchIndex = vendorList.map(function (v) {
+            var cats = (v.categories && v.categories.length) ? v.categories : [v.service_category || ""];
+            return {
+                name: normalize(v.name),
+                service: normalize(cats.join(" ") + " " + specialtiesOf(v).join(" ")),
+                rest: normalize([v.coverage_area, v.brief_description, v.description_preview].join(" "))
+            };
+        });
+    }
+    function searchVendors(query) {
+        var words = normalize(query).split(" ").filter(Boolean);
+        if (!words.length) return [];
+        var hits = [];
+        searchIndex.forEach(function (ix, i) {
+            var inName = words.every(function (w) { return ix.name.indexOf(w) !== -1; });
+            var inService = !inName && words.every(function (w) {
+                return (ix.name + " " + ix.service).indexOf(w) !== -1;
+            });
+            var inAny = inName || inService || words.every(function (w) {
+                return (ix.name + " " + ix.service + " " + ix.rest).indexOf(w) !== -1;
+            });
+            if (!inAny) return;
+            hits.push({v: allVendors[i], rank: inName ? 0 : (inService ? 1 : 2), i: i});
+        });
+        hits.sort(function (a, b) { return a.rank - b.rank || a.i - b.i; });
+        return hits.map(function (h) { return h.v; });
+    }
+    function renderSearch(query) {
+        var q = String(query || "").trim();
+        if (!q) { renderGrid(); return; }
+        var hits = searchVendors(q);
+        $("cat-grid").hidden = true;
+        $("cat-view").hidden = true;
+        $("search-title").textContent = "\u201c" + q + "\u201d"
+            + (hits.length ? " (" + hits.length + (hits.length === 1 ? " vendor)" : " vendors)") : "");
+        var note = "";
+        if (hits.length > SEARCH_MAX) {
+            note = "Showing the first " + SEARCH_MAX + " of " + hits.length + " \u2014 add a word to narrow it down.";
+        }
+        $("search-note").textContent = note;
+        $("search-note").hidden = !note;
+        $("search-cards").innerHTML = hits.length
+            ? hits.slice(0, SEARCH_MAX).map(vendorCard).join("")
+            : '<p>No listed vendor matches <strong>' + esc(q) + '</strong>. Try a different '
+              + 'word, browse the categories, or <a href="/">ask the guide</a> \u2014 it can '
+              + 'search the web too. Used someone good who isn\u2019t here? '
+              + '<a href="https://chat.schh.info/recommend-vendor.html">Recommend them</a>.</p>';
+        $("search-view").hidden = false;
+    }
+    // Live search updates the hash with replaceState (one history entry per
+    // search box visit, not per keystroke) so a result set is linkable:
+    // /vendors/#q=roof. Category deep links (#slug) are untouched.
+    var searchTimer = null, statsTimer = null;
+    function setSearchHash(q) {
+        var url = location.pathname + location.search + (q ? "#q=" + encodeURIComponent(q) : "");
+        history.replaceState(null, "", url);
+    }
+    function queryFromHash() {
+        var h = location.hash.replace(/^#/, "");
+        if (h.indexOf("q=") !== 0) return null;
+        try { return decodeURIComponent(h.slice(2)); } catch (e) { return h.slice(2); }
+    }
+    function wireSearch() {
+        var input = $("vendor-search-input");
+        $("vendor-search").addEventListener("submit", function (e) { e.preventDefault(); });
+        input.addEventListener("input", function () {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(function () {
+                var q = input.value.trim();
+                setSearchHash(q);
+                renderSearch(q);
+                // What residents look for (never who) — guarded so the
+                // page works identically without analytics loaded.
+                clearTimeout(statsTimer);
+                if (q.length >= 3 && window.umami && typeof window.umami.track === "function") {
+                    statsTimer = setTimeout(function () {
+                        window.umami.track("vendor-search", {q: q.toLowerCase().slice(0, 80)});
+                    }, 1200);
+                }
+            }, 150);
+        });
+        $("search-back").addEventListener("click", function (e) {
+            e.preventDefault();
+            input.value = "";
+            history.pushState(null, "", location.pathname + location.search);
+            renderGrid();
+        });
+        $("vendor-search").hidden = false;
     }
     var nearbyResults = {};  // slug -> rendered HTML for this visit
 
@@ -662,6 +787,13 @@ description: "A curated list of local vendors and services, including resident-o
         $("browse-heading").scrollIntoView({block: "nearest"});
     }
     function route() {
+        var q = queryFromHash();
+        if (q !== null) {
+            $("vendor-search-input").value = q;
+            renderSearch(q);
+            return;
+        }
+        $("vendor-search-input").value = "";
         var slug = location.hash.replace(/^#/, "");
         if (slug && groups[slug]) renderCategory(slug); else renderGrid();
     }
@@ -717,6 +849,8 @@ description: "A curated list of local vendors and services, including resident-o
             buildFallbackGrid((data && data.categories) || []);
         }
         assignVendors(vendors);
+        buildSearchIndex(vendors);
+        wireSearch();
 
         $("cat-grid").innerHTML = order.map(function (slug) {
             var g = groups[slug];
