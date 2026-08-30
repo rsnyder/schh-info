@@ -265,11 +265,12 @@ description: "A curated list of local vendors and services, including resident-o
                 + '<span class="vendor-brief-label">Research Brief</span> '
                 + esc(monthYear(b.research_date)) + "</a>" + aging + "</p>";
         }
-        if (!v.vendor_id || !briefCategorySupported(v)) return "";
-        var commissionUrl = "https://chat.schh.info/commission-brief.html?vendor_id="
-            + encodeURIComponent(v.vendor_id);
-        return '<p class="vendor-brief"><a href="' + esc(commissionUrl)
-            + '">Commission a Research Brief</a></p>';
+        // Commissioning is paused while the research pipeline is hardened
+        // (owner call 2026-08-30): existing briefs stay linked above, but a
+        // card without one offers no commission button for now. When it
+        // reopens, restore the commission-brief.html link here (guarded by
+        // briefCategorySupported).
+        return "";
     }
 
     function detailsSection(summary, bodyHtml) {
