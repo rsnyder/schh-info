@@ -263,6 +263,14 @@
     // and mailto: hand off to the phone/mail app (vendor answers emit them).
     h = h.replace(/\[([^\]]+)\]\(((?:https?:|tel:|mailto:)[^)\s]+)\)/g,
       '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    // Autolink bare URLs the model emits outside markdown syntax
+    // ("Browse more: https://schh.info/vendors/#other"). Runs after the
+    // markdown pass; requiring start/whitespace/( before the URL keeps it
+    // away from href="..." attributes, and trailing punctuation stays out
+    // of the link.
+    h = h.replace(/(^|[\s(])(https?:\/\/[^\s<]+?)([.,;:!?)]*)(?=\s|<|$)/gm,
+      (m, pre, url, trail) =>
+        pre + '<a href="' + url + '" target="_blank" rel="noopener">' + url + "</a>" + trail);
     h = h.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
     h = renderTables(h);
     h = h.replace(/^###\s?(.+)$/gm, "<h3>$1</h3>").replace(/^##\s?(.+)$/gm, "<h2>$1</h2>");
