@@ -865,6 +865,19 @@ description: "A curated list of local vendors and services, including resident-o
         var vendors = (data && data.vendors) || [];
         $("vendors-loading").hidden = true;
         if (!vendors.length) { $("vendors-error").hidden = false; return; }
+        // Resident-gated listings (2026-09-08): the API tells us what the
+        // gate withheld so the page can say so honestly.
+        if (data && data.viewer !== "resident" && data.resident_only_hidden > 0) {
+            var note = document.createElement("p");
+            note.className = "hint";
+            note.style.cssText = "text-align:center;padding:.5rem 1rem;background:#f4f1ea;border-radius:8px";
+            note.innerHTML = data.resident_only_hidden +
+                " resident-run service" + (data.resident_only_hidden === 1 ? " is" : "s are") +
+                " visible only to signed-in residents \u2014 " +
+                '<a href="https://chat.schh.info/vendors.html">sign in to see them</a>.';
+            var grid = document.getElementById("cat-grid");
+            grid.parentNode.insertBefore(note, grid);
+        }
 
         // Every canonical category gets a card — an empty (0) one still
         // offers the web search and the recommend link.
