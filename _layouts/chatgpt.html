@@ -1,0 +1,13 @@
+---
+layout: app
+---
+<div class="container prose integration-page">
+  <p class="integration-eyebrow">SCHH Community Guide · ChatGPT integration</p>
+  <header class="page-header"><h1>{{ page.title }}</h1><p class="subheading">{{ page.description }}</p></header>
+  <nav class="integration-nav" aria-label="ChatGPT integration pages">
+    {% assign links = "Overview|/chatgpt/,Privacy|/chatgpt/privacy/,Terms|/chatgpt/terms/,Support|/chatgpt/support/" | split: "," %}
+    {% for item in links %}{% assign pair = item | split: "|" %}<a href="{{ pair[1] }}"{% if page.url == pair[1] %} aria-current="page"{% endif %}>{{ pair[0] }}</a>{% endfor %}
+  </nav>
+  {{ content }}
+  <p class="integration-owner">Published by Ron Snyder, an individual. <a href="mailto:ron@snyderjr.com">ron@snyderjr.com</a></p>
+</div>

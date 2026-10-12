@@ -869,3 +869,13 @@ a.vendor-badge:hover, a.vendor-badge:focus-visible { opacity: .85; }
   .prose tbody tr:nth-child(even) td { background: var(--color-surface); }
   .prose tbody tr:nth-child(even) td:first-child { background: var(--color-primary-tint); }
 }
+
+/* Public ChatGPT integration pages. */
+.integration-eyebrow { color: var(--color-muted); text-align: center; font-size: .88rem; }
+.integration-page .page-header { margin-top: 1rem; }
+.integration-page h2 { color: var(--color-primary); margin-top: 2rem; }
+.integration-nav { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.5rem 0 2rem; border-bottom: 1px solid var(--color-line); padding-bottom: .75rem; }
+.integration-nav a { display: inline-flex; align-items: center; min-height: 48px; padding: .35rem .75rem; border-radius: var(--radius-sm); }
+.integration-nav a[aria-current="page"] { background: var(--color-primary); color: white; text-decoration: none; }
+.integration-owner { border-top: 1px solid var(--color-line); margin-top: 2.5rem; padding-top: 1rem; color: var(--color-muted); font-size: .9rem; overflow-wrap: anywhere; }
+.integration-page .callout { font-style: normal; }

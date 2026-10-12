@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="/css/app.css?v={{ v }}">
     {% if page.chat %}<script src="/js/guide-chat.js?v={{ v }}" defer></script>{% endif %}
     {% if page.map %}<script src="/js/map.js?v={{ v }}" defer></script>{% endif %}
-    {% if site.analytics.website_id and site.analytics.website_id != "" %}
+    {% if site.analytics.website_id and site.analytics.website_id != "" and page.no_analytics != true %}
     <script defer src="{{ site.analytics.script }}" data-website-id="{{ site.analytics.website_id }}"></script>
     {% endif %}
 </head>
