@@ -1,0 +1,733 @@
+---
+layout: null
+permalink: /vendors/recommend/
+sitemap: false
+---
+{%- comment -%}
+  Port of schh-community-guide/webapp/recommend-vendor.html (the chat.schh.info copy, which
+  stays up for old links). Kept as a standalone page like the original,
+  but served from schh.info so the installed app (scope: schh.info) keeps
+  its sign-in: on iPhone an out-of-scope link opens in Safari, whose
+  cookies are separate from the app's. Differences from the original:
+  API_BASE + credentials "include", sign-in/back links. Keep both copies
+  in sync.
+{%- endcomment -%}
+{% raw %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Recommend a Vendor — SCHH Community Guide</title>
+<style>
+  /* Same standalone shell as index.html; the form is self-contained so it
+     needs no chat.css. Sign-in happens on the chat page (one login flow to
+     maintain) — this page only checks the session cookie. */
+  body { margin:0; font-family:-apple-system, "Segoe UI", Roboto, sans-serif;
+         background:#faf9f6; min-height:100dvh; display:flex; flex-direction:column;
+         font-size:1.05rem; color:#222; }
+  header.shell { background:#4a6741; color:#fff; padding:.7rem 1rem; }
+  header.shell h1 { font-size:1.05rem; margin:0; font-weight:600; }
+  header.shell a { color:#dce8d8; font-size:.85rem; text-decoration:none; }
+  main { flex:1; max-width:38rem; width:100%; margin:0 auto; padding:1rem; box-sizing:border-box; }
+  .card { background:#fff; border:1px solid #e2e0da; border-radius:10px;
+          padding:1.2rem 1.3rem; margin-top:1rem; }
+  h2 { margin:.2rem 0 .6rem; font-size:1.3rem; }
+  p.lead { color:#555; margin:.2rem 0 1rem; line-height:1.5; }
+  p.context { color:#4a6741; font-weight:600; margin:.1rem 0 1rem; }
+  label { display:block; font-weight:600; margin:1rem 0 .3rem; }
+  label .opt { font-weight:400; color:#777; font-size:.9em; }
+  fieldset { border:0; margin:1rem 0 0; padding:0; }
+  legend { font-weight:600; margin:0 0 .3rem; padding:0; }
+  input, select, textarea { width:100%; box-sizing:border-box; font:inherit;
+          padding:.55rem .6rem; border:1px solid #bbb; border-radius:6px; background:#fff; }
+  input[readonly] { background:#f3f2ee; color:#555; }
+  textarea { min-height:6.5rem; resize:vertical; }
+  .check { display:flex; gap:.55rem; align-items:flex-start; margin-top:.7rem; font-weight:400; }
+  .check input { width:auto; margin-top:.3rem; flex:none; }
+  .check.prominent { border:1px dashed #4a6741; border-radius:8px; padding:.6rem .7rem; margin-top:1rem; }
+  .check.prominent label { font-weight:600; color:#4a6741; }
+  .hint { color:#777; font-size:.88em; margin-top:.25rem; line-height:1.4; }
+  button.primary { margin-top:1.3rem; width:100%; padding:.75rem; font:inherit; font-weight:600;
+          background:#4a6741; color:#fff; border:0; border-radius:8px; cursor:pointer; }
+  button.primary[disabled] { opacity:.55; cursor:default; }
+  button.secondary { margin-top:.7rem; width:100%; padding:.7rem; font:inherit; font-weight:600;
+          background:#fff; color:#4a6741; border:1px solid #4a6741; border-radius:8px; cursor:pointer; }
+  button.secondary[disabled] { opacity:.55; cursor:default; }
+  button.link { background:none; border:0; color:#1565c0; text-decoration:underline;
+          cursor:pointer; font:inherit; padding:0; display:inline-block; margin-bottom:.8rem; }
+  .badge-good { display:inline-block; background:#e5f0e1; color:#3c6136; font-weight:600;
+          font-size:.85em; padding:.2rem .6rem; border-radius:999px; margin-bottom:.6rem; }
+  .note-box { background:#f6f5f1; border-radius:8px; padding:.7rem .8rem; margin-top:.6rem; line-height:1.45; }
+  .note-status { color:#777; font-size:.85em; margin-top:.3rem; }
+  .error { color:#a33; min-height:1.3em; margin-top:.7rem; line-height:1.4; }
+  .notice { line-height:1.55; }
+  .notice a, footer a { color:#1565c0; }
+  .success h2 { color:#3c6136; }
+  .hidden { display:none !important; }
+  footer { max-width:38rem; margin:.5rem auto 1rem; padding:.6rem 1rem 0;
+           border-top:1px solid #ddd; font-size:.8rem; line-height:1.45; color:#666; text-align:center; }
+</style>
+</head>
+<body>
+<header class="shell">
+  <h1>SCHH Community Guide — Recommend a Vendor <a href="https://schh.info/vendors/">&larr; back to the guide</a></h1>
+</header>
+<main>
+
+  <div id="checking" class="card notice">Checking your sign-in&hellip;</div>
+
+  <div id="signin" class="card notice hidden">
+    <h2>Please sign in first</h2>
+    <p>Vendor recommendations come from verified Sun City residents, so this
+       page needs you to be signed in to the
+       <a href="/">Community Guide chat</a> on the home page — sign in there
+       with your email code, then come back here.</p>
+    <button class="primary" onclick="location.reload()">I've signed in &mdash; continue</button>
+  </div>
+
+  <!-- Step 1: category picker (docs/vendors_specification.md §12.1/§12.3) -->
+  <div id="catStep" class="card hidden">
+    <h2>Recommend a vendor</h2>
+    <p class="lead">Used someone good — a plumber, painter, house cleaner,
+       anyone? Share them with your neighbors. Start by choosing the type of
+       service.</p>
+    <label for="catSelect">Type of service</label>
+    <select id="catSelect">
+      <option value="" selected disabled>Choose a category&hellip;</option>
+    </select>
+    <input id="catOther" class="hidden" type="text" maxlength="120"
+           placeholder="Describe the type of service" style="margin-top:.4rem">
+    <button class="primary" id="catContinue" type="button">Continue</button>
+    <div class="error" id="catErr" role="alert"></div>
+  </div>
+
+  <!-- Step 2: vendor picker for the chosen category -->
+  <div id="vendorStep" class="card hidden">
+    <h2>Which vendor?</h2>
+    <p class="context" id="vendorCatLabel"></p>
+    <button class="link" id="vendorBack" type="button">&larr; choose a different category</button>
+    <fieldset>
+      <legend>Already-listed vendors in this category</legend>
+      <div id="vendorList"></div>
+    </fieldset>
+    <button class="primary" id="vendorContinue" type="button">I used this vendor</button>
+    <button class="secondary" id="vendorNotListed" type="button">They're not listed — add them</button>
+    <div class="error" id="vendorErr" role="alert"></div>
+  </div>
+
+  <!-- Existing-vendor path: recommend / withdraw / "Recommended by you" -->
+  <div id="existingStep" class="card hidden">
+    <button class="link hidden" id="existingBack" type="button">&larr; choose a different vendor</button>
+    <h2 id="existingName">Vendor</h2>
+    <div id="existingBody"></div>
+    <div class="error" id="existingErr" role="alert"></div>
+  </div>
+
+  <!-- New-vendor path -->
+  <div id="newVendorStep" class="card hidden">
+    <button class="link hidden" id="newVendorBack" type="button">&larr; choose a different vendor</button>
+    <h2>Add a vendor</h2>
+    <p class="context" id="newVendorCatLabel"></p>
+    <p class="lead">An administrator reviews every submission before it
+       appears in the guide, and may merge it with an existing listing.</p>
+
+    <label for="name">Vendor / business name</label>
+    <input id="name" type="text" maxlength="120" autocomplete="off">
+
+    <label for="phone">Phone <span class="opt">(at least one way to reach them is required)</span></label>
+    <input id="phone" type="tel" maxlength="200" autocomplete="off">
+
+    <label for="email">Email <span class="opt">(optional)</span></label>
+    <input id="email" type="email" maxlength="200" autocomplete="off">
+
+    <label for="website">Website <span class="opt">(optional)</span></label>
+    <input id="website" type="text" maxlength="200" autocomplete="off" placeholder="example.com">
+
+    <label for="address">Address <span class="opt">(optional)</span></label>
+    <input id="address" type="text" maxlength="200" autocomplete="off">
+
+    <label for="area">Area they serve <span class="opt">(optional)</span></label>
+    <input id="area" type="text" maxlength="120" placeholder="e.g. Sun City, Bluffton, Okatie">
+
+    <label for="notes">What did they do for you? How was it? <span class="opt">(optional)</span></label>
+    <textarea id="notes" maxlength="1000"></textarea>
+    <div class="hint">Please don't include your own or other residents' names,
+      addresses, or other personal, medical, financial, or gate/access
+      details — just the vendor and the work. Notes are reviewed before they
+      can inform a public summary; a note is never published individually.</div>
+
+    <!-- Addendum A1/A2: the attestation plus a two-way outcome. There is no
+         "did not meet expectations" option here on purpose — a vendor being
+         submitted for listing is by definition one the submitter would point
+         neighbors to; disappointments about listed vendors go through the
+         recommend-existing flow's private report. -->
+    <label class="check"><input id="used" type="checkbox">
+      I personally used this vendor.</label>
+    <div class="hint">Checking this creates your recommendation for this
+      vendor once it's approved. Leave it unchecked to submit the listing
+      without a recommendation.</div>
+
+    <fieldset id="newOutcomeWrap" class="hidden">
+      <legend>How did it go?</legend>
+      <label class="check"><input type="radio" name="newOutcome" value="met">
+        Met expectations</label>
+      <label class="check"><input type="radio" name="newOutcome" value="exceeded">
+        Far exceeded expectations — I highly recommend them</label>
+    </fieldset>
+
+    <label class="check"><input id="residentOwned" type="checkbox">
+      This business is owned by a Sun City resident (as far as I know)</label>
+
+    <p class="hint" style="margin-top:1rem">Submissions are reviewed by an
+      administrator and may be merged with an existing listing.</p>
+
+    <button class="primary" id="newVendorSubmit" type="button">Submit</button>
+    <div class="error" id="newVendorErr" role="alert"></div>
+  </div>
+
+  <!-- Possible-duplicate offer (spec §12.3) -->
+  <div id="matchesStep" class="card hidden">
+    <h2>Is it one of these?</h2>
+    <p class="lead">A few listed vendors look similar to what you entered.
+      Pick one to recommend it instead, or tell us it's not there.</p>
+    <div id="matchList"></div>
+    <button class="secondary" id="matchNone" type="button">No — none of these, add mine</button>
+    <div class="error" id="matchErr" role="alert"></div>
+  </div>
+
+  <div id="done" class="card notice success hidden">
+    <h2 id="doneTitle">Thank you!</h2>
+    <p id="doneMessage">Your recommendation was submitted.</p>
+    <button class="primary" onclick="location.reload()">Recommend another vendor</button>
+    <p style="margin-top:.9rem"><a href="/vendors/">Back to the vendor directory</a></p>
+  </div>
+
+</main>
+<footer>
+  Your name and email stay with the review team only — they are never published
+  or shown in the guide. Listed vendors are shared by fellow residents and are
+  not vetted, endorsed, or guaranteed by the Association.
+</footer>
+<script>
+(() => {
+  "use strict";
+
+  // Fallback only — used when GET /api/vendor-categories fails. Otherwise
+  // the category list comes live from the endpoint (spec §17.1).
+  const FALLBACK_CATEGORIES = ["Plumbing","Electrical","HVAC","Roofing","Painting",
+    "Landscaping & Lawn Care","Tree Service","Pressure Washing","House Cleaning",
+    "Pest Control","Handyman","Appliance Repair","Garage Doors","Windows & Doors",
+    "Flooring","Concrete & Masonry","Patios, Lanais & Hardscaping",
+    "Gutters","Irrigation","Golf Cart Service",
+    "Computer & Technology Help","Home Watch","Home Inspection","Sewing & Upholstery",
+    "Pet Care","Moving & Hauling","Travel & Transportation","Auto Service",
+    "Insurance","Legal","Financial","Health & Wellness","Medical & Dental"];
+
+  // Addendum A4 (wave U3): the attestation sentence carries only the fact of
+  // use — the outcome radio below it carries the judgment.
+  const ATTESTATION_TEXT = "I personally used this vendor.";
+
+  // Addendum A1: the three usage outcomes, in the order they must appear.
+  const OUTCOMES = [
+    { value: "met", label: "Met expectations" },
+    { value: "exceeded", label: "Far exceeded expectations — I highly recommend them" },
+    { value: "did_not_meet", label: "Did not meet expectations" },
+  ];
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? "" : s)
+    .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  const PANELS = ["checking", "signin", "catStep", "vendorStep", "existingStep",
+                  "newVendorStep", "matchesStep", "done"];
+  function show(id) {
+    for (const s of PANELS) $(s).classList.toggle("hidden", s !== id);
+  }
+
+  // Served from schh.info so it stays inside the installed app (PWA scope
+  // is schh.info). The API lives on chat.schh.info; the session cookies are
+  // host-only there and flow on this same-site request (credentials:
+  // "include", the same pattern as js/guide-chat.js). The BFF's CORS allows
+  // https://schh.info with credentials.
+  const API_BASE = "https://chat.schh.info";
+  function api(path, options) {
+    return fetch(API_BASE + path, Object.assign({
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    }, options));
+  }
+
+  function setErr(id, msg) { $(id).textContent = msg || ""; }
+
+  // Shared response-error handling for the mutation endpoints below. Returns
+  // true if the response was handled (caller should stop), false if `ok`.
+  async function handleError(response, errId, limitMsg) {
+    if (response.status === 401 || response.status === 403) { show("signin"); return true; }
+    if (response.status === 404) {
+      setErr(errId, "This vendor is no longer available. Please start over.");
+      return true;
+    }
+    if (response.status === 429) {
+      setErr(errId, limitMsg || "You've reached today's limit — please try again tomorrow.");
+      return true;
+    }
+    const payload = await response.json().catch(() => ({}));
+    const message = payload.error && payload.error.message;
+    setErr(errId, message || "Something went wrong. Please try again in a moment.");
+    return true;
+  }
+
+  // ---------------------------------------------------------------- state
+  let currentCategory = null;   // {name, slug?, vendor_count?}
+  let currentVendor = null;     // {id, name}
+  let vendorStepVendors = [];   // DB-mode vendor records for the chosen category
+  let recIdempotencyKey = null;
+  let newVendorIdempotencyKey = null;
+  let lastNewVendorBody = null; // for the confirmed_new resubmit after "matches"
+  let cameFromPicker = false;   // false when reached via ?vendor_id= deep link
+
+  // -------------------------------------------------------------- step 1
+
+  function populateCategorySelect(categories, isFallback) {
+    const select = $("catSelect");
+    select.innerHTML = '<option value="" selected disabled>Choose a category&hellip;</option>';
+    for (const c of categories) {
+      const o = document.createElement("option");
+      o.value = c.name;
+      o.textContent = c.name;
+      if (!isFallback) {
+        if (c.slug != null) o.dataset.slug = c.slug;
+        if (c.vendor_count != null) o.dataset.count = c.vendor_count;
+      }
+      select.appendChild(o);
+    }
+    if (isFallback) {
+      const other = document.createElement("option");
+      other.value = "__other__";
+      other.textContent = "Something else…";
+      select.appendChild(other);
+    }
+    select.onchange = () => {
+      $("catOther").classList.toggle("hidden", select.value !== "__other__");
+    };
+  }
+
+  function loadCategories() {
+    show("catStep");
+    setErr("catErr", "");
+    api("/api/vendor-categories")
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => {
+        const categories = (data && data.categories) || [];
+        if (!categories.length) throw new Error("empty");
+        populateCategorySelect(categories, false);
+      })
+      .catch(() => populateCategorySelect(FALLBACK_CATEGORIES.map(name => ({ name })), true));
+  }
+
+  $("catContinue").addEventListener("click", () => {
+    const select = $("catSelect");
+    setErr("catErr", "");
+    let name = select.value;
+    if (!name || name === "") { setErr("catErr", "Please choose the type of service."); return; }
+    if (name === "__other__") {
+      name = $("catOther").value.trim();
+      if (!name) { setErr("catErr", "Please describe the type of service."); return; }
+      onCategoryChosen({ name });
+      return;
+    }
+    const option = select.selectedOptions[0];
+    onCategoryChosen({ name, slug: option ? option.dataset.slug : undefined,
+                       vendor_count: option && option.dataset.count !== undefined
+                         ? Number(option.dataset.count) : undefined });
+  });
+
+  function onCategoryChosen(category) {
+    currentCategory = category;
+    cameFromPicker = true;
+    // vendor_count === 0 (from the live endpoint) means there is nothing to
+    // pick from — skip straight to the new-vendor form without a round trip.
+    if (category.vendor_count === 0) { showNewVendor(category); return; }
+    api("/api/vendors")
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => {
+        const all = (data && data.vendors) || [];
+        const filtered = all.filter(v =>
+          (Array.isArray(v.categories) && v.categories.includes(category.name)) ||
+          v.service_category === category.name);
+        // Degradation rule: records without vendor_id mean either manifest
+        // mode (pre-cutover) or simply no DB vendors in this category yet —
+        // either way there is nothing to recommend against, so fall back to
+        // the plain free-text submission flow used before this rework.
+        const dbVendors = filtered.filter(v => v.vendor_id);
+        if (!dbVendors.length) { showNewVendor(category); return; }
+        renderVendorStep(category, dbVendors);
+      })
+      .catch(() => showNewVendor(category));
+  }
+
+  // -------------------------------------------------------------- step 2
+
+  function renderVendorStep(category, vendors) {
+    vendorStepVendors = vendors;
+    show("vendorStep");
+    setErr("vendorErr", "");
+    $("vendorCatLabel").textContent = "Category: " + category.name;
+    const list = $("vendorList");
+    list.innerHTML = "";
+    vendors.forEach((v, i) => {
+      const row = document.createElement("label");
+      row.className = "check";
+      row.innerHTML = '<input type="radio" name="vendorChoice" value="' + i + '">' +
+        '<span>' + esc(v.name) + '</span>';
+      list.appendChild(row);
+    });
+  }
+
+  $("vendorBack").addEventListener("click", loadCategories);
+
+  $("vendorContinue").addEventListener("click", () => {
+    const checked = document.querySelector('input[name="vendorChoice"]:checked');
+    if (!checked) { setErr("vendorErr", "Please choose a vendor, or use “They're not listed.”"); return; }
+    const v = vendorStepVendors[Number(checked.value)];
+    showExisting({ id: v.vendor_id, name: v.name }, true);
+  });
+
+  $("vendorNotListed").addEventListener("click", () => showNewVendor(currentCategory));
+
+  // ------------------------------------------------- existing-vendor path
+
+  function showExisting(vendor, fromPicker) {
+    currentVendor = vendor;
+    cameFromPicker = !!fromPicker;
+    show("existingStep");
+    setErr("existingErr", "");
+    $("existingName").textContent = vendor.name;
+    $("existingBack").classList.toggle("hidden", !cameFromPicker);
+    $("existingBody").innerHTML = "<p>Checking your recommendation status&hellip;</p>";
+
+    api("/api/vendors/" + encodeURIComponent(vendor.id) + "/recommendations/me")
+      .then(async r => {
+        if (r.status === 401 || r.status === 403) { show("signin"); return; }
+        if (!r.ok) {
+          $("existingBody").innerHTML = "";
+          await handleError(r, "existingErr");
+          return;
+        }
+        const mine = await r.json();
+        if (mine.recommended) renderRecommendedState(vendor, mine);
+        else renderRecommendForm(vendor);
+      })
+      .catch(() => {
+        $("existingBody").innerHTML = "";
+        setErr("existingErr", "Something went wrong. Please check your connection and try again.");
+      });
+  }
+
+  $("existingBack").addEventListener("click", () => {
+    if (vendorStepVendors.length) renderVendorStep(currentCategory, vendorStepVendors);
+    else loadCategories();
+  });
+
+  function noteStatusLabel(status) {
+    switch (status) {
+      case "pending": return "Awaiting review";
+      case "approved": return "Reviewed";
+      case "rejected": return "Not used — didn't meet the guidelines";
+      case "hidden": return "Hidden by an administrator";
+      default: return "";
+    }
+  }
+
+  // Addendum A2: the endorsement level ("used" / "highly_recommended") on
+  // the resident's own active row, in the "Recommended by you" state's words.
+  function levelText(endorsement) {
+    return endorsement === "highly_recommended"
+      ? "You highly recommend this vendor."
+      : "You reported using this vendor.";
+  }
+
+  function renderRecommendedState(vendor, mine) {
+    const noteHtml = mine.note
+      ? '<div class="note-box">Your note: ' + esc(mine.note) + '</div>' +
+        '<div class="note-status">' + esc(noteStatusLabel(mine.noteStatus)) + '</div>'
+      : "";
+    $("existingBody").innerHTML =
+      '<span class="badge-good">Recommended by you</span>' +
+      '<p>' + esc(levelText(mine.endorsement)) + '</p>' + noteHtml +
+      '<button class="secondary" id="changeBtn" type="button">Change</button>' +
+      '<button class="secondary" id="withdrawBtn" type="button">Withdraw my recommendation</button>';
+    $("changeBtn").addEventListener("click", () => renderRecommendForm(vendor));
+    $("withdrawBtn").addEventListener("click", () => {
+      setErr("existingErr", "");
+      $("withdrawBtn").disabled = true;
+      api("/api/vendors/" + encodeURIComponent(vendor.id) + "/recommendations/me",
+          { method: "DELETE" })
+        .then(async r => {
+          if (r.ok) { showExisting(vendor, cameFromPicker); return; }
+          await handleError(r, "existingErr");
+          $("withdrawBtn").disabled = false;
+        })
+        .catch(() => {
+          setErr("existingErr", "Something went wrong. Please check your connection and try again.");
+          $("withdrawBtn").disabled = false;
+        });
+    });
+  }
+
+  // Addendum A1.3: option 3 ("did not meet") never creates a public record —
+  // it routes to the private concern flow instead, reusing report-vendor.html's
+  // "private, never published" framing and its 15-character minimum.
+  const PRIVATE_NOTE_MIN = 15;
+
+  function updateRecNoteForOutcome(outcome) {
+    const label = $("recNoteLabel");
+    const hint = $("recNoteHint");
+    const submit = $("recSubmit");
+    if (outcome === "did_not_meet") {
+      label.textContent = "What happened? (required — sent privately)";
+      hint.textContent = "This is filed as a private report to the guide's administrators " +
+        "only — it is never published or shown on the vendor's listing. Facts help most: " +
+        "what was the work, what went wrong, roughly when. Please don't include your own or " +
+        "other residents' names or personal details. At least " + PRIVATE_NOTE_MIN +
+        " characters.";
+      submit.textContent = "Send private report";
+    } else {
+      label.textContent = "Optional note about your experience";
+      hint.textContent = "Please don’t include your own or other residents’ names, " +
+        "addresses, or other personal, medical, financial, or gate/access details. Your note " +
+        "is reviewed before it can inform a public summary of what residents mention — it is " +
+        "never published individually.";
+      submit.textContent = "Submit recommendation";
+    }
+  }
+
+  function renderRecommendForm(vendor) {
+    recIdempotencyKey = crypto.randomUUID();
+    $("existingBody").innerHTML =
+      '<p class="lead">Recommend ' + esc(vendor.name) + ' to your neighbors.</p>' +
+      '<label class="check"><input id="recAttest" type="checkbox">' + esc(ATTESTATION_TEXT) + '</label>' +
+      '<fieldset>' +
+        '<legend>How did it go?</legend>' +
+        OUTCOMES.map(o => '<label class="check"><input type="radio" name="recOutcome" value="' +
+          o.value + '">' + esc(o.label) + '</label>').join("") +
+      '</fieldset>' +
+      '<label for="recNote" id="recNoteLabel" style="margin-top:1rem">Optional note about your experience</label>' +
+      '<textarea id="recNote" maxlength="1000"></textarea>' +
+      '<div class="hint" id="recNoteHint">Please don’t include your own or other residents’ names, ' +
+      'addresses, or other personal, medical, financial, or gate/access details. Your note ' +
+      'is reviewed before it can inform a public summary of what residents mention — it is ' +
+      'never published individually.</div>' +
+      '<button class="primary" id="recSubmit" type="button">Submit recommendation</button>';
+
+    for (const radio of document.querySelectorAll('input[name="recOutcome"]')) {
+      radio.addEventListener("change", () => updateRecNoteForOutcome(radio.value));
+    }
+
+    $("recSubmit").addEventListener("click", () => {
+      setErr("existingErr", "");
+      if (!$("recAttest").checked) {
+        setErr("existingErr", 'Please confirm: "' + ATTESTATION_TEXT + '"');
+        return;
+      }
+      const checked = document.querySelector('input[name="recOutcome"]:checked');
+      if (!checked) { setErr("existingErr", "Please choose how it went."); return; }
+      const outcome = checked.value;
+      const note = $("recNote").value.trim();
+      if (outcome === "did_not_meet" && note.length < PRIVATE_NOTE_MIN) {
+        setErr("existingErr",
+          "Please describe what happened in at least " + PRIVATE_NOTE_MIN + " characters.");
+        return;
+      }
+      $("recSubmit").disabled = true;
+      const body = {
+        outcome: outcome,
+        note: note || null,
+        attestation: true,
+        idempotency_key: recIdempotencyKey,
+      };
+      const limitMsg = outcome === "did_not_meet"
+        ? "You've reached today's report limit — please try again tomorrow."
+        : "You've reached today's recommendation limit — please try again tomorrow.";
+      api("/api/vendors/" + encodeURIComponent(vendor.id) + "/recommendations",
+          { method: "POST", body: JSON.stringify(body) })
+        .then(async r => {
+          if (r.ok) {
+            if (outcome === "did_not_meet") { renderPrivateConfirmation(vendor); return; }
+            showExisting(vendor, cameFromPicker);
+            return;
+          }
+          await handleError(r, "existingErr", limitMsg);
+          $("recSubmit").disabled = false;
+        })
+        .catch(() => {
+          setErr("existingErr", "Something went wrong. Please check your connection and try again.");
+          $("recSubmit").disabled = false;
+        });
+    });
+  }
+
+  // Addendum A1.3's private-confirmation panel: no public record was
+  // created, so there is nothing about the vendor's public state to refresh.
+  function renderPrivateConfirmation(vendor) {
+    setErr("existingErr", "");
+    $("existingBody").innerHTML =
+      '<p>Thank you — your report was filed privately with the administrators.</p>' +
+      '<button class="secondary" id="privateBackBtn" type="button">Back</button>';
+    $("privateBackBtn").addEventListener("click", () => showExisting(vendor, cameFromPicker));
+  }
+
+  // ------------------------------------------------------ new-vendor path
+
+  function showNewVendor(category) {
+    currentCategory = category;
+    newVendorIdempotencyKey = crypto.randomUUID();
+    lastNewVendorBody = null;
+    show("newVendorStep");
+    setErr("newVendorErr", "");
+    $("newVendorCatLabel").textContent = "Category: " + category.name;
+    $("newVendorBack").classList.toggle("hidden", !cameFromPicker || !vendorStepVendors.length);
+    for (const id of ["name", "phone", "email", "website", "address", "area", "notes"]) $(id).value = "";
+    $("used").checked = false;
+    $("residentOwned").checked = false;
+    for (const radio of document.querySelectorAll('input[name="newOutcome"]')) radio.checked = false;
+    $("newOutcomeWrap").classList.add("hidden");
+  }
+
+  $("used").addEventListener("change", () => {
+    $("newOutcomeWrap").classList.toggle("hidden", !$("used").checked);
+  });
+
+  $("newVendorBack").addEventListener("click", () => {
+    if (vendorStepVendors.length) renderVendorStep(currentCategory, vendorStepVendors);
+    else loadCategories();
+  });
+
+  function submitNewVendorBody(body) {
+    return api("/api/vendors/submissions", { method: "POST", body: JSON.stringify(body) });
+  }
+
+  $("newVendorSubmit").addEventListener("click", () => {
+    const err = "newVendorErr";
+    setErr(err, "");
+    const body = {
+      service_category: currentCategory.name,
+      category_slug: currentCategory.slug || "",
+      vendor_name: $("name").value.trim(),
+      phone: $("phone").value.trim(),
+      email: $("email").value.trim(),
+      website: $("website").value.trim(),
+      address: $("address").value.trim(),
+      area: $("area").value.trim(),
+      notes: $("notes").value.trim(),
+      used_them: $("used").checked,
+      resident_owned: $("residentOwned").checked,
+      confirmed_new: false,
+      idempotency_key: newVendorIdempotencyKey,
+    };
+    if (body.used_them) {
+      const checked = document.querySelector('input[name="newOutcome"]:checked');
+      if (!checked) { setErr(err, "Please choose how it went."); return; }
+      body.outcome = checked.value;
+    }
+    if (!body.vendor_name) { setErr(err, "Please enter the vendor's name."); return; }
+    if (!body.phone && !body.email && !body.website) {
+      setErr(err, "Please provide at least one way to reach them — phone, email, or website.");
+      return;
+    }
+    lastNewVendorBody = body;
+    $("newVendorSubmit").disabled = true;
+    submitNewVendorBody(body)
+      .then(async r => {
+        if (!r.ok) {
+          await handleError(r, err,
+            "You've reached today's submission limit — please try again tomorrow.");
+          $("newVendorSubmit").disabled = false;
+          return;
+        }
+        const payload = await r.json().catch(() => ({}));
+        if (payload && payload.matches && payload.matches.length && payload.created === false) {
+          showMatches(payload.matches);
+          return;
+        }
+        showDone("Thank you!",
+          "Your submission was received and will appear in the guide once an administrator reviews it.");
+      })
+      .catch(() => {
+        setErr(err, "Something went wrong. Please check your connection and try again.");
+        $("newVendorSubmit").disabled = false;
+      });
+  });
+
+  // --------------------------------------------------------- matches path
+
+  function showMatches(matches) {
+    show("matchesStep");
+    setErr("matchErr", "");
+    const list = $("matchList");
+    list.innerHTML = "";
+    matches.forEach(m => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "secondary";
+      btn.textContent = m.name;
+      btn.addEventListener("click", () => showExisting({ id: m.vendor_id, name: m.name }, false));
+      list.appendChild(btn);
+    });
+  }
+
+  $("matchNone").addEventListener("click", () => {
+    setErr("matchErr", "");
+    if (!lastNewVendorBody) { show("newVendorStep"); return; }
+    $("matchNone").disabled = true;
+    const body = Object.assign({}, lastNewVendorBody, { confirmed_new: true,
+      idempotency_key: newVendorIdempotencyKey });
+    submitNewVendorBody(body)
+      .then(async r => {
+        if (!r.ok) {
+          await handleError(r, "matchErr",
+            "You've reached today's submission limit — please try again tomorrow.");
+          $("matchNone").disabled = false;
+          return;
+        }
+        showDone("Thank you!",
+          "Your submission was received and will appear in the guide once an administrator reviews it.");
+      })
+      .catch(() => {
+        setErr("matchErr", "Something went wrong. Please check your connection and try again.");
+        $("matchNone").disabled = false;
+      });
+  });
+
+  // -------------------------------------------------------------- done
+
+  function showDone(title, message) {
+    $("doneTitle").textContent = title;
+    $("doneMessage").textContent = message;
+    show("done");
+  }
+
+  // ------------------------------------------------------------- start
+
+  function startFlow() {
+    const vendorId = new URLSearchParams(location.search).get("vendor_id");
+    if (vendorId) {
+      api("/api/vendors/" + encodeURIComponent(vendorId))
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(data => showExisting({ id: vendorId, name: data.name }, false))
+        .catch(loadCategories);
+      return;
+    }
+    loadCategories();
+  }
+
+  api("/api/auth/session", { method: "GET" })
+    .then(r => r.json())
+    .then(s => { if (s.authenticated) startFlow(); else show("signin"); })
+    .catch(() => show("signin"));
+})();
+</script>
+</body>
+</html>
+{% endraw %}

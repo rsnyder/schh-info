@@ -1,0 +1,265 @@
+---
+layout: null
+permalink: /vendors/report/
+sitemap: false
+---
+{%- comment -%}
+  Port of schh-community-guide/webapp/report-vendor.html (the chat.schh.info copy, which
+  stays up for old links). Kept as a standalone page like the original,
+  but served from schh.info so the installed app (scope: schh.info) keeps
+  its sign-in: on iPhone an out-of-scope link opens in Safari, whose
+  cookies are separate from the app's. Differences from the original:
+  API_BASE + credentials "include", sign-in/back links. Keep both copies
+  in sync.
+{%- endcomment -%}
+{% raw %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Report a Vendor Problem — SCHH Community Guide</title>
+<style>
+  /* Same standalone shell as recommend-vendor.html. Sign-in happens on the
+     chat page (one login flow to maintain) — this page only checks the
+     session cookie. */
+  body { margin:0; font-family:-apple-system, "Segoe UI", Roboto, sans-serif;
+         background:#faf9f6; min-height:100dvh; display:flex; flex-direction:column;
+         font-size:1.05rem; color:#222; }
+  header.shell { background:#4a6741; color:#fff; padding:.7rem 1rem; }
+  header.shell h1 { font-size:1.05rem; margin:0; font-weight:600; }
+  header.shell a { color:#dce8d8; font-size:.85rem; text-decoration:none; }
+  main { flex:1; max-width:38rem; width:100%; margin:0 auto; padding:1rem; box-sizing:border-box; }
+  .card { background:#fff; border:1px solid #e2e0da; border-radius:10px;
+          padding:1.2rem 1.3rem; margin-top:1rem; }
+  h2 { margin:.2rem 0 .6rem; font-size:1.3rem; }
+  p.lead { color:#555; margin:.2rem 0 1rem; line-height:1.5; }
+  label { display:block; font-weight:600; margin:1rem 0 .3rem; }
+  label .opt { font-weight:400; color:#777; font-size:.9em; }
+  input, select, textarea { width:100%; box-sizing:border-box; font:inherit;
+          padding:.55rem .6rem; border:1px solid #bbb; border-radius:6px; background:#fff; }
+  textarea { min-height:8rem; resize:vertical; }
+  input[readonly] { background:#f3f2ee; color:#555; }
+  .hint { color:#777; font-size:.88em; margin-top:.25rem; line-height:1.4; }
+  button.primary { margin-top:1.3rem; width:100%; padding:.75rem; font:inherit; font-weight:600;
+          background:#4a6741; color:#fff; border:0; border-radius:8px; cursor:pointer; }
+  button.primary[disabled] { opacity:.55; cursor:default; }
+  .error { color:#a33; min-height:1.3em; margin-top:.7rem; line-height:1.4; }
+  .notice { line-height:1.55; }
+  .notice a, footer a { color:#1565c0; }
+  .success h2 { color:#3c6136; }
+  .hidden { display:none !important; }
+  footer { max-width:38rem; margin:.5rem auto 1rem; padding:.6rem 1rem 0;
+           border-top:1px solid #ddd; font-size:.8rem; line-height:1.45; color:#666; text-align:center; }
+</style>
+</head>
+<body>
+<header class="shell">
+  <h1>SCHH Community Guide — Report a Vendor Problem <a href="https://schh.info/vendors/">&larr; back to the guide</a></h1>
+</header>
+<main>
+
+  <div id="checking" class="card notice">Checking your sign-in&hellip;</div>
+
+  <div id="signin" class="card notice hidden">
+    <h2>Please sign in first</h2>
+    <p>Vendor reports come from verified Sun City residents, so this page
+       needs you to be signed in to the
+       <a href="/">Community Guide chat</a> on the home page — sign in there
+       with your email code, then come back here.</p>
+    <button class="primary" onclick="location.reload()">I've signed in &mdash; continue</button>
+  </div>
+
+  <form id="form" class="card hidden" novalidate>
+    <h2>Report a problem with a listed vendor</h2>
+    <p class="lead">Had a bad experience with a vendor listed in the guide?
+       Tell us. Reports go <strong>only</strong> to the guide's
+       administrators — nothing you write here is ever published. Repeated
+       concerns about a vendor may result in their removal from the list.</p>
+
+    <label for="category">Type of service <span class="opt">(optional)</span></label>
+    <select id="category">
+      <option value="" selected>Choose a category&hellip;</option>
+    </select>
+
+    <label for="vendorPicker" class="hidden" id="vendorPickerLabel">Which vendor?</label>
+    <select id="vendorPicker" class="hidden">
+      <option value="">Not listed — I'll type the name below</option>
+    </select>
+
+    <label for="name">Vendor / business name</label>
+    <input id="name" type="text" maxlength="120" autocomplete="off">
+    <div class="hint hidden" id="nameHint">Filled in from the vendor you picked above.
+      Choose "Not listed" there to type a different name.</div>
+
+    <label for="details">What happened?</label>
+    <textarea id="details" maxlength="1000"></textarea>
+    <div class="hint">Facts help most — what was the work, what went wrong,
+      roughly when. Please don't include your own or other residents' names
+      or personal details.</div>
+
+    <button class="primary" id="submit" type="submit">Send report</button>
+    <div class="error" id="error" role="alert"></div>
+  </form>
+
+  <div id="done" class="card notice success hidden">
+    <h2>Report received</h2>
+    <p>Thank you — an administrator will review it. Reports are private and
+       never published; if a vendor accumulates repeated concerns, they may
+       be removed from the guide.</p>
+    <p style="margin-top:.9rem"><a href="/vendors/">Back to the vendor directory</a></p>
+  </div>
+
+</main>
+<footer>
+  Your name and email stay with the review team only — they are never
+  published or shared with the vendor. The guide does not publish negative
+  reviews; administrative removal is the outcome of sustained concerns.
+</footer>
+<script>
+(() => {
+  "use strict";
+  // Keep in sync with docs/vendor_sheet_schema.md's controlled category list.
+  const CATEGORIES = ["Plumbing","Electrical","HVAC","Roofing","Painting",
+    "Landscaping & Lawn Care","Tree Service","Pressure Washing","House Cleaning",
+    "Pest Control","Handyman","Appliance Repair","Garage Doors","Windows & Doors",
+    "Flooring","Concrete & Masonry","Patios, Lanais & Hardscaping",
+    "Gutters","Irrigation","Golf Cart Service",
+    "Computer & Technology Help","Home Watch","Home Inspection","Sewing & Upholstery",
+    "Pet Care","Moving & Hauling","Travel & Transportation","Auto Service",
+    "Insurance","Legal","Financial","Health & Wellness","Medical & Dental","Other"];
+  const $ = id => document.getElementById(id);
+
+  const select = $("category");
+  for (const c of CATEGORIES) {
+    const o = document.createElement("option");
+    o.value = o.textContent = c;
+    select.appendChild(o);
+  }
+
+  function show(id) {
+    for (const s of ["checking", "signin", "form", "done"]) {
+      $(s).classList.toggle("hidden", s !== id);
+    }
+  }
+
+  // Served from schh.info so it stays inside the installed app (PWA scope
+  // is schh.info). The API lives on chat.schh.info; the session cookies are
+  // host-only there and flow on this same-site request (credentials:
+  // "include", the same pattern as js/guide-chat.js). The BFF's CORS allows
+  // https://schh.info with credentials.
+  const API_BASE = "https://chat.schh.info";
+  function api(path, options) {
+    return fetch(API_BASE + path, Object.assign({
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    }, options));
+  }
+
+  // ---------------------------------------------- optional vendor picker
+  // Lets a resident pick an already-listed vendor instead of typing the
+  // name, so the report links to a vendor_id. Degrades to today's plain
+  // free-text name field whenever there's nothing DB-backed to pick from —
+  // no server-side category filter exists yet, so this fetches the full
+  // public vendor list and filters client-side by category name.
+  let categoryVendors = [];   // DB-mode records (carry vendor_id) for the chosen category
+  let selectedVendorId = null;
+
+  function resetVendorPicker() {
+    selectedVendorId = null;
+    categoryVendors = [];
+    $("vendorPicker").classList.add("hidden");
+    $("vendorPickerLabel").classList.add("hidden");
+    $("nameHint").classList.add("hidden");
+    $("name").readOnly = false;
+  }
+
+  function populateVendorPicker(vendors) {
+    categoryVendors = vendors;
+    const picker = $("vendorPicker");
+    picker.innerHTML = '<option value="">Not listed — I\'ll type the name below</option>';
+    vendors.forEach((v, i) => {
+      const o = document.createElement("option");
+      o.value = String(i);
+      o.textContent = v.name;
+      picker.appendChild(o);
+    });
+    picker.value = "";
+    picker.classList.remove("hidden");
+    $("vendorPickerLabel").classList.remove("hidden");
+  }
+
+  select.addEventListener("change", () => {
+    resetVendorPicker();
+    const category = select.value;
+    if (!category) return;
+    api("/api/vendors")
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => {
+        const all = (data && data.vendors) || [];
+        const filtered = all.filter(v =>
+          (Array.isArray(v.categories) && v.categories.includes(category)) ||
+          v.service_category === category);
+        const dbVendors = filtered.filter(v => v.vendor_id);
+        if (dbVendors.length) populateVendorPicker(dbVendors);
+      })
+      .catch(() => {}); // no picker shown — free-text name field still works
+  });
+
+  $("vendorPicker").addEventListener("change", () => {
+    const picker = $("vendorPicker");
+    if (picker.value === "") {
+      selectedVendorId = null;
+      $("name").value = "";
+      $("name").readOnly = false;
+      $("nameHint").classList.add("hidden");
+      return;
+    }
+    const v = categoryVendors[Number(picker.value)];
+    selectedVendorId = v.vendor_id;
+    $("name").value = v.name;
+    $("name").readOnly = true;
+    $("nameHint").classList.remove("hidden");
+  });
+
+  $("form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const err = $("error");
+    err.textContent = "";
+    const body = {
+      service_category: select.value || "",
+      vendor_name: $("name").value.trim(),
+      details: $("details").value.trim(),
+      vendor_id: selectedVendorId || null,
+    };
+    if (!body.vendor_name) { err.textContent = "Please enter the vendor's name."; return; }
+    if (body.details.length < 15) {
+      err.textContent = "Please describe what happened in a sentence or two."; return;
+    }
+    $("submit").disabled = true;
+    try {
+      const response = await api("/api/vendors/concerns", { method: "POST", body: JSON.stringify(body) });
+      if (response.ok) { show("done"); return; }
+      const payload = await response.json().catch(() => ({}));
+      const message = payload.error && payload.error.message;
+      if (response.status === 401 || response.status === 403) { show("signin"); return; }
+      if (response.status === 429) {
+        err.textContent = "You've reached today's report limit — please try again tomorrow.";
+      } else {
+        err.textContent = message || "Something went wrong. Please try again in a moment.";
+      }
+    } catch {
+      err.textContent = "Something went wrong. Please check your connection and try again.";
+    }
+    $("submit").disabled = false;
+  });
+
+  api("/api/auth/session", { method: "GET" })
+    .then(r => r.json())
+    .then(s => show(s.authenticated ? "form" : "signin"))
+    .catch(() => show("signin"));
+})();
+</script>
+</body>
+</html>
+{% endraw %}
