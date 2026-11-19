@@ -61,7 +61,7 @@ sections:
 
       **Browse by category.** Listings are grouped by service — plumbing, flooring, house cleaning, patios and lanais, and many more. Tap a category to see its vendors, each with contact details, tap-to-call phone numbers, and how many residents have recommended them.
 
-      **Resident-recommended.** Every listing starts as a resident recommendation and is reviewed before it appears. Used someone great? [Recommend them](https://chat.schh.info/recommend-vendor.html) — it takes about a minute, and your name is never published (listings show only a recommendation count). Featured providers — sponsored placements drawn from the same resident-recommended list — appear at the top of their category listings; the [Sponsors page](/sponsors/) explains the program.
+      **Researched, then resident-recommended.** Most listings were seeded by a category-by-category research pass; what makes them useful is neighbors' experience. Recommendations come from residents who have used a vendor and from a participating community group chat, and resident-recommended vendors are listed first in their category. Used someone great? [Recommend them](https://chat.schh.info/recommend-vendor.html) — it takes about a minute, and your name is never published (listings show only a recommendation count).
 
       **Search the wider area.** Inside any category you can also search nearby providers on the web (powered by Google). Those results are clearly labeled — they are *not* resident-recommended, but they help when our own list is still thin.
 
@@ -71,15 +71,15 @@ sections:
 
       Listings are provided as a convenience. Inclusion does not necessarily mean endorsement, verification, or recommendation — use your own judgment when hiring vendors or using local services.
 
-      Curious about the thinking behind the feature — or running a vendor-recommendation effort of your own? See [the background &amp; vision page](/vendors/about/).
+      For how listings are researched, how recommendations are gathered and kept current, and how resident-run services are added, see [how the Vendors feature works](/vendors/about/).
 
   - icon: heart
     heading: "How the Guide Is Funded"
     anchor: funding
     body: |-
-      The guide was created and is personally funded by a resident. Its ongoing costs — AI services, hosting, search, development tools, domains, and email delivery — add up every month and grow as more residents use it. Voluntary sponsorships help cover those costs: local businesses already on the vendor list can sponsor a labeled Featured placement, and residents can chip in any amount.
+      The guide was created and is personally funded by a resident. Its ongoing costs — AI services, hosting, search, development tools, domains, and email delivery — add up every month and grow as more residents use it.
 
-      The guide never asks residents for money. Nothing in it is gated on payment, support is entirely optional (and not tax-deductible), and the guide stays free for every resident regardless. The [Sponsors page](/sponsors/) explains the whole program.
+      The guide never asks residents for money. Nothing in it is gated on payment, and it stays free for every resident.
 
   - icon: heart
     heading: "Help Improve the Guide"

@@ -112,10 +112,6 @@ nav:
       short: "Tips"
       url: "/tips/"
       icon: "star"
-    - text: "Sponsors"
-      short: "Sponsors"
-      url: "/sponsors/"
-      icon: "heart"
     # Lives on chat.schh.info, outside the PWA scope, so it is marked
     # external — the templates open those in a browser tab rather than
     # replacing the installed app's window, which has no back button.
