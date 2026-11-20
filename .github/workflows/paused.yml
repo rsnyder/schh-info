@@ -1,0 +1,51 @@
+name: Deploy PAUSED page to Pages
+
+# Cold storage switch for schh.info. Running this workflow replaces the live
+# site with the single page in _paused/ (every URL answers with it via
+# 404.html, and sw.js retires the installed app's cache).
+#
+# To bring the full site back: Actions -> "Deploy Jekyll site to Pages" ->
+# Run workflow (or push any commit to main). NOTE: while paused, any push to
+# main redeploys the full site — re-run this workflow afterwards to re-pause.
+# See schh-community-guide docs/suspend_resume.md.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Assemble paused site
+        run: |
+          mkdir -p paused-site
+          cp _paused/index.html paused-site/index.html
+          cp _paused/index.html paused-site/404.html
+          cp _paused/sw.js paused-site/sw.js
+          printf 'User-agent: *\nDisallow: /\n' > paused-site/robots.txt
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: paused-site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
