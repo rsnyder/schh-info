@@ -229,8 +229,8 @@ description: "A curated list of local vendors and services, including resident-o
     // Research Briefs (plan B3): card state now comes straight from each
     // vendor's `brief` field on /api/vendors — {status, research_date,
     // version, in_progress} or null — rather than a build-time Liquid map.
-    // The brief itself lives at chat.schh.info/brief.html?vendor_id=<id>
-    // (webapp/brief.html + brief.js, task B2); this page only ever links
+    // The brief itself lives at /vendors/brief/?vendor_id=<id>
+    // (port of webapp/brief.html + js/brief.js, task B2); this page only ever links
     // to it.
     //
     // Which categories a brief can even be commissioned for — keep in sync
@@ -272,7 +272,7 @@ description: "A curated list of local vendors and services, including resident-o
             // limitations") describes the research, not the business, and
             // reads as a knock on the vendor — the brief's own limitations
             // section does that explaining (owner call 2026-08-24).
-            var url = "https://chat.schh.info/brief.html?vendor_id="
+            var url = "/vendors/brief/?vendor_id="
                 + encodeURIComponent(v.vendor_id || "");
             var aging = briefIsAging(b.research_date)
                 ? ' <span class="hint">(refresh available)</span>' : "";

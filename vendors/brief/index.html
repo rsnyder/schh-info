@@ -1,0 +1,195 @@
+---
+layout: null
+permalink: /vendors/brief/
+sitemap: false
+---
+{%- comment -%}
+  Port of schh-community-guide/webapp/brief.html (the chat.schh.info copy
+  stays up for old links), served from schh.info so the installed app keeps
+  its sign-in (an out-of-scope link opens in Safari, whose cookies are
+  separate on iPhone). Script: js/brief.js. Differences: sign-in text,
+  business-correction link, script path. Keep both copies in sync.
+{%- endcomment -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Research Brief — SCHH Community Guide</title>
+<style>
+  /* Same standalone shell as report-vendor.html / recommend-vendor.html:
+     self-contained, no chat.css dependency. Sign-in happens on the chat
+     page (index.html) — this page only checks the session cookie and, on
+     success, reloads itself (docs/vendor_brief_commissioning_plan.md B2). */
+  :root {
+    --brief-accent: #4a6741;
+    --brief-link: #1565c0;
+    --brief-ink: #222222;
+    --brief-muted: #666666;
+    --brief-line: #ddddda;
+    --brief-surface: #ffffff;
+    --brief-bg: #faf9f6;
+    --brief-warn-bg: #fff6e0;
+    --brief-warn-line: #e0c473;
+  }
+  body { margin:0; font-family:-apple-system, "Segoe UI", Roboto, sans-serif;
+         background:var(--brief-bg); min-height:100dvh; display:flex; flex-direction:column;
+         font-size:1.05rem; color:var(--brief-ink); }
+  header.shell { background:var(--brief-accent); color:#fff; padding:.7rem 1rem; }
+  header.shell h1 { font-size:1.05rem; margin:0; font-weight:600; }
+  header.shell a { color:#dce8d8; font-size:.85rem; text-decoration:none; }
+  main { flex:1; max-width:42rem; width:100%; margin:0 auto; padding:1rem; box-sizing:border-box; }
+  .card { background:var(--brief-surface); border:1px solid var(--brief-line); border-radius:10px;
+          padding:1.2rem 1.3rem; margin-top:1rem; }
+  h2 { margin:.2rem 0 .3rem; font-size:1.35rem; }
+  .notice a, footer a { color:var(--brief-link); }
+  button.primary { margin-top:1.1rem; width:100%; padding:.75rem; font:inherit; font-weight:600;
+          background:var(--brief-accent); color:#fff; border:0; border-radius:8px; cursor:pointer; }
+  .hidden { display:none !important; }
+  footer { max-width:42rem; margin:.5rem auto 1rem; padding:.6rem 1rem 0;
+           border-top:1px solid var(--brief-line); font-size:.8rem; line-height:1.45;
+           color:var(--brief-muted); text-align:center; }
+
+  /* -------------------------------------------------------- brief content */
+  #backLinkWrap { margin: 0 0 .8rem; font-size:.92em; }
+  #backLinkWrap a { color:var(--brief-link); text-decoration:none; }
+  #backLinkWrap a:hover { text-decoration:underline; }
+  .brief-meta { color:var(--brief-muted); font-size:.92em; margin:.2rem 0 .7rem; line-height:1.5; }
+  .brief-meta a { color:var(--brief-link); }
+  .badge { display:inline-block; font-weight:600; font-size:.82em; padding:.25rem .65rem;
+           border-radius:999px; margin:.2rem 0 .8rem; }
+  .badge-published { background:#e5f0e1; color:#3c6136; }
+  .badge-limited { background:var(--brief-warn-bg); color:#7a5b13; }
+  .limitations-block { background:var(--brief-warn-bg); border:1px solid var(--brief-warn-line);
+          border-radius:8px; padding:.9rem 1rem; margin:1.2rem 0 0; line-height:1.55; }
+  .limitations-block h3 { margin:0 0 .4rem; font-size:1.02em; color:#7a5b13; }
+  .limitations-block > *:last-child { margin-bottom:0; }
+  .limitations-pointer { background:var(--brief-warn-bg); border:1px solid var(--brief-warn-line);
+          border-radius:8px; padding:.55rem .8rem; margin:.2rem 0 .8rem; font-size:.92em; }
+  .limitations-pointer a { color:#7a5b13; font-weight:600; }
+  .disclosure { color:var(--brief-muted); font-size:.92em; line-height:1.5;
+          border-left:3px solid var(--brief-line); padding:.1rem 0 .1rem .9rem; margin:0 0 1.2rem; }
+  .narrative { line-height:1.6; }
+  .narrative h2, .narrative h3 { font-size:1.15em; margin:1.1em 0 .4em; color:var(--brief-accent); }
+  .narrative h2:first-child, .narrative h3:first-child { margin-top:0; }
+  .narrative p { margin:.6em 0; }
+  .narrative ul, .narrative ol { margin:.5em 0; padding-left:1.4em; }
+  .narrative li { margin:.25em 0; }
+  .narrative blockquote { border-left:3px solid var(--brief-line); margin:.8em 0; padding:.2em 1em;
+          color:var(--brief-muted); }
+  .narrative a { color:var(--brief-link); overflow-wrap:anywhere; }
+  .table-scroll { overflow-x:auto; margin:.8em 0; max-width:100%; }
+  .narrative table { border-collapse:collapse; font-size:.92em; }
+  .narrative th, .narrative td { border:1px solid var(--brief-line); padding:.4em .65em;
+          text-align:left; white-space:nowrap; }
+  .narrative thead th { background:#f1efe9; }
+  .sources h3 { font-size:1.05em; margin:1.4em 0 .5em; }
+  .sources ol { padding-left:1.4em; margin:.4em 0; }
+  .sources li { margin:.5em 0; line-height:1.5; }
+  .sources .src-meta { color:var(--brief-muted); font-size:.88em; }
+  .brief-footer { border-top:1px solid var(--brief-line); margin-top:1.6rem; padding-top:.9rem;
+          font-size:.88em; color:var(--brief-muted); line-height:1.5; }
+  .brief-footer a { color:var(--brief-link); }
+
+  /* --------------------------------------------------- correction panel */
+  #correctionPanel textarea { width:100%; box-sizing:border-box; font:inherit;
+          min-height:6rem; resize:vertical; padding:.55rem .6rem; border:1px solid #bbb;
+          border-radius:6px; margin-top:.4rem; }
+  #correctionPanel button { margin-top:.6rem; padding:.5rem .9rem; font:inherit; font-weight:600;
+          background:var(--brief-accent); color:#fff; border:0; border-radius:8px; cursor:pointer; }
+  #correctionPanel button[disabled] { opacity:.55; cursor:default; }
+  #correctionError { color:#a33; min-height:1.2em; margin-top:.5rem; }
+  #correctionDone { color:#3c6136; }
+  @media (max-width:479px) {
+    body { font-size:1rem; }
+    .card { padding:1rem; }
+  }
+</style>
+</head>
+<body>
+<header class="shell">
+  <h1>SCHH Community Guide — Research Brief <a href="https://schh.info/vendors/">&larr; back to the guide</a></h1>
+</header>
+<main>
+
+  <div id="checking" class="card notice">Checking your sign-in&hellip;</div>
+
+  <div id="signin" class="card notice hidden">
+    <h2>Please sign in first</h2>
+    <p>Research briefs are for verified Sun City residents, so this page
+       needs you to be signed in to the
+       <a href="/">Community Guide chat</a> on the home page — sign in there
+       with your email code, then come back here.</p>
+    <button class="primary" onclick="location.reload()">I've signed in &mdash; continue</button>
+    <p style="margin-top:1rem">Are you the business this brief is about?
+       <a href="https://chat.schh.info/brief-correction-business.html">Report a correction without signing in</a>.</p>
+  </div>
+
+  <div id="notfound" class="card notice hidden">
+    <h2>No research brief here yet</h2>
+    <p id="notfoundMsg">No research brief has been published for this vendor.</p>
+    <p><a id="notfoundBack" href="https://schh.info/vendors/">Back to the vendor directory</a></p>
+  </div>
+
+  <div id="missing" class="card notice hidden">
+    <h2>No vendor specified</h2>
+    <p>This link is missing the vendor it should point to. Please return to
+       the vendor directory and open a brief from there.</p>
+    <p><a href="https://schh.info/vendors/">Back to the vendor directory</a></p>
+  </div>
+
+  <div id="content" class="card hidden">
+    <div id="backLinkWrap"><a id="backLink" href="https://schh.info/vendors/">&larr; back to this vendor on schh.info</a></div>
+
+    <h2><span id="vendorName"></span> &mdash; Research Brief</h2>
+    <p class="brief-meta" id="metaLine"></p>
+    <p class="brief-meta hidden" id="changeNoteLine"></p>
+    <span class="badge" id="statusBadge"></span>
+
+    <p class="limitations-pointer hidden" id="limitationsPointer">
+      Published with limitations —
+      <a href="#briefLimitations">see the note at the end of this brief</a>.
+    </p>
+
+    <p class="disclosure">This brief was prepared with AI-assisted research
+       checked against official records and reviewed before publication. It is
+       provided for information only and is not an endorsement or a guarantee.</p>
+
+    <div class="narrative" id="narrativeBody"></div>
+
+    <div class="sources" id="sourcesSection">
+      <h3>Sources</h3>
+      <ol id="sourcesList"></ol>
+    </div>
+
+    <div class="limitations-block hidden" id="limitationsBlock">
+      <h3 id="briefLimitations">About this brief's limitations</h3>
+      <div id="limitationsBody"></div>
+    </div>
+
+    <footer class="brief-footer">
+      <div id="correctionPanel">
+        <strong>Spot something wrong?</strong>
+        <p style="margin:.3rem 0 0">Tell us what's off and we'll check it against the
+           record. We review every correction and update the brief if it's warranted.</p>
+        <textarea id="correctionText" maxlength="2000"
+                  placeholder="What's wrong, and what should it say instead?"></textarea>
+        <div><button id="correctionSubmit" type="button">Send correction</button></div>
+        <div id="correctionError" role="alert"></div>
+        <p id="correctionDone" class="hidden">Thanks — we check every correction and
+           update the brief if it's warranted.</p>
+      </div>
+      <p>AI-assisted research checked before publication — informational only,
+         not an endorsement.</p>
+    </footer>
+  </div>
+
+</main>
+<footer>
+  Please verify important details directly with the business. Looking for the
+  chat guide instead? <a href="/">Start there</a>.
+</footer>
+<script src="/js/brief.js?v={{ site.time | date: '%s' }}"></script>
+</body>
+</html>

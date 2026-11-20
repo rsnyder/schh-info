@@ -46,7 +46,8 @@ analytics:
 future: true
 # Research Briefs (plan B3, 2026-08-25): the three hand-built sample briefs
 # migrated from the static `_briefs` collection below into the vendors
-# database and are now served at chat.schh.info/brief.html?vendor_id=<id>
+# database and are now served at /vendors/brief/?vendor_id=<id> (port of the
+# chat.schh.info/brief.html page, which stays up for old links)
 # (resident-gated, task B1/B2). The vendors page reads each card's `brief`
 # state straight from /api/vendors — no build-time flag needed any more.
 
